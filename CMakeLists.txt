@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 3.16)
+project(PADEngine)
+
+
+set(CMAKE_CXX_STANDARD 20)
+
+
+add_executable(PADEngine project/source/main.cpp)
+
+
+add_subdirectory(external/glfw-3.3.2)
+add_subdirectory(external/glm-0.9.9.8)
+
+include_directories(
+	external/glfw-3.3.2/include
+	external/glm-0.9.9.8/glm
+)
+
+find_package(Vulkan REQUIRED)
+target_include_directories(PADEngine PUBLIC ${Vulkan_INCLUDE_DIRS})
+target_link_libraries(PADEngine
+  Vulkan::Vulkan
+  glfw
+  glm
+)
