@@ -5,7 +5,11 @@ project(PADEngine)
 set(CMAKE_CXX_STANDARD 20)
 
 
-add_executable(PADEngine project/source/main.cpp)
+add_executable(PADEngine
+  project/source/main.cpp
+  project/source/core.cpp
+  project/source/core.h
+)
 
 
 add_subdirectory(external/glfw-3.3.2)
