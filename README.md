@@ -1,5 +1,5 @@
 ﻿# PAD Engine
-Basic 3D Engine Runs in Vulcan On Windows, Linux and Mac.
+Basic 3D Engine Runs in Vulkan On Windows, Linux and Mac.
 
 How to build
 ---------
