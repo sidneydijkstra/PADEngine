@@ -11,6 +11,14 @@ add_executable(PADEngine
   project/source/core.h
 )
 
+file(
+	COPY project/assets
+	DESTINATION ${CMAKE_BINARY_DIR}
+)
+file(
+	COPY project/shaders
+	DESTINATION ${CMAKE_BINARY_DIR}
+)
 
 add_subdirectory(external/glfw-3.3.2)
 add_subdirectory(external/glm-0.9.9.8)

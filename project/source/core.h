@@ -11,6 +11,7 @@
 
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <optional>
 #include <vector>
@@ -50,6 +51,12 @@ class Core {
         void createSwapChain();
         void createImageView();
 
+		// shader functions
+		static std::vector<char> readFile(const std::string& filename);
+        void createRenderPass();
+        void createGraphicsPipeline();
+		VkShaderModule createShaderModule(const std::vector<char>& code);
+
         bool checkValidationLayerSupport();
         bool checkDeviceExtensionSupport(VkPhysicalDevice _device);
         bool isDeviceSuitable(VkPhysicalDevice _device);
@@ -70,6 +77,10 @@ class Core {
         VkDevice _device;
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
+
+        VkRenderPass _renderPass;
+        VkPipelineLayout _pipelineLayout;
+        VkPipeline _graphicsPipeline;
 
         VkSurfaceKHR _surface;
 
