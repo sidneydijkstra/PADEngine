@@ -57,6 +57,14 @@ class Core {
         void createGraphicsPipeline();
 		VkShaderModule createShaderModule(const std::vector<char>& code);
 
+        // draw functions
+        void createFramebuffers();
+        void createCommandPool();
+        void createCommandBuffers();
+        void createSyncObjects();
+
+        void drawFrame();
+
         bool checkValidationLayerSupport();
         bool checkDeviceExtensionSupport(VkPhysicalDevice _device);
         bool isDeviceSuitable(VkPhysicalDevice _device);
@@ -81,6 +89,15 @@ class Core {
         VkRenderPass _renderPass;
         VkPipelineLayout _pipelineLayout;
         VkPipeline _graphicsPipeline;
+        std::vector<VkFramebuffer> _swapChainFramebuffers;
+        VkCommandPool _commandPool;
+        std::vector<VkCommandBuffer> _commandBuffers;
+
+        std::vector<VkSemaphore> _imageAvailableSemaphores;
+        std::vector<VkSemaphore> _renderFinishedSemaphores;
+        std::vector<VkFence> _inFlightFences;
+        std::vector<VkFence> _imagesInFlight;
+        size_t _currentFrame = 0;
 
         VkSurfaceKHR _surface;
 
@@ -94,6 +111,8 @@ class Core {
         GLFWwindow* _window;
         const uint32_t WIDTH = 800;
         const uint32_t HEIGHT = 600;
+
+        const int MAX_FRAMES_IN_FLIGHT = 2;
 
         const std::vector<const char*> _validationLayers = {
             "VK_LAYER_KHRONOS_validation"
