@@ -9,6 +9,8 @@ add_executable(PADEngine
   project/source/main.cpp
   project/source/core.cpp
   project/source/core.h
+  project/source/devicehandler.cpp
+  project/source/devicehandler.h
 )
 
 file(
