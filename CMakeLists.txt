@@ -7,10 +7,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(PADEngine
   project/source/main.cpp
+  project/source/config.h
   project/source/core.cpp
   project/source/core.h
   project/source/devicehandler.cpp
   project/source/devicehandler.h
+  project/source/swapchainhandler.cpp
+  project/source/swapchainhandler.h
 )
 
 file(

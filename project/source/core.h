@@ -9,7 +9,9 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "config.h"
 #include "devicehandler.h"
+#include "swapchainhandler.h"
 
 #include <iostream>
 #include <fstream>
@@ -21,6 +23,8 @@
 #ifndef CORE_CLASS
 #define CORE_CLASS
 
+
+
 class Core {
     public:
         Core();
@@ -30,12 +34,11 @@ class Core {
 
     private:
 		DeviceHandler* _deviceHandler;
+        SwapChainHandler* _swapChainHandler;
 
         void initVulkan();
         void createInstance();
         void createSurface();
-        void createSwapChain();
-        void createImageView();
 
 		// shader functions
 		static std::vector<char> readFile(const std::string& filename);
@@ -52,10 +55,6 @@ class Core {
         void drawFrame();
 
         bool checkValidationLayerSupport();
-
-        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats);
-        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes);
-        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
         void initWindow();
         void loop();
@@ -83,15 +82,8 @@ class Core {
         VkSurfaceKHR _surface;
 
         VkSwapchainKHR _swapChain;
-        std::vector<VkImage> _swapChainImages;
-        VkFormat _swapChainImageFormat;
-        VkExtent2D _swapChainExtent;
-
-        std::vector<VkImageView> _swapChainImageViews;
 
         GLFWwindow* _window;
-        const uint32_t WIDTH = 800;
-        const uint32_t HEIGHT = 600;
 
         const int MAX_FRAMES_IN_FLIGHT = 2;
 
