@@ -14,6 +14,8 @@ add_executable(PADEngine
   project/source/devicehandler.h
   project/source/swapchainhandler.cpp
   project/source/swapchainhandler.h
+  project/source/shader.cpp
+  project/source/shader.h
 )
 
 file(

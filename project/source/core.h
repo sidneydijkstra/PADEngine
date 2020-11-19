@@ -12,6 +12,7 @@
 #include "config.h"
 #include "devicehandler.h"
 #include "swapchainhandler.h"
+#include "shader.h"
 
 #include <iostream>
 #include <fstream>
@@ -35,16 +36,11 @@ class Core {
     private:
 		DeviceHandler* _deviceHandler;
         SwapChainHandler* _swapChainHandler;
+		Shader* _shader;
 
         void initVulkan();
         void createInstance();
         void createSurface();
-
-		// shader functions
-		static std::vector<char> readFile(const std::string& filename);
-        void createRenderPass();
-        void createGraphicsPipeline();
-		VkShaderModule createShaderModule(const std::vector<char>& code);
 
         // draw functions
         void createFramebuffers();
@@ -66,9 +62,6 @@ class Core {
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
 
-        VkRenderPass _renderPass;
-        VkPipelineLayout _pipelineLayout;
-        VkPipeline _graphicsPipeline;
         std::vector<VkFramebuffer> _swapChainFramebuffers;
         VkCommandPool _commandPool;
         std::vector<VkCommandBuffer> _commandBuffers;
