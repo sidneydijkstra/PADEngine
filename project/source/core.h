@@ -13,6 +13,7 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "shader.h"
+#include "renderer.h"
 
 #include <iostream>
 #include <fstream>
@@ -37,17 +38,11 @@ class Core {
 		DeviceHandler* _deviceHandler;
         SwapChainHandler* _swapChainHandler;
 		Shader* _shader;
+        Renderer* _renderer;
 
         void initVulkan();
         void createInstance();
         void createSurface();
-
-        // draw functions
-        void createCommandPool();
-        void createCommandBuffers();
-        void createSyncObjects();
-
-        void drawFrame();
 
         bool checkValidationLayerSupport();
 
@@ -56,27 +51,10 @@ class Core {
         void cleanup();
 
         VkInstance _instance;
-        VkPhysicalDevice _physicalDevice;
-        VkDevice _device;
-        VkQueue _graphicsQueue;
-        VkQueue _presentQueue;
-
-        VkCommandPool _commandPool;
-        std::vector<VkCommandBuffer> _commandBuffers;
-
-        std::vector<VkSemaphore> _imageAvailableSemaphores;
-        std::vector<VkSemaphore> _renderFinishedSemaphores;
-        std::vector<VkFence> _inFlightFences;
-        std::vector<VkFence> _imagesInFlight;
-        size_t _currentFrame = 0;
 
         VkSurfaceKHR _surface;
 
-        VkSwapchainKHR _swapChain;
-
         GLFWwindow* _window;
-
-        const int MAX_FRAMES_IN_FLIGHT = 2;
 
         const std::vector<const char*> _validationLayers = {
             "VK_LAYER_KHRONOS_validation"

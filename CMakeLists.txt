@@ -16,6 +16,8 @@ add_executable(PADEngine
   project/source/swapchainhandler.h
   project/source/shader.cpp
   project/source/shader.h
+  project/source/renderer.cpp
+  project/source/renderer.h
 )
 
 file(
