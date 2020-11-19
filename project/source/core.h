@@ -37,7 +37,6 @@ class Core {
     private:
 		DeviceHandler* _deviceHandler;
         SwapChainHandler* _swapChainHandler;
-		Shader* _shader;
         Renderer* _renderer;
 
         void initVulkan();

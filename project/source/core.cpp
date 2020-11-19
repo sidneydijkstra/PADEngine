@@ -21,32 +21,12 @@ void Core::initVulkan() {
     this->createSurface();
 
 	_deviceHandler = new DeviceHandler(this->_instance, this->_surface);
-
 	_deviceHandler->setupDevices();
 
-    //this->pickPhysicalDevice();
-    //this->createLogicalDevice();
-
     _swapChainHandler = new SwapChainHandler(this->_instance, this->_surface, _deviceHandler);
-
     _swapChainHandler->setupSwapChain();
 
-    //this->createSwapChain();
-    //this->createImageView();
-
-	_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
-
-    //this->createRenderPass();
-	//this->createGraphicsPipeline();
-
-    _swapChainHandler->setupFramebuffers(_shader->getRenderPass());
-
-    //this->createFramebuffers();
-    //this->createCommandPool();
-    //this->createCommandBuffers();
-    //this->createSyncObjects();
-
-    _renderer = new Renderer(_instance, _deviceHandler, _swapChainHandler, _shader);
+    _renderer = new Renderer(_instance, _deviceHandler, _swapChainHandler);
 }
 
 void Core::createInstance() {
@@ -162,7 +142,6 @@ void Core::loop() {
 
 void Core::cleanup() {
     delete _renderer;
-	delete _shader;
     delete _swapChainHandler;
     delete _deviceHandler;
 

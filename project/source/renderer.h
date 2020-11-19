@@ -21,7 +21,7 @@
 
 class Renderer {
 public:
-	Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, Shader* _shader);
+	Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler);
 	~Renderer();
 
 	void draw();

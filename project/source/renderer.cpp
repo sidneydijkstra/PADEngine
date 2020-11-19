@@ -1,10 +1,13 @@
 #include "renderer.h"
 
-Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, Shader* _shader) {
+Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler) {
 	this->_instance = _instance;
 	this->_deviceHandler = _deviceHandler;
 	this->_swapChainHandler = _swapChainHandler;
-	this->_shader = _shader;
+
+    this->_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
+
+    this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass());
 
     this->_deviceHandler->getDevicePresentQueue(_presentQueue);
     this->_deviceHandler->getDeviceGraphicsQueue(_graphicsQueue);
@@ -169,5 +172,7 @@ Renderer::~Renderer() {
     }
 
     vkDestroyCommandPool(this->_deviceHandler->getLogicalDevice(), this->_commandPool, nullptr);
+
+    delete _shader;
 }
 
