@@ -46,7 +46,9 @@ void Core::initVulkan() {
     //this->createRenderPass();
 	//this->createGraphicsPipeline();
 
-    this->createFramebuffers();
+    _swapChainHandler->setupFramebuffers(_shader->getRenderPass());
+
+    //this->createFramebuffers();
     this->createCommandPool();
     this->createCommandBuffers();
     this->createSyncObjects();
@@ -119,31 +121,6 @@ void Core::createSurface() {
     }
 }
 
-void Core::createFramebuffers() {
-    this->_swapChainFramebuffers.resize(this->_swapChainHandler->getSwapChainImageViews().size());
-
-    for (size_t i = 0; i < this->_swapChainHandler->getSwapChainImageViews().size(); i++) {
-        VkImageView attachments[] = {
-            this->_swapChainHandler->getSwapChainImageViews()[i]
-        };
-
-        VkFramebufferCreateInfo framebufferInfo{};
-        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass = this->_shader->getRenderPass();
-        framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = attachments;
-        framebufferInfo.width = this->_swapChainHandler->getSwapChainExtent().width;
-        framebufferInfo.height = this->_swapChainHandler->getSwapChainExtent().height;
-        framebufferInfo.layers = 1;
-
-        if (vkCreateFramebuffer(this->_device, &framebufferInfo, nullptr, &this->_swapChainFramebuffers[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create framebuffer!");
-        }else {
-            std::cout << "\t- created framebuffer!" << std::endl;
-        }
-    }
-}
-
 void Core::createCommandPool() {
     QueueFamilyIndices queueFamilyIndices = _deviceHandler->findQueueFamilies(this->_physicalDevice);
 
@@ -161,7 +138,7 @@ void Core::createCommandPool() {
 
 
 void Core::createCommandBuffers() {
-    this->_commandBuffers.resize(this->_swapChainFramebuffers.size());
+    this->_commandBuffers.resize(this->_swapChainHandler->getSwapChainFramebuffers().size());
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -190,7 +167,7 @@ void Core::createCommandBuffers() {
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassInfo.renderPass = this->_shader->getRenderPass();
-        renderPassInfo.framebuffer = this->_swapChainFramebuffers[i];
+        renderPassInfo.framebuffer = this->_swapChainHandler->getSwapChainFramebuffers()[i];
 
         renderPassInfo.renderArea.offset = { 0, 0 };
         renderPassInfo.renderArea.extent = this->_swapChainHandler->getSwapChainExtent();
@@ -339,11 +316,6 @@ void Core::cleanup() {
     }
 
     vkDestroyCommandPool(this->_device, this->_commandPool, nullptr);
-
-    for (VkFramebuffer framebuffer : this->_swapChainFramebuffers) {
-        vkDestroyFramebuffer(this->_device, framebuffer, nullptr);
-    }
-
     
 	delete _shader;
     delete _swapChainHandler;

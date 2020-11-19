@@ -1,3 +1,7 @@
+
+#ifndef SHADER_CLASS
+#define SHADER_CLASS
+
 #define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -14,9 +18,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
-#ifndef SHADER_CLASS
-#define SHADER_CLASS
 
 class Shader {
 public:

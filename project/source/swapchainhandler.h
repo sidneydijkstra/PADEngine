@@ -1,4 +1,7 @@
 
+#ifndef SWAPCHAINHANDLER_CLASS
+#define SWAPCHAINHANDLER_CLASS
+
 #define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -19,22 +22,20 @@
 #include <vector>
 #include <set>
 
-#ifndef SWAPCHAINHANDLER_CLASS
-#define SWAPCHAINHANDLER_CLASS
-
 class SwapChainHandler {
 public:
 	SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface, DeviceHandler* _deviceHandler);
 	~SwapChainHandler();
 
 	void setupSwapChain();
+	void setupFramebuffers(VkRenderPass _renderPass);
 
 	// TODO: maby chaing to struct
 	VkSwapchainKHR getSwapChain();
 	std::vector<VkImage> getSwapChainImages();
 	VkFormat getSwapChainImageFormat();
 	VkExtent2D getSwapChainExtent();
-	std::vector<VkImageView> getSwapChainImageViews();
+	std::vector<VkFramebuffer> getSwapChainFramebuffers();
 
 private:
 	
@@ -50,6 +51,7 @@ private:
 	VkExtent2D _swapChainExtent;
 
 	std::vector<VkImageView> _swapChainImageViews;
+	std::vector<VkFramebuffer> _swapChainFramebuffers;
 
 	void createSwapChain();
 	void createImageView();

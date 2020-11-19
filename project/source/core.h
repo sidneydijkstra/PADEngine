@@ -43,7 +43,6 @@ class Core {
         void createSurface();
 
         // draw functions
-        void createFramebuffers();
         void createCommandPool();
         void createCommandBuffers();
         void createSyncObjects();
@@ -62,7 +61,6 @@ class Core {
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
 
-        std::vector<VkFramebuffer> _swapChainFramebuffers;
         VkCommandPool _commandPool;
         std::vector<VkCommandBuffer> _commandBuffers;
 

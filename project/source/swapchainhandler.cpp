@@ -15,6 +15,32 @@ void SwapChainHandler::setupSwapChain() {
     this->createImageView();
 }
 
+void SwapChainHandler::setupFramebuffers(VkRenderPass _renderPass) {
+    this->_swapChainFramebuffers.resize(this->_swapChainImageViews.size());
+
+    for (size_t i = 0; i < this->_swapChainImageViews.size(); i++) {
+        VkImageView attachments[] = {
+            this->_swapChainImageViews[i]
+        };
+
+        VkFramebufferCreateInfo framebufferInfo{};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = _renderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.width = this->_swapChainExtent.width;
+        framebufferInfo.height = this->_swapChainExtent.height;
+        framebufferInfo.layers = 1;
+
+        if (vkCreateFramebuffer(this->_device, &framebufferInfo, nullptr, &this->_swapChainFramebuffers[i]) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create framebuffer!");
+        }
+        else {
+            std::cout << "\t- created framebuffer!" << std::endl;
+        }
+    }
+}
+
 VkSwapchainKHR SwapChainHandler::getSwapChain() {
     return this->_swapChain;
 }
@@ -31,8 +57,8 @@ VkExtent2D SwapChainHandler::getSwapChainExtent() {
     return this->_swapChainExtent;
 }
 
-std::vector<VkImageView> SwapChainHandler::getSwapChainImageViews() {
-    return this->_swapChainImageViews;
+std::vector<VkFramebuffer> SwapChainHandler::getSwapChainFramebuffers() {
+    return this->_swapChainFramebuffers;
 }
 
 void SwapChainHandler::createSwapChain() {
@@ -160,6 +186,10 @@ VkExtent2D SwapChainHandler::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& _c
 }
 
 SwapChainHandler::~SwapChainHandler() {
+    for (VkFramebuffer framebuffer : this->_swapChainFramebuffers) {
+        vkDestroyFramebuffer(this->_device, framebuffer, nullptr);
+    }
+
     for (VkImageView imageView : this->_swapChainImageViews) {
         vkDestroyImageView(this->_device, imageView, nullptr);
     }
