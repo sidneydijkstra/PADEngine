@@ -13,8 +13,11 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "shader.h"
+#include "vertex.h"
 
 #include <iostream>
+#include <array>
+#include <vector>
 
 #ifndef RENDERER_CLASS
 #define RENDERER_CLASS
@@ -37,6 +40,16 @@ private:
 	VkQueue _graphicsQueue;
 	VkQueue _presentQueue;
 
+	VkBuffer _vertexBuffer;
+	VkDeviceMemory _vertexBufferMemory;
+
+	const std::vector<Vertex> vertices = {
+		{{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
+		{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+		{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+	};
+
+
 	std::vector<VkSemaphore> _imageAvailableSemaphores;
 	std::vector<VkSemaphore> _renderFinishedSemaphores;
 	std::vector<VkFence> _inFlightFences;
@@ -46,6 +59,11 @@ private:
 	void setupCommandPool();
 	void setupCommandBuffers();
 	void setupSyncObjects();
+
+	void setupBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+	void setupVertexBuffer();
+	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;
 };

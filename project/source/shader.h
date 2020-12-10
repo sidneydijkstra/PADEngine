@@ -14,6 +14,7 @@
 
 #include "devicehandler.h"
 #include "swapchainhandler.h"
+#include "vertex.h"
 
 #include <iostream>
 #include <vector>
