@@ -14,6 +14,7 @@ Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChai
 
     this->setupCommandPool();
     this->setupVertexBuffer();
+    this->setupIndexBuffer();
     this->setupCommandBuffers();
     this->setupSyncObjects();
 
@@ -83,10 +84,10 @@ void Renderer::setupCommandBuffers() {
         VkBuffer vertexBuffers[] = { this->_vertexBuffer };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
-        
+        vkCmdBindIndexBuffer(this->_commandBuffers[i], this->_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-        std::cout << "vertices-size" << std::to_string(vertices.size()) << std::endl;
-        vkCmdDraw(this->_commandBuffers[i], static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+        std::cout << "vertices-size" << std::to_string(vertices.size()) << std::endl; 
+        vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
         vkCmdEndRenderPass(this->_commandBuffers[i]);
 
         if (vkEndCommandBuffer(this->_commandBuffers[i]) != VK_SUCCESS) {
@@ -147,7 +148,7 @@ void Renderer::setupBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemory
     vkBindBufferMemory(this->_deviceHandler->getLogicalDevice(), buffer, bufferMemory, 0);
 }
 
-void Renderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+void Renderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) { // TODO: new
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -196,6 +197,26 @@ void Renderer::setupVertexBuffer() { // TODO: new
 
     this->setupBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer, _vertexBufferMemory);
     this->copyBuffer(stagingBuffer, _vertexBuffer, bufferSize);
+
+    vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, nullptr);
+}
+
+void Renderer::setupIndexBuffer() { // TODO: new
+    VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    this->setupBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+    void* data;
+    vkMapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+    memcpy(data, indices.data(), (size_t)bufferSize);
+    vkUnmapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory);
+
+    this->setupBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer, _indexBufferMemory);
+
+    copyBuffer(stagingBuffer, _indexBuffer, bufferSize);
 
     vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), stagingBuffer, nullptr);
     vkFreeMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, nullptr);
@@ -275,6 +296,9 @@ Renderer::~Renderer() {
     }
 
     vkDestroyCommandPool(this->_deviceHandler->getLogicalDevice(), this->_commandPool, nullptr);
+
+    vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), _indexBuffer, nullptr);
+    vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _indexBufferMemory, nullptr);
 
     vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), _vertexBuffer, nullptr);
     vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _vertexBufferMemory, nullptr);
