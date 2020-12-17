@@ -21,4 +21,31 @@ struct UniformBufferObject {
     glm::mat4 proj;
 };
 
+#include "buffer.h"
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+struct UniformBufferData {
+	std::vector<VkBuffer> uniformBuffers;
+	std::vector<VkDeviceMemory> uniformBuffersMemory;
+};
+
+class UniformBuffer : Buffer {
+public:
+	UniformBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool, int _swapChainImageSize);
+	~UniformBuffer();
+
+	void setupBuffer();
+	void updateBuffer(int _index, UniformBufferObject _ubo);
+	UniformBufferData getBuffer();
+	void recreate();
+
+private:
+	std::vector<VkBuffer> _uniformBuffers;
+	std::vector<VkDeviceMemory> _uniformBuffersMemory;
+
+	int _swapChainImageSize;
+};
 #endif

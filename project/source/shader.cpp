@@ -7,6 +7,7 @@ Shader::Shader(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHan
 
 	this->setupRenderPass();
 	this->setupDescriptorSetLayout();
+	this->setupDescriptorPool();
 	this->setupGraphicsPipeline(_vertexPath, _fragmentPath);
 }
 
@@ -14,8 +15,12 @@ VkRenderPass Shader::getRenderPass() {
 	return this->_renderPass;
 }
 
-VkDescriptorSetLayout Shader::getDescriptionSetLayout() {
+VkDescriptorSetLayout Shader::getDescriptorSetLayout() {
 	return this->_descriptorSetLayout;
+}
+
+std::vector<VkDescriptorSet> Shader::getDescriptiorSets() {
+	return this->_descriptorSets;
 }
 
 VkPipelineLayout Shader::getPipelineLayout() {
@@ -24,6 +29,10 @@ VkPipelineLayout Shader::getPipelineLayout() {
 
 VkPipeline Shader::getGraphicsPipeline() {
 	return this->_graphicsPipeline;
+}
+
+void Shader::setUnifromBuffer(UniformBuffer* _buffer) {
+	this->setupDescriptorSets(_buffer);
 }
 
 void Shader::setupRenderPass() {
@@ -244,6 +253,58 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 	vkDestroyShaderModule(this->_deviceHandler->getLogicalDevice(), vertShaderModule, nullptr);
 }
 
+void Shader::setupDescriptorPool() {
+	int swapChainImageSize = _swapChainHandler->getSwapChainImages().size();
+	VkDescriptorPoolSize poolSize{};
+	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSize.descriptorCount = static_cast<uint32_t>(swapChainImageSize);
+
+	VkDescriptorPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	poolInfo.poolSizeCount = 1;
+	poolInfo.pPoolSizes = &poolSize;
+	poolInfo.maxSets = static_cast<uint32_t>(swapChainImageSize);
+
+	if (vkCreateDescriptorPool(this->_deviceHandler->getLogicalDevice(), &poolInfo, nullptr, &_descriptorPool) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor pool!");
+	}
+}
+
+void Shader::setupDescriptorSets(UniformBuffer* _buffer) {
+	int swapChainImageSize = _swapChainHandler->getSwapChainImages().size();
+	std::vector<VkDescriptorSetLayout> layouts(swapChainImageSize, this->_descriptorSetLayout);
+	VkDescriptorSetAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = _descriptorPool;
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(swapChainImageSize);
+	allocInfo.pSetLayouts = layouts.data();
+
+	_descriptorSets.resize(swapChainImageSize);
+	if (vkAllocateDescriptorSets(this->_deviceHandler->getLogicalDevice(), &allocInfo, _descriptorSets.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate descriptor sets!");
+	}
+
+	UniformBufferData uniform = _buffer->getBuffer();
+	for (size_t i = 0; i < swapChainImageSize; i++) {
+		VkDescriptorBufferInfo bufferInfo{};
+		bufferInfo.buffer = uniform.uniformBuffers[i];
+		bufferInfo.offset = 0;
+		bufferInfo.range = sizeof(UniformBufferObject);
+
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = _descriptorSets[i];
+		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pBufferInfo = &bufferInfo;
+		descriptorWrite.pImageInfo = nullptr; // Optional
+		descriptorWrite.pTexelBufferView = nullptr; // Optional
+		vkUpdateDescriptorSets(this->_deviceHandler->getLogicalDevice(), 1, &descriptorWrite, 0, nullptr);
+	}
+}
+
 std::vector<char> Shader::readFile(const std::string& _filename) {
 	std::ifstream file(_filename, std::ios::ate | std::ios::binary);
 
@@ -279,6 +340,7 @@ VkShaderModule Shader::createShaderModule(const std::vector<char>& _code) {
 }
 
 Shader::~Shader() {
+	vkDestroyDescriptorPool(this->_deviceHandler->getLogicalDevice(), _descriptorPool, nullptr);
 	vkDestroyDescriptorSetLayout(this->_deviceHandler->getLogicalDevice(), _descriptorSetLayout, nullptr);
 	vkDestroyPipeline(this->_deviceHandler->getLogicalDevice(), this->_graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(this->_deviceHandler->getLogicalDevice(), this->_pipelineLayout, nullptr);

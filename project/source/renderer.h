@@ -15,7 +15,9 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "shader.h"
-#include "buffer.h"
+#include "indexbuffer.h"
+#include "vertexbuffer.h"
+#include "uniformbuffer.h"
 
 #include <chrono>
 
@@ -39,7 +41,10 @@ private:
 	SwapChainHandler* _swapChainHandler;
 	GLFWwindow* _window;
 	Shader* _shader;
-	Buffer* _buffer;
+
+	VertexBuffer* _vertexBuffer;
+	IndexBuffer* _indexBuffer;
+	UniformBuffer* _uniformBuffer;
 
 	VkCommandPool _commandPool;
 	std::vector<VkCommandBuffer> _commandBuffers;

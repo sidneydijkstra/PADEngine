@@ -13,9 +13,6 @@
 #include <glm/mat4x4.hpp>
 
 #include "devicehandler.h"
-#include "shader.h"
-#include "vertex.h"
-#include "uniformbuffer.h"
 
 #include <iostream>
 #include <vector>
@@ -28,52 +25,15 @@ struct BufferData {
 
 class Buffer {
 public:
-	Buffer(VkInstance _instance, DeviceHandler* _deviceHandler, Shader* _shader, VkQueue _graphicsQueue, VkCommandPool _commandPool, int _swapChainImageSize);
+	Buffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool);
 	~Buffer();
 
-	void setupVertexBuffer();
-	void setupIndexBuffer();
-	void setupUniformBuffers();
-	void setupDescriptorPool();
-	void setupDescriptorSets();
-
-	void updateUniformBuffers(int _index, UniformBufferObject _ubo);
-
-	BufferData getVertexBuffer();
-	BufferData getIndexBuffer();
-	std::vector<VkDescriptorSet> getDescriptorSets();
-
-private:
+protected:
 	VkInstance _instance;
 	DeviceHandler* _deviceHandler;
-	Shader* _shader;
 
 	VkQueue _graphicsQueue;
 	VkCommandPool _commandPool;
-
-	VkBuffer _vertexBuffer;
-	VkDeviceMemory _vertexBufferMemory;
-
-	VkBuffer _indexBuffer;
-	VkDeviceMemory _indexBufferMemory;
-
-	std::vector<VkBuffer> _uniformBuffers;
-	std::vector<VkDeviceMemory> _uniformBuffersMemory;
-	VkDescriptorPool _descriptorPool;
-	std::vector<VkDescriptorSet> _descriptorSets;
-
-	const std::vector<Vertex> vertices = {
-		{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-		{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-		{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-		{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
-	};
-
-	const std::vector<uint16_t> indices = {
-		0, 1, 2, 2, 3, 0
-	};
-
-	int _swapChainImageSize;
 
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);

@@ -20,8 +20,13 @@ add_executable(PADEngine
   project/source/renderer.h
   project/source/buffer.cpp
   project/source/buffer.h
-  project/source/vertex.h
+  project/source/vertexbuffer.cpp
+  project/source/vertexbuffer.h
+  project/source/indexbuffer.cpp
+  project/source/indexbuffer.h
+  project/source/uniformbuffer.cpp
   project/source/uniformbuffer.h
+  project/source/vertex.h
 )
 
 file(
