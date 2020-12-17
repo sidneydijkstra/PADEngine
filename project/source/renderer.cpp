@@ -33,8 +33,10 @@ void Renderer::recreate() {
 
     this->cleanup();
     this->_swapChainHandler->recreate();
+    delete _shader;
     this->_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
     this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass());
+    delete _buffer;
     _buffer = new Buffer(this->_instance, this->_deviceHandler, _graphicsQueue, _commandPool);
     this->setupCommandBuffers();
 }
