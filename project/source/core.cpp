@@ -130,6 +130,7 @@ void Core::initWindow() {
     this->_window = glfwCreateWindow(Config::WIDTH, Config::HEIGHT, "PAD-Engine", nullptr, nullptr);
     glfwSetWindowUserPointer(_window, this);
     glfwSetFramebufferSizeCallback(_window, framebufferResizeCallback);
+    //glfwSetWindowSizeCallback(_window, framebufferResizeCallback);
 }
 
 void Core::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
