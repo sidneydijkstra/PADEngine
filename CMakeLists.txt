@@ -21,6 +21,7 @@ add_executable(PADEngine
   project/source/buffer.cpp
   project/source/buffer.h
   project/source/vertex.h
+  project/source/uniformbuffer.h
 )
 
 file(

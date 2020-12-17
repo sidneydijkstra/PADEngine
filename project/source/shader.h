@@ -26,6 +26,7 @@ public:
 	~Shader();
 
 	VkRenderPass getRenderPass();
+	VkDescriptorSetLayout getDescriptionSetLayout();
 	VkPipelineLayout getPipelineLayout();
 	VkPipeline getGraphicsPipeline();
 
@@ -35,12 +36,14 @@ private:
 	SwapChainHandler* _swapChainHandler;
 
 	void setupRenderPass();
+	void setupDescriptorSetLayout();
 	void setupGraphicsPipeline(std::string _vertexPath, std::string _fragmentPath);
 
 	std::vector<char> readFile(const std::string& filename);
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 
 	VkRenderPass _renderPass;
+	VkDescriptorSetLayout _descriptorSetLayout;
 	VkPipelineLayout _pipelineLayout;
 	VkPipeline _graphicsPipeline;
 };

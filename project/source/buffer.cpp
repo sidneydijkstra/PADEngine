@@ -1,14 +1,19 @@
 #include "buffer.h"
 
-Buffer::Buffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool) {
+Buffer::Buffer(VkInstance _instance, DeviceHandler* _deviceHandler, Shader* _shader, VkQueue _graphicsQueue, VkCommandPool _commandPool, int _swapChainImageSize) {
     this->_instance = _instance;
     this->_deviceHandler = _deviceHandler;
+    this->_shader = _shader;
 
     this->_graphicsQueue = _graphicsQueue;
     this->_commandPool = _commandPool;
+    this->_swapChainImageSize = _swapChainImageSize;
 
     this->setupVertexBuffer();
     this->setupIndexBuffer();
+    this->setupUniformBuffers();
+    this->setupDescriptorPool();
+    this->setupDescriptorSets();
 }
 
 void Buffer::setupVertexBuffer() { // TODO: new
@@ -16,14 +21,14 @@ void Buffer::setupVertexBuffer() { // TODO: new
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    this->setupBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+    this->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
     vkMapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
     memcpy(data, vertices.data(), (size_t)bufferSize);
     vkUnmapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory);
 
-    this->setupBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer, _vertexBufferMemory);
+    this->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer, _vertexBufferMemory);
     this->copyBuffer(stagingBuffer, _vertexBuffer, bufferSize);
 
     vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), stagingBuffer, nullptr);
@@ -35,14 +40,14 @@ void Buffer::setupIndexBuffer() { // TODO: new
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
-    this->setupBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+    this->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
     vkMapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
     memcpy(data, indices.data(), (size_t)bufferSize);
     vkUnmapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory);
 
-    this->setupBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer, _indexBufferMemory);
+    this->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer, _indexBufferMemory);
 
     copyBuffer(stagingBuffer, _indexBuffer, bufferSize);
 
@@ -50,15 +55,86 @@ void Buffer::setupIndexBuffer() { // TODO: new
     vkFreeMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
+void Buffer::setupUniformBuffers() {
+    VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+    _uniformBuffers.resize(_swapChainImageSize);
+    _uniformBuffersMemory.resize(_swapChainImageSize);
+
+    for (size_t i = 0; i < _swapChainImageSize; i++) {
+        createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, _uniformBuffers[i], _uniformBuffersMemory[i]);
+    }
+}
+
+void Buffer::setupDescriptorPool() {
+    VkDescriptorPoolSize poolSize{};
+    poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSize.descriptorCount = static_cast<uint32_t>(_swapChainImageSize);
+
+    VkDescriptorPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolInfo.poolSizeCount = 1;
+    poolInfo.pPoolSizes = &poolSize;
+    poolInfo.maxSets = static_cast<uint32_t>(_swapChainImageSize);
+
+    if (vkCreateDescriptorPool(this->_deviceHandler->getLogicalDevice(), &poolInfo, nullptr, &_descriptorPool) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create descriptor pool!");
+    }
+}
+
+void Buffer::setupDescriptorSets() {
+    std::vector<VkDescriptorSetLayout> layouts(_swapChainImageSize, this->_shader->getDescriptionSetLayout());
+    VkDescriptorSetAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.descriptorPool = _descriptorPool;
+    allocInfo.descriptorSetCount = static_cast<uint32_t>(_swapChainImageSize);
+    allocInfo.pSetLayouts = layouts.data();
+
+    _descriptorSets.resize(_swapChainImageSize);
+    if (vkAllocateDescriptorSets(this->_deviceHandler->getLogicalDevice(), &allocInfo, _descriptorSets.data()) != VK_SUCCESS) {
+        throw std::runtime_error("failed to allocate descriptor sets!");
+    }
+
+    for (size_t i = 0; i < _swapChainImageSize; i++) {
+        VkDescriptorBufferInfo bufferInfo{};
+        bufferInfo.buffer = _uniformBuffers[i];
+        bufferInfo.offset = 0;
+        bufferInfo.range = sizeof(UniformBufferObject);
+
+        VkWriteDescriptorSet descriptorWrite{};
+        descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrite.dstSet = _descriptorSets[i];
+        descriptorWrite.dstBinding = 0;
+        descriptorWrite.dstArrayElement = 0;
+        descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptorWrite.descriptorCount = 1;
+        descriptorWrite.pBufferInfo = &bufferInfo;
+        descriptorWrite.pImageInfo = nullptr; // Optional
+        descriptorWrite.pTexelBufferView = nullptr; // Optional
+        vkUpdateDescriptorSets(this->_deviceHandler->getLogicalDevice(), 1, &descriptorWrite, 0, nullptr);
+    }
+}
+
+void Buffer::updateUniformBuffers(int _index, UniformBufferObject _ubo) { // new and wierd
+    void* data;
+    vkMapMemory(this->_deviceHandler->getLogicalDevice(), _uniformBuffersMemory[_index], 0, sizeof(_ubo), 0, &data);
+    memcpy(data, &_ubo, sizeof(_ubo));
+    vkUnmapMemory(this->_deviceHandler->getLogicalDevice(), _uniformBuffersMemory[_index]);
+}
+
 BufferData Buffer::getVertexBuffer() {
     return BufferData { this->_vertexBuffer, (uint32_t)this->vertices.size() };
 }
 
 BufferData Buffer::getIndexBuffer() {
-    return BufferData{ this->_indexBuffer, (uint32_t)this->indices.size() };
+    return BufferData { this->_indexBuffer, (uint32_t)this->indices.size() };
 }
 
-void Buffer::setupBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) { // TODO: new
+std::vector<VkDescriptorSet> Buffer::getDescriptorSets() {
+    return this->_descriptorSets;
+}
+
+void Buffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) { // TODO: new
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = size;
@@ -138,4 +214,11 @@ Buffer::~Buffer() {
 
     vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), _vertexBuffer, nullptr);
     vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _vertexBufferMemory, nullptr);
+
+    for (size_t i = 0; i < _uniformBuffersMemory.size(); i++) {
+        vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), _uniformBuffers[i], nullptr);
+        vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _uniformBuffersMemory[i], nullptr);
+    }
+
+    vkDestroyDescriptorPool(this->_deviceHandler->getLogicalDevice(), _descriptorPool, nullptr);
 }

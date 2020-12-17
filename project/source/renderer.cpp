@@ -15,7 +15,7 @@ Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChai
 
     this->setupCommandPool();
 
-    _buffer = new Buffer(this->_instance, this->_deviceHandler, _graphicsQueue, _commandPool);
+    _buffer = new Buffer(this->_instance, this->_deviceHandler, this->_shader, _graphicsQueue, _commandPool, this->_swapChainHandler->getSwapChainImages().size());
 
     this->setupCommandBuffers();
     this->setupSyncObjects();
@@ -37,12 +37,30 @@ void Renderer::recreate() {
     this->_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
     this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass());
     delete _buffer;
-    _buffer = new Buffer(this->_instance, this->_deviceHandler, _graphicsQueue, _commandPool);
+    _buffer = new Buffer(this->_instance, this->_deviceHandler, this->_shader, _graphicsQueue, _commandPool, this->_swapChainHandler->getSwapChainImages().size());
     this->setupCommandBuffers();
 }
 
 void Renderer::cleanup() {
     vkFreeCommandBuffers(this->_deviceHandler->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
+}
+
+void Renderer::update(uint32_t currentImage) {
+    static auto startTime = std::chrono::high_resolution_clock::now();
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    UniformBufferObject ubo{};
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    ubo.proj = glm::perspective(glm::radians(45.0f), this->_swapChainHandler->getSwapChainExtent().width / (float)this->_swapChainHandler->getSwapChainExtent().height, 0.1f, 10.0f);
+
+    ubo.proj[1][1] *= -1;
+
+    _buffer->updateUniformBuffers(currentImage, ubo);
 }
 
 void Renderer::setupCommandPool() {
@@ -113,6 +131,7 @@ void Renderer::setupCommandBuffers() {
         vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(this->_commandBuffers[i], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
 
+        vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &_buffer->getDescriptorSets()[i], 0, nullptr);
         vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
         vkCmdEndRenderPass(this->_commandBuffers[i]);
 
@@ -167,6 +186,8 @@ void Renderer::draw() {
     }
     // Mark the image as now being in use by this frame
     this->_imagesInFlight[imageIndex] = this->_inFlightFences[this->_currentFrame];
+
+    update(imageIndex);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

@@ -6,11 +6,16 @@ Shader::Shader(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHan
 	this->_swapChainHandler = _swapChainHandler;
 
 	this->setupRenderPass();
+	this->setupDescriptorSetLayout();
 	this->setupGraphicsPipeline(_vertexPath, _fragmentPath);
 }
 
 VkRenderPass Shader::getRenderPass() {
 	return this->_renderPass;
+}
+
+VkDescriptorSetLayout Shader::getDescriptionSetLayout() {
+	return this->_descriptorSetLayout;
 }
 
 VkPipelineLayout Shader::getPipelineLayout() {
@@ -63,6 +68,24 @@ void Shader::setupRenderPass() {
 	}
 	else {
 		std::cout << "created render pass!" << std::endl;
+	}
+}
+
+void Shader::setupDescriptorSetLayout() {
+	VkDescriptorSetLayoutBinding uboLayoutBinding{};
+	uboLayoutBinding.binding = 0;
+	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	uboLayoutBinding.descriptorCount = 1;
+	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &uboLayoutBinding;
+
+	if (vkCreateDescriptorSetLayout(this->_deviceHandler->getLogicalDevice(), &layoutInfo, nullptr, &_descriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor set layout!");
 	}
 }
 
@@ -128,8 +151,8 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
-	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizer.cullMode = VK_CULL_MODE_NONE; // VK_CULL_MODE_BACK_BIT; TODO: watch
+	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f; // Optional
 	rasterizer.depthBiasClamp = 0.0f; // Optional
@@ -177,8 +200,8 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 0; // Optional
-	pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
+	pipelineLayoutInfo.setLayoutCount = 1;
+	pipelineLayoutInfo.pSetLayouts = &_descriptorSetLayout;
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
@@ -256,6 +279,7 @@ VkShaderModule Shader::createShaderModule(const std::vector<char>& _code) {
 }
 
 Shader::~Shader() {
+	vkDestroyDescriptorSetLayout(this->_deviceHandler->getLogicalDevice(), _descriptorSetLayout, nullptr);
 	vkDestroyPipeline(this->_deviceHandler->getLogicalDevice(), this->_graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(this->_deviceHandler->getLogicalDevice(), this->_pipelineLayout, nullptr);
 	vkDestroyRenderPass(this->_deviceHandler->getLogicalDevice(), this->_renderPass, nullptr);

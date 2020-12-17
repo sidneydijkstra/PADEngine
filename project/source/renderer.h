@@ -9,11 +9,15 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "shader.h"
 #include "buffer.h"
+
+#include <chrono>
 
 #include <iostream>
 #include <array>
@@ -52,6 +56,8 @@ private:
 
 	void recreate();
 	void cleanup();
+
+	void update(uint32_t currentImage);
 
 	void setupCommandPool();
 	void setupCommandBuffers();
