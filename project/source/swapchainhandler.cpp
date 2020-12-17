@@ -5,9 +5,24 @@ SwapChainHandler::SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface, 
     this->_surface = _surface;
     this->_deviceHandler = _deviceHandler;
 
-
     this->_physicalDevice = _deviceHandler->getPhysicalDevice();
     this->_device = _device = _deviceHandler->getLogicalDevice();
+}
+
+void SwapChainHandler::recreate() {
+    this->cleanup();
+    this->createSwapChain();
+    this->createImageView();
+}
+
+void SwapChainHandler::cleanup() {
+    for (size_t i = 0; i < _swapChainFramebuffers.size(); i++) {
+        vkDestroyFramebuffer(this->_deviceHandler->getLogicalDevice(), _swapChainFramebuffers[i], nullptr);
+    }
+    for (size_t i = 0; i < _swapChainImageViews.size(); i++) {
+        vkDestroyImageView(this->_deviceHandler->getLogicalDevice(), _swapChainImageViews[i], nullptr);
+    }
+    vkDestroySwapchainKHR(this->_deviceHandler->getLogicalDevice(), _swapChain, nullptr);
 }
 
 void SwapChainHandler::setupSwapChain() {
@@ -186,13 +201,6 @@ VkExtent2D SwapChainHandler::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& _c
 }
 
 SwapChainHandler::~SwapChainHandler() {
-    for (VkFramebuffer framebuffer : this->_swapChainFramebuffers) {
-        vkDestroyFramebuffer(this->_device, framebuffer, nullptr);
-    }
-
-    for (VkImageView imageView : this->_swapChainImageViews) {
-        vkDestroyImageView(this->_device, imageView, nullptr);
-    }
-
-    vkDestroySwapchainKHR(this->_device, this->_swapChain, nullptr);
+    this->cleanup();
 }
+

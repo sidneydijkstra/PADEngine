@@ -26,7 +26,7 @@ void Core::initVulkan() {
     _swapChainHandler = new SwapChainHandler(this->_instance, this->_surface, _deviceHandler);
     _swapChainHandler->setupSwapChain();
 
-    _renderer = new Renderer(_instance, _deviceHandler, _swapChainHandler);
+    _renderer = new Renderer(_instance, _deviceHandler, _swapChainHandler, _window);
 }
 
 void Core::createInstance() {
@@ -126,9 +126,15 @@ void Core::initWindow() {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     this->_window = glfwCreateWindow(Config::WIDTH, Config::HEIGHT, "PAD-Engine", nullptr, nullptr);
+    glfwSetWindowUserPointer(_window, this);
+    glfwSetFramebufferSizeCallback(_window, framebufferResizeCallback);
+}
+
+void Core::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+    auto app = reinterpret_cast<Core*>(glfwGetWindowUserPointer(window));
+    app->_renderer->setFramebufferResized();
 }
 
 void Core::loop() {

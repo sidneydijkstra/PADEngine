@@ -27,6 +27,9 @@ public:
 	SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface, DeviceHandler* _deviceHandler);
 	~SwapChainHandler();
 
+	void recreate();
+	void cleanup();
+
 	void setupSwapChain();
 	void setupFramebuffers(VkRenderPass _renderPass);
 

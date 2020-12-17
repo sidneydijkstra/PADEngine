@@ -18,6 +18,8 @@ add_executable(PADEngine
   project/source/shader.h
   project/source/renderer.cpp
   project/source/renderer.h
+  project/source/buffer.cpp
+  project/source/buffer.h
   project/source/vertex.h
 )
 

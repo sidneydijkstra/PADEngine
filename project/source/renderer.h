@@ -13,7 +13,7 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "shader.h"
-#include "vertex.h"
+#include "buffer.h"
 
 #include <iostream>
 #include <array>
@@ -24,15 +24,18 @@
 
 class Renderer {
 public:
-	Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler);
+	Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, GLFWwindow* _window);
 	~Renderer();
 
 	void draw();
+	void setFramebufferResized();
 private:
 	VkInstance _instance;
 	DeviceHandler* _deviceHandler;
 	SwapChainHandler* _swapChainHandler;
+	GLFWwindow* _window;
 	Shader* _shader;
+	Buffer* _buffer;
 
 	VkCommandPool _commandPool;
 	std::vector<VkCommandBuffer> _commandBuffers;
@@ -40,37 +43,19 @@ private:
 	VkQueue _graphicsQueue;
 	VkQueue _presentQueue;
 
-	VkBuffer _vertexBuffer;
-	VkDeviceMemory _vertexBufferMemory;
-	VkBuffer _indexBuffer;
-	VkDeviceMemory _indexBufferMemory;
-
-	const std::vector<Vertex> vertices = {
-		{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-		{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-		{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-		{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
-	};
-
-	const std::vector<uint16_t> indices = {
-		0, 1, 2, 2, 3, 0
-	};
-
 	std::vector<VkSemaphore> _imageAvailableSemaphores;
 	std::vector<VkSemaphore> _renderFinishedSemaphores;
 	std::vector<VkFence> _inFlightFences;
 	std::vector<VkFence> _imagesInFlight;
 	size_t _currentFrame = 0;
+	bool _framebufferResized = false;
+
+	void recreate();
+	void cleanup();
 
 	void setupCommandPool();
 	void setupCommandBuffers();
 	void setupSyncObjects();
-
-	void setupBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-	void setupVertexBuffer();
-	void setupIndexBuffer();
-	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;
 };

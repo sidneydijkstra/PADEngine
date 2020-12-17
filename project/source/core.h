@@ -65,6 +65,6 @@ class Core {
                 const bool _enableValidationLayers = true;
         #endif
 
-        
+        static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
 #endif
