@@ -18,6 +18,7 @@
 #include "indexbuffer.h"
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
+#include "texturebuffer.h"
 
 #include <chrono>
 

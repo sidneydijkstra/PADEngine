@@ -26,7 +26,10 @@ add_executable(PADEngine
   project/source/indexbuffer.h
   project/source/uniformbuffer.cpp
   project/source/uniformbuffer.h
+  project/source/texturebuffer.cpp
+  project/source/texturebuffer.h
   project/source/vertex.h
+  project/source/stb_image.h
 )
 
 file(
@@ -44,9 +47,7 @@ add_subdirectory(external/glm-0.9.9.8)
 include_directories(
 	external/glfw-3.3.2/include
 	external/glm-0.9.9.8/glm
-	external/stb-images-2.26
 )
-
 find_package(Vulkan REQUIRED)
 target_include_directories(PADEngine PUBLIC ${Vulkan_INCLUDE_DIRS})
 target_link_libraries(PADEngine

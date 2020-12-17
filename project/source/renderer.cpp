@@ -20,6 +20,10 @@ Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChai
     _uniformBuffer = new UniformBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool, _swapChainHandler->getSwapChainImages().size());
     this->_shader->setUnifromBuffer(_uniformBuffer);
 
+    TextureBuffer* tex = new TextureBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
+    tex->loadTexture("assets/logo.png");
+    delete tex;
+
     this->setupCommandBuffers();
     this->setupSyncObjects();
 }
