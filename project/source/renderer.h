@@ -46,6 +46,7 @@ private:
 	VertexBuffer* _vertexBuffer;
 	IndexBuffer* _indexBuffer;
 	UniformBuffer* _uniformBuffer;
+	TextureBuffer* _textureBuffer;
 
 	VkCommandPool _commandPool;
 	std::vector<VkCommandBuffer> _commandBuffers;

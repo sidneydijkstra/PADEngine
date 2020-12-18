@@ -15,6 +15,7 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "uniformbuffer.h"
+#include "texturebuffer.h"
 #include "vertex.h"
 
 #include <iostream>
@@ -26,7 +27,7 @@ public:
 	Shader(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, std::string _vertexPath, std::string _fragmentPath);
 	~Shader();
 
-	void setUnifromBuffer(UniformBuffer* _buffer);
+	void setBuffers(UniformBuffer* _ubuffer, TextureBuffer* _tbuffer);
 
 	VkRenderPass getRenderPass();
 	VkDescriptorSetLayout getDescriptorSetLayout();
@@ -52,7 +53,7 @@ private:
 	void setupDescriptorSetLayout();
 	void setupGraphicsPipeline(std::string _vertexPath, std::string _fragmentPath);
 	void setupDescriptorPool();
-	void setupDescriptorSets(UniformBuffer* _buffer);
+	void setupDescriptorSets(UniformBuffer* _ubuffer, TextureBuffer* _tbuffer);
 
 	std::vector<char> readFile(const std::string& filename);
 	VkShaderModule createShaderModule(const std::vector<char>& code);

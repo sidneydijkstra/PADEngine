@@ -18,11 +18,10 @@ Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChai
     _vertexBuffer = new VertexBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
     _indexBuffer = new IndexBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
     _uniformBuffer = new UniformBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool, _swapChainHandler->getSwapChainImages().size());
-    this->_shader->setUnifromBuffer(_uniformBuffer);
 
-    TextureBuffer* tex = new TextureBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
-    tex->loadTexture("assets/logo.png");
-    delete tex;
+    _textureBuffer = new TextureBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
+    _textureBuffer->loadTexture("assets/logo.png");
+    this->_shader->setBuffers(_uniformBuffer, _textureBuffer);
 
     this->setupCommandBuffers();
     this->setupSyncObjects();
@@ -47,7 +46,7 @@ void Renderer::recreate() {
     _vertexBuffer->recreate();
     _indexBuffer->recreate();
     _uniformBuffer->recreate();
-    this->_shader->setUnifromBuffer(_uniformBuffer);
+    this->_shader->setBuffers(_uniformBuffer, _textureBuffer);
 
     this->setupCommandBuffers();
 }
@@ -63,7 +62,7 @@ void Renderer::update(uint32_t currentImage) {
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     UniformBufferObject ubo{};
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
     ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
@@ -265,6 +264,7 @@ Renderer::~Renderer() {
     delete _vertexBuffer;
     delete _indexBuffer;
     delete _uniformBuffer;
+    delete _textureBuffer;
     delete _shader;
 }
 

@@ -6,6 +6,20 @@ TextureBuffer::TextureBuffer(VkInstance _instance, DeviceHandler* _deviceHandler
 
 void TextureBuffer::loadTexture(const char* _path) {
     this->createTextureImage(_path);
+    createTextureImageView();
+    createTextureSampler();
+}
+
+void TextureBuffer::textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format) {
+    _swapChainImageViews.resize(_swapChainImages.size());
+
+    for (size_t i = 0; i < _swapChainImageViews.size(); i++) {
+        _swapChainImageViews[i] = createImageView(_swapChainImages[i], _format);
+    }
+}
+
+TextureBufferData TextureBuffer::getBuffer() {
+    return TextureBufferData{this->_textureImageView, this->_textureSampler};
 }
 
 void TextureBuffer::createTextureImage(const char* _path) {
@@ -154,7 +168,62 @@ void TextureBuffer::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t w
     endSingleTimeCommands(commandBuffer);
 }
 
+void TextureBuffer::createTextureImageView() {
+    _textureImageView = createImageView(_textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+}
+
+VkImageView TextureBuffer::createImageView(VkImage image, VkFormat format) {
+    VkImageViewCreateInfo viewInfo{};
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.image = image;
+    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = format;
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.baseMipLevel = 0;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = 1;
+
+    VkImageView imageView;
+    if (vkCreateImageView(this->_deviceHandler->getLogicalDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create texture image view!");
+    }
+
+    return imageView;
+}
+
+void TextureBuffer::createTextureSampler() {
+    VkPhysicalDeviceProperties properties{};
+    vkGetPhysicalDeviceProperties(this->_deviceHandler->getPhysicalDevice(), &properties);
+
+    VkSamplerCreateInfo samplerInfo{};
+    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    samplerInfo.magFilter = VK_FILTER_LINEAR;
+    samplerInfo.minFilter = VK_FILTER_LINEAR;
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.anisotropyEnable = VK_TRUE;
+    samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+    samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    samplerInfo.compareEnable = VK_FALSE;
+    samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    samplerInfo.mipLodBias = 0.0f;
+    samplerInfo.minLod = 0.0f;
+    samplerInfo.maxLod = 0.0f;
+    samplerInfo.anisotropyEnable = VK_FALSE;
+    samplerInfo.maxAnisotropy = 1.0f;
+
+    if (vkCreateSampler(this->_deviceHandler->getLogicalDevice(), &samplerInfo, nullptr, &_textureSampler) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create texture sampler!");
+    }
+}
+
 TextureBuffer::~TextureBuffer() {
+    vkDestroySampler(this->_deviceHandler->getLogicalDevice(), _textureSampler, nullptr);
+    vkDestroyImageView(this->_deviceHandler->getLogicalDevice(), _textureImageView, nullptr);
     vkDestroyImage(this->_deviceHandler->getLogicalDevice(), _textureImage, nullptr);
     vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _textureImageMemory, nullptr);
 }
