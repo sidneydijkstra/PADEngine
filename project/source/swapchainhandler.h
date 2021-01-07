@@ -14,11 +14,13 @@
 
 #include "config.h"
 #include "devicehandler.h"
+#include "depthbuffer.h"
 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <optional>
+#include <array>
 #include <vector>
 #include <set>
 
@@ -31,7 +33,7 @@ public:
 	void cleanup();
 
 	void setupSwapChain();
-	void setupFramebuffers(VkRenderPass _renderPass);
+	void setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _depthBuffer);
 
 	// TODO: maby chaing to struct
 	VkSwapchainKHR getSwapChain();

@@ -28,6 +28,8 @@ add_executable(PADEngine
   project/source/uniformbuffer.h
   project/source/texturebuffer.cpp
   project/source/texturebuffer.h
+  project/source/depthbuffer.cpp
+  project/source/depthbuffer.h
   project/source/vertex.h
   project/source/stb_image.h
 )

@@ -8,12 +8,17 @@ Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChai
 
     this->_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
 
-    this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass());
-
     this->_deviceHandler->getDevicePresentQueue(_presentQueue);
     this->_deviceHandler->getDeviceGraphicsQueue(_graphicsQueue);
 
     this->setupCommandPool();
+
+    _depthBuffer = new DepthBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
+    _depthBuffer->setupBuffer(_swapChainHandler->getSwapChainExtent());
+
+    this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
+
+
 
     _vertexBuffer = new VertexBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
     _indexBuffer = new IndexBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
@@ -41,7 +46,8 @@ void Renderer::recreate() {
     this->_swapChainHandler->recreate();
     delete _shader;
     this->_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
-    this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass());
+    _depthBuffer->recreate(_swapChainHandler->getSwapChainExtent());
+    this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
     _vertexBuffer->recreate();
     _indexBuffer->recreate();
@@ -126,9 +132,12 @@ void Renderer::setupCommandBuffers() {
         renderPassInfo.renderArea.offset = { 0, 0 };
         renderPassInfo.renderArea.extent = this->_swapChainHandler->getSwapChainExtent();
 
-        VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-        renderPassInfo.clearValueCount = 1;
-        renderPassInfo.pClearValues = &clearColor;
+        std::array<VkClearValue, 2> clearValues{};
+        clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+        clearValues[1].depthStencil = { 1.0f, 0 };
+
+        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+        renderPassInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(this->_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
         vkCmdBindPipeline(this->_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());

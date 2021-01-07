@@ -30,21 +30,22 @@ void SwapChainHandler::setupSwapChain() {
     this->createImageView();
 }
 
-void SwapChainHandler::setupFramebuffers(VkRenderPass _renderPass) {
+void SwapChainHandler::setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _depthBuffer) {
     this->_swapChainFramebuffers.resize(this->_swapChainImageViews.size());
 
     for (size_t i = 0; i < this->_swapChainImageViews.size(); i++) {
-        VkImageView attachments[] = {
-            this->_swapChainImageViews[i]
+        std::array<VkImageView, 2> attachments = {
+            _swapChainImageViews[i],
+            _depthBuffer->getBuffer().depthImageView
         };
 
         VkFramebufferCreateInfo framebufferInfo{};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = _renderPass;
-        framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = attachments;
-        framebufferInfo.width = this->_swapChainExtent.width;
-        framebufferInfo.height = this->_swapChainExtent.height;
+        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        framebufferInfo.pAttachments = attachments.data();
+        framebufferInfo.width = _swapChainExtent.width;
+        framebufferInfo.height = _swapChainExtent.height;
         framebufferInfo.layers = 1;
 
         if (vkCreateFramebuffer(this->_device, &framebufferInfo, nullptr, &this->_swapChainFramebuffers[i]) != VK_SUCCESS) {

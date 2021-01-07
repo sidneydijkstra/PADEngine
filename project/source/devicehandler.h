@@ -51,6 +51,8 @@ class DeviceHandler {
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice _device);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice _device);
+
+		VkFormat findDepthFormat();
 	private:
 		// add device extensions
 		const std::vector<const char*> _deviceExtensions = {
@@ -67,5 +69,8 @@ class DeviceHandler {
 		void createLogicalDevice();
 		bool isDeviceSuitable(VkPhysicalDevice _device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice _device);
+
+		VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+		bool hasStencilComponent(VkFormat _format);
 };
 #endif

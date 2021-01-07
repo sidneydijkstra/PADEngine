@@ -19,6 +19,7 @@
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
 #include "texturebuffer.h"
+#include "depthbuffer.h"
 
 #include <chrono>
 
@@ -47,6 +48,7 @@ private:
 	IndexBuffer* _indexBuffer;
 	UniformBuffer* _uniformBuffer;
 	TextureBuffer* _textureBuffer;
+	DepthBuffer* _depthBuffer;
 
 	VkCommandPool _commandPool;
 	std::vector<VkCommandBuffer> _commandBuffers;
