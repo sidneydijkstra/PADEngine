@@ -16,17 +16,17 @@ VkPhysicalDevice DeviceHandler::getPhysicalDevice() {
 }
 
 VkDevice DeviceHandler::getLogicalDevice() {
-	return this->_device;
+	return this->_logicaldevice;
 }
 
 void DeviceHandler::getDevicePresentQueue(VkQueue& _presentQueue) {
 	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
-	vkGetDeviceQueue(this->_device, indices.presentFamily.value(), 0, &_presentQueue);
+	vkGetDeviceQueue(this->_logicaldevice, indices.presentFamily.value(), 0, &_presentQueue);
 }
 
 void DeviceHandler::getDeviceGraphicsQueue(VkQueue & _graphicsQueue) {
 	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
-	vkGetDeviceQueue(this->_device, indices.graphicsFamily.value(), 0, &_graphicsQueue);
+	vkGetDeviceQueue(this->_logicaldevice, indices.graphicsFamily.value(), 0, &_graphicsQueue);
 }
 
 void DeviceHandler::pickPhysicalDevice() {
@@ -88,7 +88,7 @@ void DeviceHandler::createLogicalDevice() {
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(this->_deviceExtensions.size());
 	createInfo.ppEnabledExtensionNames = this->_deviceExtensions.data();
 
-	if (vkCreateDevice(this->_physicalDevice, &createInfo, nullptr, &this->_device) != VK_SUCCESS) {
+	if (vkCreateDevice(this->_physicalDevice, &createInfo, nullptr, &this->_logicaldevice) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device!");
 	}
 	else {
@@ -214,5 +214,5 @@ VkFormat DeviceHandler::findDepthFormat() {
 
 
 DeviceHandler::~DeviceHandler() {
-	vkDestroyDevice(this->_device, nullptr);
+	vkDestroyDevice(this->_logicaldevice, nullptr);
 }

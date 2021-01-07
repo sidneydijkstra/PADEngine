@@ -140,18 +140,22 @@ void Renderer::setupCommandBuffers() {
         renderPassInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(this->_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(this->_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
 
-        BufferData vertexData = _vertexBuffer->getBuffer();
-        BufferData indexData = _indexBuffer->getBuffer();
+        for (size_t j = 0; j < 2; j++) {
+            vkCmdBindPipeline(this->_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
 
-        VkBuffer vertexBuffers[] = { vertexData.buffer };
-        VkDeviceSize offsets[] = { 0 };
-        vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(this->_commandBuffers[i], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
+            BufferData vertexData = _vertexBuffer->getBuffer();
+            BufferData indexData = _indexBuffer->getBuffer();
 
-        vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &_shader->getDescriptiorSets()[i], 0, nullptr);
-        vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+            VkBuffer vertexBuffers[] = { vertexData.buffer };
+            VkDeviceSize offsets[] = { 0 };
+            vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
+            vkCmdBindIndexBuffer(this->_commandBuffers[i], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
+
+            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &_shader->getDescriptiorSets()[i], 0, nullptr);
+            vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(j == 0 ? indexData.size/2 : indexData.size), 1, j == 0 ? 0 : indexData.size/2, 0, 0);
+        }
+
         vkCmdEndRenderPass(this->_commandBuffers[i]);
 
         if (vkEndCommandBuffer(this->_commandBuffers[i]) != VK_SUCCESS) {

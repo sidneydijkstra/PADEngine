@@ -63,7 +63,7 @@ class DeviceHandler {
 		VkSurfaceKHR _surface;
 
 		VkPhysicalDevice _physicalDevice;
-		VkDevice _device;
+		VkDevice _logicaldevice;
 
 		void pickPhysicalDevice();
 		void createLogicalDevice();
