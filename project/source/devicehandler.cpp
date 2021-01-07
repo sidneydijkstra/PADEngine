@@ -1,12 +1,26 @@
 #include "devicehandler.h"
 
-DeviceHandler::DeviceHandler(VkInstance _instance, VkSurfaceKHR _surface) {
-	this->_instance = _instance;
-	this->_surface = _surface;
+static DeviceHandler* _instance;
+
+DeviceHandler::DeviceHandler() {
 }
 
 
-void DeviceHandler::setupDevices() {
+DeviceHandler * DeviceHandler::getInstance() {
+	if (!_instance) {
+		_instance = new DeviceHandler();
+	}
+	return _instance;
+}
+
+void DeviceHandler::deleteInstance() {
+	delete _instance;
+	_instance = NULL;
+}
+
+void DeviceHandler::init(VkInstance _instance, VkSurfaceKHR _surface) {
+	this->_vulkanInstance = _instance;
+	this->_surface = _surface;
 	this->pickPhysicalDevice();
 	this->createLogicalDevice();
 }
@@ -33,7 +47,7 @@ void DeviceHandler::pickPhysicalDevice() {
 	this->_physicalDevice = VK_NULL_HANDLE;
 
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(this->_instance, &deviceCount, nullptr);
+	vkEnumeratePhysicalDevices(this->_vulkanInstance, &deviceCount, nullptr);
 
 	if (deviceCount == 0) {
 		throw std::runtime_error("failed to find GPUs with Vulkan support!");
@@ -43,7 +57,7 @@ void DeviceHandler::pickPhysicalDevice() {
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(this->_instance, &deviceCount, devices.data());
+	vkEnumeratePhysicalDevices(this->_vulkanInstance, &deviceCount, devices.data());
 
 	for (const auto& device : devices) {
 		if (isDeviceSuitable(device)) {

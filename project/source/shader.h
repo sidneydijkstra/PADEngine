@@ -24,7 +24,7 @@
 
 class Shader {
 public:
-	Shader(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, std::string _vertexPath, std::string _fragmentPath);
+	Shader(VkInstance _instance, SwapChainHandler* _swapChainHandler, std::string _vertexPath, std::string _fragmentPath);
 	~Shader();
 
 	void setBuffers(UniformBuffer* _ubuffer, TextureBuffer* _tbuffer);
@@ -38,7 +38,6 @@ public:
 
 private:
 	VkInstance _instance;
-	DeviceHandler* _deviceHandler;
 	SwapChainHandler* _swapChainHandler;
 
 	VkRenderPass _renderPass;

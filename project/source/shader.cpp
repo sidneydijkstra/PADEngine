@@ -1,8 +1,7 @@
 #include "shader.h"
 
-Shader::Shader(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, std::string _vertexPath, std::string _fragmentPath) {
+Shader::Shader(VkInstance _instance, SwapChainHandler* _swapChainHandler, std::string _vertexPath, std::string _fragmentPath) {
 	this->_instance = _instance;
-	this->_deviceHandler = _deviceHandler;
 	this->_swapChainHandler = _swapChainHandler;
 
 	this->setupRenderPass();
@@ -52,7 +51,7 @@ void Shader::setupRenderPass() {
 
 
 	VkAttachmentDescription depthAttachment{}; // new
-	depthAttachment.format = _deviceHandler->findDepthFormat();
+	depthAttachment.format = DeviceHandler::getInstance()->findDepthFormat();
 	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -93,7 +92,7 @@ void Shader::setupRenderPass() {
 	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-	if (vkCreateRenderPass(_deviceHandler->getLogicalDevice(), &renderPassInfo, nullptr, &this->_renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(DeviceHandler::getInstance()->getLogicalDevice(), &renderPassInfo, nullptr, &this->_renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
 	else {
@@ -122,7 +121,7 @@ void Shader::setupDescriptorSetLayout() {
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 	layoutInfo.pBindings = bindings.data();
 
-	if (vkCreateDescriptorSetLayout(this->_deviceHandler->getLogicalDevice(), &layoutInfo, nullptr, &_descriptorSetLayout) != VK_SUCCESS) {
+	if (vkCreateDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), &layoutInfo, nullptr, &_descriptorSetLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor set layout!");
 	}
 }
@@ -243,7 +242,7 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-	if (vkCreatePipelineLayout(this->_deviceHandler->getLogicalDevice(), &pipelineLayoutInfo, nullptr, &this->_pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(DeviceHandler::getInstance()->getLogicalDevice(), &pipelineLayoutInfo, nullptr, &this->_pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 	else {
@@ -285,15 +284,15 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipelineInfo.basePipelineIndex = -1; // Optional
 
-	if (vkCreateGraphicsPipelines(this->_deviceHandler->getLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->_graphicsPipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(DeviceHandler::getInstance()->getLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->_graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 	else {
 		std::cout << "created graphics pipeline!" << std::endl;
 	}
 
-	vkDestroyShaderModule(this->_deviceHandler->getLogicalDevice(), fragShaderModule, nullptr);
-	vkDestroyShaderModule(this->_deviceHandler->getLogicalDevice(), vertShaderModule, nullptr);
+	vkDestroyShaderModule(DeviceHandler::getInstance()->getLogicalDevice(), fragShaderModule, nullptr);
+	vkDestroyShaderModule(DeviceHandler::getInstance()->getLogicalDevice(), vertShaderModule, nullptr);
 }
 
 void Shader::setupDescriptorPool() {
@@ -310,7 +309,7 @@ void Shader::setupDescriptorPool() {
 	poolInfo.pPoolSizes = poolSizes.data();
 	poolInfo.maxSets = static_cast<uint32_t>(swapChainImageSize);
 
-	if (vkCreateDescriptorPool(this->_deviceHandler->getLogicalDevice(), &poolInfo, nullptr, &_descriptorPool) != VK_SUCCESS) {
+	if (vkCreateDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), &poolInfo, nullptr, &_descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
 	}
 }
@@ -325,7 +324,7 @@ void Shader::setupDescriptorSets(UniformBuffer* _ubuffer, TextureBuffer* _tbuffe
 	allocInfo.pSetLayouts = layouts.data();
 
 	_descriptorSets.resize(swapChainImageSize);
-	if (vkAllocateDescriptorSets(this->_deviceHandler->getLogicalDevice(), &allocInfo, _descriptorSets.data()) != VK_SUCCESS) {
+	if (vkAllocateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, _descriptorSets.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 
@@ -360,7 +359,7 @@ void Shader::setupDescriptorSets(UniformBuffer* _ubuffer, TextureBuffer* _tbuffe
 		descriptorWrites[1].descriptorCount = 1;
 		descriptorWrites[1].pImageInfo = &imageInfo;
 
-		vkUpdateDescriptorSets(this->_deviceHandler->getLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
 }
 
@@ -388,7 +387,7 @@ VkShaderModule Shader::createShaderModule(const std::vector<char>& _code) {
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(_code.data());
 
 	VkShaderModule shaderModule;
-	if (vkCreateShaderModule(this->_deviceHandler->getLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+	if (vkCreateShaderModule(DeviceHandler::getInstance()->getLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create shader module!");
 	}
 	else {
@@ -399,9 +398,9 @@ VkShaderModule Shader::createShaderModule(const std::vector<char>& _code) {
 }
 
 Shader::~Shader() {
-	vkDestroyDescriptorPool(this->_deviceHandler->getLogicalDevice(), _descriptorPool, nullptr);
-	vkDestroyDescriptorSetLayout(this->_deviceHandler->getLogicalDevice(), _descriptorSetLayout, nullptr);
-	vkDestroyPipeline(this->_deviceHandler->getLogicalDevice(), this->_graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(this->_deviceHandler->getLogicalDevice(), this->_pipelineLayout, nullptr);
-	vkDestroyRenderPass(this->_deviceHandler->getLogicalDevice(), this->_renderPass, nullptr);
+	vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorPool, nullptr);
+	vkDestroyDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorSetLayout, nullptr);
+	vkDestroyPipeline(DeviceHandler::getInstance()->getLogicalDevice(), this->_graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(DeviceHandler::getInstance()->getLogicalDevice(), this->_pipelineLayout, nullptr);
+	vkDestroyRenderPass(DeviceHandler::getInstance()->getLogicalDevice(), this->_renderPass, nullptr);
 }

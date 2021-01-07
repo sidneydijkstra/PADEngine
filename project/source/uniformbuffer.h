@@ -34,7 +34,7 @@ struct UniformBufferData {
 
 class UniformBuffer : Buffer {
 public:
-	UniformBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool, int _swapChainImageSize);
+	UniformBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool, int _swapChainImageSize);
 	~UniformBuffer();
 
 	void setupBuffer();

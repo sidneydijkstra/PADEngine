@@ -35,7 +35,6 @@ class Core {
         void run();
 
     private:
-		DeviceHandler* _deviceHandler;
         SwapChainHandler* _swapChainHandler;
         Renderer* _renderer;
 

@@ -1,30 +1,27 @@
 #include "renderer.h"
 
-Renderer::Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, GLFWwindow* _window) {
+Renderer::Renderer(VkInstance _instance, SwapChainHandler* _swapChainHandler, GLFWwindow* _window) {
 	this->_instance = _instance;
-	this->_deviceHandler = _deviceHandler;
 	this->_swapChainHandler = _swapChainHandler;
     this->_window = _window;
 
-    this->_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
+    this->_shader = new Shader(this->_instance, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
 
-    this->_deviceHandler->getDevicePresentQueue(_presentQueue);
-    this->_deviceHandler->getDeviceGraphicsQueue(_graphicsQueue);
+    DeviceHandler::getInstance()->getDevicePresentQueue(_presentQueue);
+	DeviceHandler::getInstance()->getDeviceGraphicsQueue(_graphicsQueue);
 
     this->setupCommandPool();
 
-    _depthBuffer = new DepthBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
+    _depthBuffer = new DepthBuffer(_instance, _graphicsQueue, _commandPool);
     _depthBuffer->setupBuffer(_swapChainHandler->getSwapChainExtent());
 
     this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
+    _vertexBuffer = new VertexBuffer(_instance, _graphicsQueue, _commandPool);
+    _indexBuffer = new IndexBuffer(_instance, _graphicsQueue, _commandPool);
+    _uniformBuffer = new UniformBuffer(_instance, _graphicsQueue, _commandPool, _swapChainHandler->getSwapChainImages().size());
 
-
-    _vertexBuffer = new VertexBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
-    _indexBuffer = new IndexBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
-    _uniformBuffer = new UniformBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool, _swapChainHandler->getSwapChainImages().size());
-
-    _textureBuffer = new TextureBuffer(_instance, _deviceHandler, _graphicsQueue, _commandPool);
+    _textureBuffer = new TextureBuffer(_instance, _graphicsQueue, _commandPool);
     _textureBuffer->loadTexture("assets/logo.png");
     this->_shader->setBuffers(_uniformBuffer, _textureBuffer);
 
@@ -40,12 +37,12 @@ void Renderer::recreate() {
         glfwWaitEvents();
     }
 
-    vkDeviceWaitIdle(this->_deviceHandler->getLogicalDevice());
+    vkDeviceWaitIdle(DeviceHandler::getInstance()->getLogicalDevice());
 
     this->cleanup();
     this->_swapChainHandler->recreate();
     delete _shader;
-    this->_shader = new Shader(this->_instance, this->_deviceHandler, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
+    this->_shader = new Shader(this->_instance, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
     _depthBuffer->recreate(_swapChainHandler->getSwapChainExtent());
     this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
@@ -58,7 +55,7 @@ void Renderer::recreate() {
 }
 
 void Renderer::cleanup() {
-    vkFreeCommandBuffers(this->_deviceHandler->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
 }
 
 void Renderer::update(uint32_t currentImage) {
@@ -80,14 +77,14 @@ void Renderer::update(uint32_t currentImage) {
 }
 
 void Renderer::setupCommandPool() {
-    QueueFamilyIndices queueFamilyIndices = _deviceHandler->findQueueFamilies(this->_deviceHandler->getPhysicalDevice());
+    QueueFamilyIndices queueFamilyIndices = DeviceHandler::getInstance()->findQueueFamilies(DeviceHandler::getInstance()->getPhysicalDevice());
 
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
     poolInfo.flags = 0; // Optional
 
-    if (vkCreateCommandPool(this->_deviceHandler->getLogicalDevice(), &poolInfo, nullptr, &this->_commandPool) != VK_SUCCESS) {
+    if (vkCreateCommandPool(DeviceHandler::getInstance()->getLogicalDevice(), &poolInfo, nullptr, &this->_commandPool) != VK_SUCCESS) {
         throw std::runtime_error("failed to create command pool!");
     }
     else {
@@ -104,7 +101,7 @@ void Renderer::setupCommandBuffers() {
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = (uint32_t)this->_commandBuffers.size();
 
-    if (vkAllocateCommandBuffers(this->_deviceHandler->getLogicalDevice(), &allocInfo, this->_commandBuffers.data()) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, this->_commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate command buffers!");
     }
     else {
@@ -141,20 +138,18 @@ void Renderer::setupCommandBuffers() {
 
         vkCmdBeginRenderPass(this->_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        for (size_t j = 0; j < 2; j++) {
-            vkCmdBindPipeline(this->_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
+        vkCmdBindPipeline(this->_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
 
-            BufferData vertexData = _vertexBuffer->getBuffer();
-            BufferData indexData = _indexBuffer->getBuffer();
+        BufferData vertexData = _vertexBuffer->getBuffer();
+        BufferData indexData = _indexBuffer->getBuffer();
 
-            VkBuffer vertexBuffers[] = { vertexData.buffer };
-            VkDeviceSize offsets[] = { 0 };
-            vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
-            vkCmdBindIndexBuffer(this->_commandBuffers[i], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
+        VkBuffer vertexBuffers[] = { vertexData.buffer };
+        VkDeviceSize offsets[] = { 0 };
+        vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
+        vkCmdBindIndexBuffer(this->_commandBuffers[i], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
 
-            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &_shader->getDescriptiorSets()[i], 0, nullptr);
-            vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(j == 0 ? indexData.size/2 : indexData.size), 1, j == 0 ? 0 : indexData.size/2, 0, 0);
-        }
+        vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &_shader->getDescriptiorSets()[i], 0, nullptr);
+        vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(this->_commandBuffers[i]);
 
@@ -181,7 +176,7 @@ void Renderer::setupSyncObjects() {
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        if (vkCreateSemaphore(this->_deviceHandler->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(this->_deviceHandler->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(this->_deviceHandler->getLogicalDevice(), &fenceInfo, nullptr, &this->_inFlightFences[i]) != VK_SUCCESS) {
+        if (vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(DeviceHandler::getInstance()->getLogicalDevice(), &fenceInfo, nullptr, &this->_inFlightFences[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create synchronization objects for a frame!");
         }
         else {
@@ -191,10 +186,10 @@ void Renderer::setupSyncObjects() {
 }
 
 void Renderer::draw() {
-    vkWaitForFences(this->_deviceHandler->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame], VK_TRUE, UINT64_MAX);
+    vkWaitForFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame], VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(this->_deviceHandler->getLogicalDevice(), this->_swapChainHandler->getSwapChain(), UINT64_MAX, this->_imageAvailableSemaphores[this->_currentFrame], VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(DeviceHandler::getInstance()->getLogicalDevice(), this->_swapChainHandler->getSwapChain(), UINT64_MAX, this->_imageAvailableSemaphores[this->_currentFrame], VK_NULL_HANDLE, &imageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         this->recreate();
@@ -205,7 +200,7 @@ void Renderer::draw() {
 
     // Check if a previous frame is using this image (i.e. there is its fence to wait on)
     if (imageIndex == UINT64_MAX || this->_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
-        vkWaitForFences(this->_deviceHandler->getLogicalDevice(), 1, &this->_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+        vkWaitForFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
     }
     // Mark the image as now being in use by this frame
     this->_imagesInFlight[imageIndex] = this->_inFlightFences[this->_currentFrame];
@@ -228,7 +223,7 @@ void Renderer::draw() {
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    vkResetFences(this->_deviceHandler->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame]);
+    vkResetFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame]);
 
     if (vkQueueSubmit(this->_graphicsQueue, 1, &submitInfo, this->_inFlightFences[this->_currentFrame]) != VK_SUCCESS) {
         throw std::runtime_error("failed to submit draw command buffer!");
@@ -267,17 +262,18 @@ void Renderer::setFramebufferResized() {
 
 Renderer::~Renderer() {
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        vkDestroySemaphore(this->_deviceHandler->getLogicalDevice(), this->_renderFinishedSemaphores[i], nullptr);
-        vkDestroySemaphore(this->_deviceHandler->getLogicalDevice(), this->_imageAvailableSemaphores[i], nullptr);
-        vkDestroyFence(this->_deviceHandler->getLogicalDevice(), this->_inFlightFences[i], nullptr);
+        vkDestroySemaphore(DeviceHandler::getInstance()->getLogicalDevice(), this->_renderFinishedSemaphores[i], nullptr);
+        vkDestroySemaphore(DeviceHandler::getInstance()->getLogicalDevice(), this->_imageAvailableSemaphores[i], nullptr);
+        vkDestroyFence(DeviceHandler::getInstance()->getLogicalDevice(), this->_inFlightFences[i], nullptr);
     }
 
-    vkDestroyCommandPool(this->_deviceHandler->getLogicalDevice(), this->_commandPool, nullptr);
+    vkDestroyCommandPool(DeviceHandler::getInstance()->getLogicalDevice(), this->_commandPool, nullptr);
 
     delete _vertexBuffer;
     delete _indexBuffer;
     delete _uniformBuffer;
     delete _textureBuffer;
+    delete _depthBuffer;
     delete _shader;
 }
 

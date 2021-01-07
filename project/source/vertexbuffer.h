@@ -11,7 +11,7 @@
 
 class VertexBuffer : Buffer {
 public:
-	VertexBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	VertexBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool);
 	~VertexBuffer();
 
 	void setupBuffer();

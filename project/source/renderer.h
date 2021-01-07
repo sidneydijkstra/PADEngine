@@ -32,14 +32,13 @@
 
 class Renderer {
 public:
-	Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, GLFWwindow* _window);
+	Renderer(VkInstance _instance, SwapChainHandler* _swapChainHandler, GLFWwindow* _window);
 	~Renderer();
 
 	void draw();
 	void setFramebufferResized();
 private:
 	VkInstance _instance;
-	DeviceHandler* _deviceHandler;
 	SwapChainHandler* _swapChainHandler;
 	GLFWwindow* _window;
 	Shader* _shader;

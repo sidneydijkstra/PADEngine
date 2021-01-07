@@ -14,7 +14,7 @@ struct DepthBufferData {
 
 class DepthBuffer : Buffer {
 public:
-	DepthBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	DepthBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool);
 	~DepthBuffer();
 
 	void setupBuffer(VkExtent2D _swapChainExtent);

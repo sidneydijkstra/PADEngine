@@ -26,7 +26,7 @@
 
 class SwapChainHandler {
 public:
-	SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface, DeviceHandler* _deviceHandler);
+	SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface);
 	~SwapChainHandler();
 
 	void recreate();
@@ -46,9 +46,6 @@ private:
 	
 	VkInstance _instance;
 	VkSurfaceKHR _surface;
-	DeviceHandler* _deviceHandler;
-	VkPhysicalDevice _physicalDevice;
-	VkDevice _device;
 
 	VkSwapchainKHR _swapChain;
 	std::vector<VkImage> _swapChainImages;

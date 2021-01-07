@@ -19,7 +19,7 @@ struct TextureBufferData {
 
 class TextureBuffer : Buffer {
 public:
-	TextureBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	TextureBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool);
 	~TextureBuffer();
 
 	void loadTexture(const char* _path);

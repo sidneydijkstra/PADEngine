@@ -1,7 +1,7 @@
 #include "depthbuffer.h"
 
-DepthBuffer::DepthBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool) :
-Buffer(_instance, _deviceHandler, _graphicsQueue, _commandPool){
+DepthBuffer::DepthBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool) :
+Buffer(_instance, _graphicsQueue, _commandPool){
 }
 
 void DepthBuffer::setupBuffer(VkExtent2D _swapChainExtent) {
@@ -13,15 +13,15 @@ DepthBufferData DepthBuffer::getBuffer() {
 }
 
 void DepthBuffer::recreate(VkExtent2D _swapChainExtent) {
-    vkDestroyImageView(this->_deviceHandler->getLogicalDevice(), _depthImageView, nullptr);
-    vkDestroyImage(this->_deviceHandler->getLogicalDevice(), _depthImage, nullptr);
-    vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _depthImageMemory, nullptr);
+    vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _depthImageView, nullptr);
+    vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _depthImage, nullptr);
+    vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _depthImageMemory, nullptr);
 
     this->setupBuffer(_swapChainExtent);
 }
 
 void DepthBuffer::setupDepthResources(VkExtent2D _swapChainExtent) {
-    VkFormat depthFormat = _deviceHandler->findDepthFormat();
+    VkFormat depthFormat = DeviceHandler::getInstance()->findDepthFormat();
 
     createImage(_swapChainExtent.width, _swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _depthImage, _depthImageMemory);
     _depthImageView = createImageView(_depthImage, depthFormat);
@@ -44,23 +44,23 @@ void DepthBuffer::createImage(uint32_t width, uint32_t height, VkFormat format, 
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateImage(this->_deviceHandler->getLogicalDevice(), &imageInfo, nullptr, &image) != VK_SUCCESS) {
+    if (vkCreateImage(DeviceHandler::getInstance()->getLogicalDevice(), &imageInfo, nullptr, &image) != VK_SUCCESS) {
         throw std::runtime_error("failed to create image!");
     }
 
     VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(this->_deviceHandler->getLogicalDevice(), image, &memRequirements);
+    vkGetImageMemoryRequirements(DeviceHandler::getInstance()->getLogicalDevice(), image, &memRequirements);
 
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-    if (vkAllocateMemory(this->_deviceHandler->getLogicalDevice(), &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
+    if (vkAllocateMemory(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate image memory!");
     }
 
-    vkBindImageMemory(this->_deviceHandler->getLogicalDevice(), image, imageMemory, 0);
+    vkBindImageMemory(DeviceHandler::getInstance()->getLogicalDevice(), image, imageMemory, 0);
 }
 
 VkImageView DepthBuffer::createImageView(VkImage image, VkFormat format) {
@@ -76,7 +76,7 @@ VkImageView DepthBuffer::createImageView(VkImage image, VkFormat format) {
     viewInfo.subresourceRange.layerCount = 1;
 
     VkImageView imageView;
-    if (vkCreateImageView(this->_deviceHandler->getLogicalDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+    if (vkCreateImageView(DeviceHandler::getInstance()->getLogicalDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
         throw std::runtime_error("failed to create texture image view!");
     }
 
@@ -100,6 +100,17 @@ void DepthBuffer::transitionImageLayout(VkImage image, VkFormat format, VkImageL
     barrier.subresourceRange.levelCount = 1;
     barrier.subresourceRange.baseArrayLayer = 0;
     barrier.subresourceRange.layerCount = 1;
+
+    if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+        if (DeviceHandler::getInstance()->hasStencilComponent(format)) {
+            barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+        }
+    }
+    else {
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    }
 
     VkPipelineStageFlags sourceStage;
     VkPipelineStageFlags destinationStage;
@@ -141,7 +152,7 @@ void DepthBuffer::transitionImageLayout(VkImage image, VkFormat format, VkImageL
     endSingleTimeCommands(commandBuffer);
 }
 DepthBuffer::~DepthBuffer() {
-    vkDestroyImageView(this->_deviceHandler->getLogicalDevice(), _depthImageView, nullptr);
-    vkDestroyImage(this->_deviceHandler->getLogicalDevice(), _depthImage, nullptr);
-    vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _depthImageMemory, nullptr);
+    vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _depthImageView, nullptr);
+    vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _depthImage, nullptr);
+    vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _depthImageMemory, nullptr);
 }

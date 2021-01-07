@@ -20,13 +20,12 @@ void Core::initVulkan() {
     this->createInstance();
     this->createSurface();
 
-	_deviceHandler = new DeviceHandler(this->_instance, this->_surface);
-	_deviceHandler->setupDevices();
+	DeviceHandler::getInstance()->init(this->_instance, this->_surface);
 
-    _swapChainHandler = new SwapChainHandler(this->_instance, this->_surface, _deviceHandler);
+    _swapChainHandler = new SwapChainHandler(this->_instance, this->_surface);
     _swapChainHandler->setupSwapChain();
 
-    _renderer = new Renderer(_instance, _deviceHandler, _swapChainHandler, _window);
+    _renderer = new Renderer(_instance, _swapChainHandler, _window);
 }
 
 void Core::createInstance() {
@@ -144,13 +143,13 @@ void Core::loop() {
         _renderer->draw();
     }
 
-    vkDeviceWaitIdle(this->_deviceHandler->getLogicalDevice());
+    vkDeviceWaitIdle(DeviceHandler::getInstance()->getLogicalDevice());
 }
 
 void Core::cleanup() {
     delete _renderer;
     delete _swapChainHandler;
-    delete _deviceHandler;
+	DeviceHandler::deleteInstance();
 
     vkDestroySurfaceKHR(this->_instance, this->_surface, nullptr);
     vkDestroyInstance(this->_instance, nullptr);

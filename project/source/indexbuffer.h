@@ -10,7 +10,7 @@
 
 class IndexBuffer : Buffer {
 public:
-	IndexBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	IndexBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool);
 	~IndexBuffer();
 
 	void setupBuffer();
