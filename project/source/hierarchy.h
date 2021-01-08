@@ -23,7 +23,7 @@ public:
 	~Hierarchy();
 
 	void addChild(Hierarchy* child);
-	void removeChild(Hierarchy* _child);
+	void removeChild(Hierarchy* child);
 
 	Hierarchy* getParent() { return _parent; };
 	std::vector<Hierarchy*> getChildren() { return _children; }
