@@ -1,5 +1,5 @@
-#ifndef ENTITY_CLASS
-#define ENTITY_CLASS
+#ifndef VECTOR3_CLASS
+#define VECTOR3_CLASS
 
 class Vector3 {
 public:

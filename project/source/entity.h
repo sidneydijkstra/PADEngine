@@ -10,7 +10,7 @@ public:
 	Entity();
 	virtual ~Entity();
 
-	Vector3 getPostion() { return _position };
+	Vector3 getPostion() { return _position; }
 	void setPosition(Vector3 position) { _position = position; }
 	float getRotation() { return _rotation; }
 	void setRotation(float rotation) { _rotation = rotation; }
@@ -18,8 +18,7 @@ public:
 private:
 	Vector3 _position;
 	float _rotation;
-	Vector3 scale = new Vector3(1, 1, 1);
-
+	Vector3 scale = Vector3(1, 1, 1);
 };
 
 #endif
