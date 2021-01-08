@@ -32,6 +32,7 @@ add_executable(PADEngine
   project/source/depthbuffer.h
   project/source/vertex.h
   project/source/stb_image.h
+  project/source/logger.h
 )
 
 file(
