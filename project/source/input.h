@@ -123,7 +123,7 @@ public:
     static bool getMouseButtonUp(int key) noexcept;
 
 private:
-    
+
     struct KeyState {
         enum State : uint8_t { PRESSED = GLFW_PRESS, RELEASED = GLFW_RELEASE };
 
@@ -136,14 +136,13 @@ private:
         bool operator==(uint8_t state) const noexcept;
     };
 
-    inline static int currentFrame = 0;
+    inline static GLFWwindow* s_window = nullptr;
 
-    inline static GLFWwindow* window = nullptr;
-
-    inline static KeyState* keyStates = new KeyState[static_cast<size_t>(KeyCode::LastKeyCode) + 1];
+    inline static int s_currentFrame = 0;
+    inline static KeyState* s_keyStates = new KeyState[static_cast<size_t>(KeyCode::LastKeyCode) + 1];
     
-    inline static std::pair<double, double> mousePosition = std::make_pair(0.0, 0.0);
-    inline static std::pair<double, double> mouseScrollDelta = std::make_pair(0.0, 0.0);
+    inline static std::pair<double, double> s_mousePosition = std::make_pair(0.0, 0.0);
+    inline static std::pair<double, double> s_mouseScrollDelta = std::make_pair(0.0, 0.0);
 
     static void attachToWindow(GLFWwindow* window) noexcept;
     static void detachFromWindow() noexcept;
