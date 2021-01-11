@@ -25,13 +25,12 @@ struct BufferData {
 
 class Buffer {
 public:
-	Buffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	Buffer(VkInstance _instance, VkCommandPool _commandPool);
 	~Buffer();
 
 protected:
 	VkInstance _instance;
 
-	VkQueue _graphicsQueue;
 	VkCommandPool _commandPool;
 
 	VkCommandBuffer beginSingleTimeCommands();

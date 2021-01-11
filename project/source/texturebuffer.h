@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <array>
 
 struct TextureBufferData {
 	VkImageView textureImageView;
@@ -19,18 +20,20 @@ struct TextureBufferData {
 
 class TextureBuffer : Buffer {
 public:
-	TextureBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	TextureBuffer(VkInstance _instance, VkCommandPool _commandPool);
 	~TextureBuffer();
 
 	void loadTexture(const char* _path);
 	void textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format);
 	TextureBufferData getBuffer();
 
+
 private:
 	VkImage _textureImage;
 	VkDeviceMemory _textureImageMemory;
 
 	VkImageView _textureImageView;
+
 	VkSampler _textureSampler;
 
 	// image loading

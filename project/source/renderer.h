@@ -14,12 +14,14 @@
 
 #include "devicehandler.h"
 #include "swapchainhandler.h"
+#include "framebuffers.h"
 #include "shader.h"
 #include "indexbuffer.h"
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
 #include "texturebuffer.h"
 #include "depthbuffer.h"
+#include "entity.h"
 
 #include <chrono>
 
@@ -32,22 +34,20 @@
 
 class Renderer {
 public:
-	Renderer(VkInstance _instance, SwapChainHandler* _swapChainHandler, GLFWwindow* _window);
+	Renderer(VkInstance _instance, GLFWwindow* _window);
 	~Renderer();
 
 	void draw();
 	void setFramebufferResized();
 private:
 	VkInstance _instance;
-	SwapChainHandler* _swapChainHandler;
 	GLFWwindow* _window;
 	Shader* _shader;
 
-	VertexBuffer* _vertexBuffer;
-	IndexBuffer* _indexBuffer;
-	UniformBuffer* _uniformBuffer;
-	TextureBuffer* _textureBuffer;
+	std::vector<Entity*> _children;
 	DepthBuffer* _depthBuffer;
+
+	FrameBuffers* _framebuffers;
 
 	VkCommandPool _commandPool;
 	std::vector<VkCommandBuffer> _commandBuffers;
@@ -66,9 +66,13 @@ private:
 	void cleanup();
 
 	void update(uint32_t currentImage);
+	void renderEntitys();
+
+	void beginCommandBuffer(int _index);
+	void endCommandBuffer(int _index);
 
 	void setupCommandPool();
-	void setupCommandBuffers();
+	void setupCommandBuffers(Entity* _entity);
 	void setupSyncObjects();
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;

@@ -1,7 +1,7 @@
 #include "depthbuffer.h"
 
-DepthBuffer::DepthBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool) :
-Buffer(_instance, _graphicsQueue, _commandPool){
+DepthBuffer::DepthBuffer(VkInstance _instance, VkCommandPool _commandPool) :
+Buffer(_instance, _commandPool){
 }
 
 void DepthBuffer::setupBuffer(VkExtent2D _swapChainExtent) {

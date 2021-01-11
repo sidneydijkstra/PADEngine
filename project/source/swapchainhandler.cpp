@@ -1,8 +1,27 @@
 #include "swapchainhandler.h"
 
-SwapChainHandler::SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface) {
-	this->_instance = _instance;
+static SwapChainHandler* _instance;
+
+SwapChainHandler::SwapChainHandler() {
+}
+
+
+SwapChainHandler* SwapChainHandler::getInstance() {
+    if (!_instance) {
+        _instance = new SwapChainHandler();
+    }
+    return _instance;
+}
+
+void SwapChainHandler::init(VkInstance _instance, VkSurfaceKHR _surface) {
+    this->_vulkaninstance = _instance;
     this->_surface = _surface;
+    this->setupSwapChain();
+}
+
+void SwapChainHandler::deleteInstance() {
+    delete _instance;
+    _instance = nullptr;
 }
 
 void SwapChainHandler::recreate() {
@@ -12,9 +31,6 @@ void SwapChainHandler::recreate() {
 }
 
 void SwapChainHandler::cleanup() {
-    for (size_t i = 0; i < _swapChainFramebuffers.size(); i++) {
-        vkDestroyFramebuffer(DeviceHandler::getInstance()->getLogicalDevice(), _swapChainFramebuffers[i], nullptr);
-    }
     for (size_t i = 0; i < _swapChainImageViews.size(); i++) {
         vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _swapChainImageViews[i], nullptr);
     }
@@ -26,39 +42,20 @@ void SwapChainHandler::setupSwapChain() {
     this->createImageView();
 }
 
-void SwapChainHandler::setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _depthBuffer) {
-    this->_swapChainFramebuffers.resize(this->_swapChainImageViews.size());
-
-    for (size_t i = 0; i < this->_swapChainImageViews.size(); i++) {
-        std::array<VkImageView, 2> attachments = {
-            _swapChainImageViews[i],
-            _depthBuffer->getBuffer().depthImageView
-        };
-
-        VkFramebufferCreateInfo framebufferInfo{};
-        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass = _renderPass;
-        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-        framebufferInfo.pAttachments = attachments.data();
-        framebufferInfo.width = _swapChainExtent.width;
-        framebufferInfo.height = _swapChainExtent.height;
-        framebufferInfo.layers = 1;
-
-        if (vkCreateFramebuffer(DeviceHandler::getInstance()->getLogicalDevice(), &framebufferInfo, nullptr, &this->_swapChainFramebuffers[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create framebuffer!");
-        }
-        else {
-            std::cout << "\t- created framebuffer!" << std::endl;
-        }
-    }
-}
-
 VkSwapchainKHR SwapChainHandler::getSwapChain() {
     return this->_swapChain;
 }
 
 std::vector<VkImage> SwapChainHandler::getSwapChainImages() {
     return this->_swapChainImages;
+}
+
+std::vector<VkImageView> SwapChainHandler::getSwapChainImageViews() {
+    return this->_swapChainImageViews;
+}
+
+int SwapChainHandler::getSwapChainImagesSize() {
+    return this->_swapChainImages.size();
 }
 
 VkFormat SwapChainHandler::getSwapChainImageFormat() {
@@ -69,8 +66,12 @@ VkExtent2D SwapChainHandler::getSwapChainExtent() {
     return this->_swapChainExtent;
 }
 
-std::vector<VkFramebuffer> SwapChainHandler::getSwapChainFramebuffers() {
-    return this->_swapChainFramebuffers;
+int SwapChainHandler::getSwapChainWidth() {
+    return this->_swapChainExtent.width;
+}
+
+int SwapChainHandler::getSwapChainHeight() {
+    return this->_swapChainExtent.height;
 }
 
 void SwapChainHandler::createSwapChain() {

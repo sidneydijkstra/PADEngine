@@ -15,17 +15,18 @@
 #ifndef UNIFORMBUFFER_CLASS
 #define UNIFORMBUFFER_CLASS
 
-struct UniformBufferObject {
-    glm::mat4 model;
-    glm::mat4 view;
-    glm::mat4 proj;
-};
-
 #include "buffer.h"
+#include "swapchainhandler.h"
 
 #include <iostream>
 #include <vector>
 #include <string>
+
+struct UniformBufferObject {
+	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 proj;
+};
 
 struct UniformBufferData {
 	std::vector<VkBuffer> uniformBuffers;
@@ -34,7 +35,7 @@ struct UniformBufferData {
 
 class UniformBuffer : Buffer {
 public:
-	UniformBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool, int _swapChainImageSize);
+	UniformBuffer(VkInstance _instance, VkCommandPool _commandPool, int _swapChainImageSize);
 	~UniformBuffer();
 
 	void setupBuffer();

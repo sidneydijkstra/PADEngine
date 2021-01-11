@@ -1,9 +1,7 @@
 #include "buffer.h"
 
-Buffer::Buffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool) {
+Buffer::Buffer(VkInstance _instance, VkCommandPool _commandPool) {
     this->_instance = _instance;
-
-    this->_graphicsQueue = _graphicsQueue;
     this->_commandPool = _commandPool;
 }
 
@@ -34,8 +32,8 @@ void Buffer::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    vkQueueSubmit(_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(_graphicsQueue);
+    vkQueueSubmit(DeviceHandler::getInstance()->getDeviceGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(DeviceHandler::getInstance()->getDeviceGraphicsQueue());
 
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, 1, &commandBuffer);
 }

@@ -1,10 +1,18 @@
 #include "texturebuffer.h"
 
 
-TextureBuffer::TextureBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool) : Buffer(_instance, _graphicsQueue, _commandPool) {
+TextureBuffer::TextureBuffer(VkInstance _instance, VkCommandPool _commandPool) : Buffer(_instance, _commandPool) {
+    _textureSampler = NULL;
 }
 
 void TextureBuffer::loadTexture(const char* _path) {
+    if(_textureSampler != NULL){
+        vkDestroySampler(DeviceHandler::getInstance()->getLogicalDevice(), _textureSampler, nullptr);
+        vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageView, nullptr);
+        vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _textureImage, nullptr);
+        vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageMemory, nullptr);
+    }
+
     this->createTextureImage(_path);
     createTextureImageView();
     createTextureSampler();

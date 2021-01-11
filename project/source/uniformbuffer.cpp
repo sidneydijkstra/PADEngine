@@ -1,7 +1,7 @@
 #include "uniformbuffer.h"
 
-UniformBuffer::UniformBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool, int _swapChainImageSize) :
-    Buffer(_instance, _graphicsQueue, _commandPool) {
+UniformBuffer::UniformBuffer(VkInstance _instance, VkCommandPool _commandPool, int _swapChainImageSize) :
+    Buffer(_instance, _commandPool) {
     this->_swapChainImageSize = _swapChainImageSize;
     this->setupBuffer();
 }
@@ -22,7 +22,6 @@ void UniformBuffer::updateBuffer(int _index, UniformBufferObject _ubo) {
     vkMapMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[_index], 0, sizeof(_ubo), 0, &data);
     memcpy(data, &_ubo, sizeof(_ubo));
     vkUnmapMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[_index]);
-
 }
 
 UniformBufferData UniformBuffer::getBuffer() {

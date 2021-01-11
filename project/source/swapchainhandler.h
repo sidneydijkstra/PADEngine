@@ -26,25 +26,31 @@
 
 class SwapChainHandler {
 public:
-	SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface);
+	SwapChainHandler();
 	~SwapChainHandler();
+
+	static SwapChainHandler* getInstance();
+	static void deleteInstance();
+	void init(VkInstance _instance, VkSurfaceKHR _surface);
 
 	void recreate();
 	void cleanup();
 
 	void setupSwapChain();
-	void setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _depthBuffer);
 
 	// TODO: maby chaing to struct
 	VkSwapchainKHR getSwapChain();
 	std::vector<VkImage> getSwapChainImages();
+	std::vector<VkImageView> getSwapChainImageViews();
+	int getSwapChainImagesSize();
 	VkFormat getSwapChainImageFormat();
 	VkExtent2D getSwapChainExtent();
-	std::vector<VkFramebuffer> getSwapChainFramebuffers();
+	int getSwapChainWidth();
+	int getSwapChainHeight();
 
 private:
 	
-	VkInstance _instance;
+	VkInstance _vulkaninstance;
 	VkSurfaceKHR _surface;
 
 	VkSwapchainKHR _swapChain;
@@ -53,7 +59,6 @@ private:
 	VkExtent2D _swapChainExtent;
 
 	std::vector<VkImageView> _swapChainImageViews;
-	std::vector<VkFramebuffer> _swapChainFramebuffers;
 
 	void createSwapChain();
 	void createImageView();

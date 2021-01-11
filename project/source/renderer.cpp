@@ -1,61 +1,34 @@
 #include "renderer.h"
 
-Renderer::Renderer(VkInstance _instance, SwapChainHandler* _swapChainHandler, GLFWwindow* _window) {
+Renderer::Renderer(VkInstance _instance, GLFWwindow* _window) {
 	this->_instance = _instance;
-	this->_swapChainHandler = _swapChainHandler;
     this->_window = _window;
 
-    this->_shader = new Shader(this->_instance, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
+    this->_children = std::vector<Entity*>();
 
-    DeviceHandler::getInstance()->getDevicePresentQueue(_presentQueue);
-	DeviceHandler::getInstance()->getDeviceGraphicsQueue(_graphicsQueue);
+
+    _presentQueue = DeviceHandler::getInstance()->getDevicePresentQueue();
+    _graphicsQueue = DeviceHandler::getInstance()->getDeviceGraphicsQueue();
 
     this->setupCommandPool();
 
-    _depthBuffer = new DepthBuffer(_instance, _graphicsQueue, _commandPool);
-    _depthBuffer->setupBuffer(_swapChainHandler->getSwapChainExtent());
+    _children.push_back(new Entity(_instance, _commandPool));
+    _children.push_back(new Entity(_instance, _commandPool));
+    _children[1]->pos.x = -1;
 
-    this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
+    _children[0]->texture()->loadTexture("assets/logo.png");
+    _children[1]->texture()->loadTexture("assets/banaan.jpg");
 
-    _vertexBuffer = new VertexBuffer(_instance, _graphicsQueue, _commandPool);
-    _indexBuffer = new IndexBuffer(_instance, _graphicsQueue, _commandPool);
-    _uniformBuffer = new UniformBuffer(_instance, _graphicsQueue, _commandPool, _swapChainHandler->getSwapChainImages().size());
+    this->_shader = new Shader(this->_instance, "shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
 
-    _textureBuffer = new TextureBuffer(_instance, _graphicsQueue, _commandPool);
-    _textureBuffer->loadTexture("assets/logo.png");
-    this->_shader->setBuffers(_uniformBuffer, _textureBuffer);
+    _depthBuffer = new DepthBuffer(_instance, _commandPool);
+    _depthBuffer->setupBuffer(SwapChainHandler::getInstance()->getSwapChainExtent());
 
-    this->setupCommandBuffers();
+    _framebuffers = new FrameBuffers();
+    _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
+
+    this->renderEntitys();
     this->setupSyncObjects();
-}
-
-void Renderer::recreate() {
-    int width = 0, height = 0;
-    glfwGetFramebufferSize(_window, &width, &height);
-    while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(_window, &width, &height);
-        glfwWaitEvents();
-    }
-
-    vkDeviceWaitIdle(DeviceHandler::getInstance()->getLogicalDevice());
-
-    this->cleanup();
-    this->_swapChainHandler->recreate();
-    delete _shader;
-    this->_shader = new Shader(this->_instance, this->_swapChainHandler, "shaders/vert.spv", "shaders/frag.spv");
-    _depthBuffer->recreate(_swapChainHandler->getSwapChainExtent());
-    this->_swapChainHandler->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
-
-    _vertexBuffer->recreate();
-    _indexBuffer->recreate();
-    _uniformBuffer->recreate();
-    this->_shader->setBuffers(_uniformBuffer, _textureBuffer);
-
-    this->setupCommandBuffers();
-}
-
-void Renderer::cleanup() {
-    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
 }
 
 void Renderer::update(uint32_t currentImage) {
@@ -64,36 +37,53 @@ void Renderer::update(uint32_t currentImage) {
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    UniformBufferObject ubo{};
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    for (Entity* e : _children) {
+        UniformBufferObject ubo{};
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::translate(ubo.model, e->pos);
 
-    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    ubo.proj = glm::perspective(glm::radians(45.0f), this->_swapChainHandler->getSwapChainExtent().width / (float)this->_swapChainHandler->getSwapChainExtent().height, 0.1f, 10.0f);
+        ubo.proj = glm::perspective(glm::radians(45.0f), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 10.0f);
 
-    ubo.proj[1][1] *= -1;
+        ubo.proj[1][1] *= -1;
 
-    _uniformBuffer->updateBuffer(currentImage, ubo);
+        e->uniform()->updateBuffer(currentImage, ubo);
+    }
 }
 
-void Renderer::setupCommandPool() {
-    QueueFamilyIndices queueFamilyIndices = DeviceHandler::getInstance()->findQueueFamilies(DeviceHandler::getInstance()->getPhysicalDevice());
+void Renderer::renderEntitys() {
+    for (Entity* e : _children) {
+        e->recreate();
+    }
+    setupCommandBuffers(_children[0]);
+}
 
-    VkCommandPoolCreateInfo poolInfo{};
-    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-    poolInfo.flags = 0; // Optional
+void Renderer::beginCommandBuffer(int _index) {
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0; // Optional
+    beginInfo.pInheritanceInfo = nullptr; // Optional
 
-    if (vkCreateCommandPool(DeviceHandler::getInstance()->getLogicalDevice(), &poolInfo, nullptr, &this->_commandPool) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create command pool!");
+    if (vkBeginCommandBuffer(this->_commandBuffers[_index], &beginInfo) != VK_SUCCESS) {
+        throw std::runtime_error("failed to begin recording command buffer!");
     }
     else {
-        std::cout << "created command pool!" << std::endl;
+        std::cout << "\t- begin recording command buffer!" << std::endl;
     }
 }
 
-void Renderer::setupCommandBuffers() {
-    this->_commandBuffers.resize(this->_swapChainHandler->getSwapChainFramebuffers().size());
+void Renderer::endCommandBuffer(int _index) {
+    if (vkEndCommandBuffer(this->_commandBuffers[_index]) != VK_SUCCESS) {
+        throw std::runtime_error("failed to record command buffer!");
+    }
+    else {
+        std::cout << "\t- recording command buffer!" << std::endl;
+    }
+}
+
+void Renderer::setupCommandBuffers(Entity* _entity) {
+    this->_commandBuffers.resize(_framebuffers->getFrameBuffersSize());
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -109,25 +99,15 @@ void Renderer::setupCommandBuffers() {
     }
 
     for (size_t i = 0; i < this->_commandBuffers.size(); i++) {
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = 0; // Optional
-        beginInfo.pInheritanceInfo = nullptr; // Optional
-
-        if (vkBeginCommandBuffer(this->_commandBuffers[i], &beginInfo) != VK_SUCCESS) {
-            throw std::runtime_error("failed to begin recording command buffer!");
-        }
-        else {
-            std::cout << "\t- begin recording command buffer!" << std::endl;
-        }
+        beginCommandBuffer(i);
 
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassInfo.renderPass = this->_shader->getRenderPass();
-        renderPassInfo.framebuffer = this->_swapChainHandler->getSwapChainFramebuffers()[i];
+        renderPassInfo.framebuffer = _framebuffers->getFrameBuffers()[i];
 
         renderPassInfo.renderArea.offset = { 0, 0 };
-        renderPassInfo.renderArea.extent = this->_swapChainHandler->getSwapChainExtent();
+        renderPassInfo.renderArea.extent = SwapChainHandler::getInstance()->getSwapChainExtent();
 
         std::array<VkClearValue, 2> clearValues{};
         clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -140,48 +120,22 @@ void Renderer::setupCommandBuffers() {
 
         vkCmdBindPipeline(this->_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
 
-        BufferData vertexData = _vertexBuffer->getBuffer();
-        BufferData indexData = _indexBuffer->getBuffer();
+        BufferData vertexData = _entity->vertex()->getBuffer();
+        BufferData indexData = _entity->index()->getBuffer();
 
         VkBuffer vertexBuffers[] = { vertexData.buffer };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(this->_commandBuffers[i], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
-
-        vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &_shader->getDescriptiorSets()[i], 0, nullptr);
-        vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+        
+        for(Entity* ent : _children){
+            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, & ent->description().descriptorSets[i], 0, nullptr);
+            vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+        }
 
         vkCmdEndRenderPass(this->_commandBuffers[i]);
 
-        if (vkEndCommandBuffer(this->_commandBuffers[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to record command buffer!");
-        }
-        else {
-            std::cout << "\t- recording command buffer!" << std::endl;
-        }
-    }
-}
-
-void Renderer::setupSyncObjects() {
-    this->_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_imagesInFlight.resize(this->_swapChainHandler->getSwapChainImages().size(), VK_NULL_HANDLE);
-
-    VkSemaphoreCreateInfo semaphoreInfo{};
-    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-    VkFenceCreateInfo fenceInfo{};
-    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        if (vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(DeviceHandler::getInstance()->getLogicalDevice(), &fenceInfo, nullptr, &this->_inFlightFences[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create synchronization objects for a frame!");
-        }
-        else {
-            std::cout << "\t- created synchronization object for a frame!" << std::endl;
-        }
+        endCommandBuffer(i);
     }
 }
 
@@ -189,7 +143,7 @@ void Renderer::draw() {
     vkWaitForFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame], VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(DeviceHandler::getInstance()->getLogicalDevice(), this->_swapChainHandler->getSwapChain(), UINT64_MAX, this->_imageAvailableSemaphores[this->_currentFrame], VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(DeviceHandler::getInstance()->getLogicalDevice(), SwapChainHandler::getInstance()->getSwapChain(), UINT64_MAX, this->_imageAvailableSemaphores[this->_currentFrame], VK_NULL_HANDLE, &imageIndex);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         this->recreate();
@@ -235,7 +189,7 @@ void Renderer::draw() {
     presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = signalSemaphores;
 
-    VkSwapchainKHR swapChains[] = { this->_swapChainHandler->getSwapChain() };
+    VkSwapchainKHR swapChains[] = { SwapChainHandler::getInstance()->getSwapChain() };
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
     presentInfo.pImageIndices = &imageIndex;
@@ -256,24 +210,97 @@ void Renderer::draw() {
     vkQueueWaitIdle(this->_presentQueue);
 }
 
+void Renderer::recreate() {
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(_window, &width, &height);
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(_window, &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(DeviceHandler::getInstance()->getLogicalDevice());
+
+    this->cleanup();
+    SwapChainHandler::getInstance()->recreate();
+    delete _shader;
+    this->_shader = new Shader(this->_instance, "shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
+    _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
+    _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
+
+    for (Entity* e : _children) {
+        e->vertex()->recreate();
+        e->index()->recreate();
+        e->uniform()->recreate();
+        e->recreate();
+    }
+
+    this->renderEntitys();
+}
+
+void Renderer::cleanup() {
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
+}
+
 void Renderer::setFramebufferResized() {
     this->_framebufferResized = true;
 }
 
+void Renderer::setupCommandPool() {
+    QueueFamilyIndices queueFamilyIndices = DeviceHandler::getInstance()->findQueueFamilies(DeviceHandler::getInstance()->getPhysicalDevice());
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+    poolInfo.flags = 0; // Optional
+
+    if (vkCreateCommandPool(DeviceHandler::getInstance()->getLogicalDevice(), &poolInfo, nullptr, &this->_commandPool) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create command pool!");
+    }
+    else {
+        std::cout << "created command pool!" << std::endl;
+    }
+}
+
+void Renderer::setupSyncObjects() {
+    this->_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    this->_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    this->_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+    this->_imagesInFlight.resize(SwapChainHandler::getInstance()->getSwapChainImages().size(), VK_NULL_HANDLE);
+
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkFenceCreateInfo fenceInfo{};
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        if (vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(DeviceHandler::getInstance()->getLogicalDevice(), &fenceInfo, nullptr, &this->_inFlightFences[i]) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create synchronization objects for a frame!");
+        }
+        else {
+            std::cout << "\t- created synchronization object for a frame!" << std::endl;
+        }
+    }
+}
+
 Renderer::~Renderer() {
+    for (Entity* e : _children) {
+        delete e;
+    }
+    _children.clear();
+
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(DeviceHandler::getInstance()->getLogicalDevice(), this->_renderFinishedSemaphores[i], nullptr);
         vkDestroySemaphore(DeviceHandler::getInstance()->getLogicalDevice(), this->_imageAvailableSemaphores[i], nullptr);
         vkDestroyFence(DeviceHandler::getInstance()->getLogicalDevice(), this->_inFlightFences[i], nullptr);
     }
 
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
     vkDestroyCommandPool(DeviceHandler::getInstance()->getLogicalDevice(), this->_commandPool, nullptr);
 
-    delete _vertexBuffer;
-    delete _indexBuffer;
-    delete _uniformBuffer;
-    delete _textureBuffer;
     delete _depthBuffer;
+    delete _framebuffers;
     delete _shader;
 }
 

@@ -15,7 +15,7 @@ DeviceHandler * DeviceHandler::getInstance() {
 
 void DeviceHandler::deleteInstance() {
 	delete _instance;
-	_instance = NULL;
+	_instance = nullptr;
 }
 
 void DeviceHandler::init(VkInstance _instance, VkSurfaceKHR _surface) {
@@ -23,6 +23,11 @@ void DeviceHandler::init(VkInstance _instance, VkSurfaceKHR _surface) {
 	this->_surface = _surface;
 	this->pickPhysicalDevice();
 	this->createLogicalDevice();
+
+	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
+	vkGetDeviceQueue(this->_logicaldevice, indices.presentFamily.value(), 0, &_presentQueue);
+	indices = findQueueFamilies(this->_physicalDevice);
+	vkGetDeviceQueue(this->_logicaldevice, indices.graphicsFamily.value(), 0, &_graphicsQueue);
 }
 
 VkPhysicalDevice DeviceHandler::getPhysicalDevice() {
@@ -33,14 +38,12 @@ VkDevice DeviceHandler::getLogicalDevice() {
 	return this->_logicaldevice;
 }
 
-void DeviceHandler::getDevicePresentQueue(VkQueue& _presentQueue) {
-	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
-	vkGetDeviceQueue(this->_logicaldevice, indices.presentFamily.value(), 0, &_presentQueue);
+VkQueue DeviceHandler::getDevicePresentQueue() {
+	return this->_presentQueue;
 }
 
-void DeviceHandler::getDeviceGraphicsQueue(VkQueue & _graphicsQueue) {
-	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
-	vkGetDeviceQueue(this->_logicaldevice, indices.graphicsFamily.value(), 0, &_graphicsQueue);
+VkQueue DeviceHandler::getDeviceGraphicsQueue() {
+	return this->_graphicsQueue;
 }
 
 void DeviceHandler::pickPhysicalDevice() {

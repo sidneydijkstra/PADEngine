@@ -30,6 +30,12 @@ add_executable(PADEngine
   project/source/texturebuffer.h
   project/source/depthbuffer.cpp
   project/source/depthbuffer.h
+  project/source/framebuffers.cpp
+  project/source/framebuffers.h
+  project/source/resourcemanager.cpp
+  project/source/resourcemanager.h
+  project/source/entity.cpp
+  project/source/entity.h
   project/source/vertex.h
   project/source/stb_image.h
 )

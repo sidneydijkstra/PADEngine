@@ -35,7 +35,6 @@ class Core {
         void run();
 
     private:
-        SwapChainHandler* _swapChainHandler;
         Renderer* _renderer;
 
         void initVulkan();

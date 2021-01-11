@@ -10,7 +10,7 @@
 
 class IndexBuffer : Buffer {
 public:
-	IndexBuffer(VkInstance _instance, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	IndexBuffer(VkInstance _instance, VkCommandPool _commandPool);
 	~IndexBuffer();
 
 	void setupBuffer();
@@ -22,9 +22,7 @@ private:
 	VkDeviceMemory _indexBufferMemory;
 
 	const std::vector<uint16_t> indices = {
-		0, 1, 2, 2, 3, 0,
-
-		4, 5, 6, 6, 7, 4
+		0, 1, 2, 2, 3, 0
 	};
 };
 #endif

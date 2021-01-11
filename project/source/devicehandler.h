@@ -42,15 +42,14 @@ class DeviceHandler {
 
 		static DeviceHandler* getInstance();
 		static void deleteInstance();
-
 		void init(VkInstance _instance, VkSurfaceKHR _surface);
 
 		VkPhysicalDevice getPhysicalDevice();
 		VkDevice getLogicalDevice();
 
 		// TODO: might not need this, we can get QueueFamilyIndices from findQueueFamilies();
-		void getDevicePresentQueue(VkQueue& _presentQueue);
-		void getDeviceGraphicsQueue(VkQueue& _graphicsQueue);
+		VkQueue getDevicePresentQueue();
+		VkQueue getDeviceGraphicsQueue();
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice _device);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice _device);
@@ -68,6 +67,9 @@ class DeviceHandler {
 
 		VkPhysicalDevice _physicalDevice;
 		VkDevice _logicaldevice;
+
+		VkQueue _presentQueue;
+		VkQueue _graphicsQueue;
 
 		void pickPhysicalDevice();
 		void createLogicalDevice();

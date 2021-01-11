@@ -1,7 +1,7 @@
 #include "indexbuffer.h"
 
-IndexBuffer::IndexBuffer(VkInstance _instance,  VkQueue _graphicsQueue, VkCommandPool _commandPool) :
-    Buffer(_instance, _graphicsQueue, _commandPool) {
+IndexBuffer::IndexBuffer(VkInstance _instance, VkCommandPool _commandPool) :
+    Buffer(_instance, _commandPool) {
     this->setupBuffer();
 }
 
