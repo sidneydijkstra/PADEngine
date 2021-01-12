@@ -46,13 +46,13 @@ class DeviceHandler {
 
 		VkPhysicalDevice getPhysicalDevice();
 		VkDevice getLogicalDevice();
-
-		// TODO: might not need this, we can get QueueFamilyIndices from findQueueFamilies();
 		VkQueue getDevicePresentQueue();
 		VkQueue getDeviceGraphicsQueue();
+		VkCommandPool getCommandPool();
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice _device);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice _device);
+
 
 		VkFormat findDepthFormat();
 		bool hasStencilComponent(VkFormat _format);
@@ -71,10 +71,14 @@ class DeviceHandler {
 		VkQueue _presentQueue;
 		VkQueue _graphicsQueue;
 
+		VkCommandPool _commandPool;
+
 		void pickPhysicalDevice();
 		void createLogicalDevice();
 		bool isDeviceSuitable(VkPhysicalDevice _device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice _device);
+
+		void setupCommandPool();
 
 		VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 };

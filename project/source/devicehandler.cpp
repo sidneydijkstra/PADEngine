@@ -2,9 +2,7 @@
 
 static DeviceHandler* _instance;
 
-DeviceHandler::DeviceHandler() {
-}
-
+DeviceHandler::DeviceHandler() {}
 
 DeviceHandler * DeviceHandler::getInstance() {
 	if (!_instance) {
@@ -28,6 +26,8 @@ void DeviceHandler::init(VkInstance _instance, VkSurfaceKHR _surface) {
 	vkGetDeviceQueue(this->_logicaldevice, indices.presentFamily.value(), 0, &_presentQueue);
 	indices = findQueueFamilies(this->_physicalDevice);
 	vkGetDeviceQueue(this->_logicaldevice, indices.graphicsFamily.value(), 0, &_graphicsQueue);
+
+	this->setupCommandPool();
 }
 
 VkPhysicalDevice DeviceHandler::getPhysicalDevice() {
@@ -44,6 +44,10 @@ VkQueue DeviceHandler::getDevicePresentQueue() {
 
 VkQueue DeviceHandler::getDeviceGraphicsQueue() {
 	return this->_graphicsQueue;
+}
+
+VkCommandPool DeviceHandler::getCommandPool() {
+	return this->_commandPool;
 }
 
 void DeviceHandler::pickPhysicalDevice() {
@@ -221,6 +225,22 @@ SwapChainSupportDetails DeviceHandler::querySwapChainSupport(VkPhysicalDevice _d
 	return details;
 }
 
+void DeviceHandler::setupCommandPool() {
+	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(_physicalDevice);
+
+	VkCommandPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+	poolInfo.flags = 0; // Optional
+
+	if (vkCreateCommandPool(_logicaldevice, &poolInfo, nullptr, &this->_commandPool) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create command pool!");
+	}
+	else {
+		std::cout << "created command pool!" << std::endl;
+	}
+}
+
 VkFormat DeviceHandler::findDepthFormat() {
 	return findSupportedFormat(
 		{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
@@ -231,5 +251,6 @@ VkFormat DeviceHandler::findDepthFormat() {
 
 
 DeviceHandler::~DeviceHandler() {
+	vkDestroyCommandPool(this->_logicaldevice , this->_commandPool, nullptr);
 	vkDestroyDevice(this->_logicaldevice, nullptr);
 }
