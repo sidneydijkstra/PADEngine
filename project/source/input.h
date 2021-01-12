@@ -14,7 +14,7 @@
 
 /* * * * * * * * * * * * * * * * * * *\
     TODO:
-    1. Add documentation.
+    1. Complete documentation.
     2. Add JoyStick support.
     3. Add support for key mapping.
 \* * * * * * * * * * * * * * * * * * */
@@ -23,6 +23,7 @@ class Core;
 
 namespace pad {
 
+/// @brief Enumeration specifying every available key.
 enum class KeyCode {
     None = GLFW_KEY_UNKNOWN,
    
@@ -93,6 +94,7 @@ enum class KeyCode {
     LastKeyCode = Menu
 };
 
+/// @brief Static class providing global access to input states.
 class Input final {
 
 public:
@@ -111,16 +113,51 @@ public:
     static bool getButtonUp() noexcept;
     */
 
+    /// @brief Gets whether the given key is being pressed.
+    /// @param key The key to check.
+    /// @return True if the key is being pressed down, false otherwise.
     static bool getKey(KeyCode key) noexcept;
+
+    /// @brief Gets whether the given key was pressed in the current frame.
+    /// @param key The key to check.
+    /// @return True if the key was pressed in the current frame, false otherwise.
     static bool getKeyDown(KeyCode key) noexcept;
+
+    /// @brief Gets whether the given key was released in the current frame.
+    /// @param key The key to check.
+    /// @return True if the key was released in the current frame, false otherwise.
     static bool getKeyUp(KeyCode key) noexcept;
 
+    /// @brief Gets the current mouse position.
+    /// @return An std::pair containing the 'x' and 'y' position of the mouse.
     static std::pair<double, double> getMousePosition() noexcept;
+
+    /// @brief Gets the scroll offset since the last frame.
+    /// 
+    /// A normal mouse wheel, being vertical, will only provide a vertical scroll offset.
+    /// The horizontal scroll offset will only be of use when the user uses a touchpad or
+    /// another device with horizontal scroll.
+    /// 
+    /// A positive offset indicates a forwards scroll on the corresponding axis, negative values
+    /// indicate a backwards scroll.
+    /// 
+    /// @return An std::pair containing the horizontal and vertical scroll offset of the mouse.
     static std::pair<double, double> getMouseScrollDelta() noexcept;
 
-    static bool getMouseButton(int key) noexcept;
-    static bool getMouseButtonDown(int key) noexcept;
-    static bool getMouseButtonUp(int key) noexcept;
+    /// @brief Gets whether the given mouse button is being pressed.
+    /// @param button The mouse button to check. Use 0 for left button, 1 for right button, 2 for middle button.
+    /// @return True if the mouse button is being pressed down, false otherwise.
+    static bool getMouseButton(int button) noexcept;
+
+    /// @brief Gets whether the given mouse button was pressed in the current frame.
+    /// @param button The mouse button to check. Use 0 for left button, 1 for right button, 2 for middle button.
+    /// @return True if the mouse button was pressed in the current frame, false otherwise.
+    static bool getMouseButtonDown(int button) noexcept;
+
+    /// @brief Gets whether the given mouse button was released in the current frame.
+    /// @param button The mouse button to check. Use 0 for left button, 1 for right button, 2 for middle button.
+    /// @return True if the mouse button was released in the current frame, false otherwise.
+    static bool getMouseButtonUp(int button) noexcept;
 
 private:
 
@@ -138,15 +175,28 @@ private:
 
     inline static GLFWwindow* s_window = nullptr;
 
-    inline static int s_currentFrame = 0;
+    inline static int s_currentFrame = -1;
     inline static KeyState* s_keyStates = new KeyState[static_cast<size_t>(KeyCode::LastKeyCode) + 1];
     
     inline static std::pair<double, double> s_mousePosition = std::make_pair(0.0, 0.0);
     inline static std::pair<double, double> s_mouseScrollDelta = std::make_pair(0.0, 0.0);
 
+    /// @brief Attaches Input to the given window.
+    /// 
+    /// Causes Input to listen to the input belonging to the given window.
+    /// This method should therefore be called before using Input.
     static void attachToWindow(GLFWwindow* window) noexcept;
+
+    /// @brief Detaches Input from currently attached window.
+    /// 
+    /// Should only be called internally.
     static void detachFromWindow() noexcept;
 
+    /// @brief Refreshes the key states.
+    ///
+    /// Causes glfwPollEvents() to be called and increments the current frame.
+    /// 
+    /// Should only be called once per fixed frame.
     static void update() noexcept;
 
     static void handleKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods) noexcept;
