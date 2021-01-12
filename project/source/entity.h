@@ -18,7 +18,7 @@ public:
 private:
 	Vector3 _position;
 	float _rotation;
-	Vector3 scale = Vector3(1, 1, 1);
+	Vector3 _scale = Vector3(1, 1, 1);
 };
 
 #endif
