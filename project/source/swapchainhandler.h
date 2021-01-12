@@ -13,6 +13,7 @@
 #include <glm/mat4x4.hpp>
 
 #include "config.h"
+#include "vulkanhandler.h"
 #include "devicehandler.h"
 #include "depthbuffer.h"
 
@@ -31,12 +32,9 @@ public:
 
 	static SwapChainHandler* getInstance();
 	static void deleteInstance();
-	void init(VkInstance _instance, VkSurfaceKHR _surface);
+	void init();
 
 	void recreate();
-	void cleanup();
-
-	void setupSwapChain();
 
 	// TODO: maby chaing to struct
 	VkSwapchainKHR getSwapChain();
@@ -49,10 +47,6 @@ public:
 	int getSwapChainHeight();
 
 private:
-	
-	VkInstance _vulkaninstance;
-	VkSurfaceKHR _surface;
-
 	VkSwapchainKHR _swapChain;
 	std::vector<VkImage> _swapChainImages;
 	VkFormat _swapChainImageFormat;
@@ -60,6 +54,8 @@ private:
 
 	std::vector<VkImageView> _swapChainImageViews;
 
+	void cleanup();
+	void setupSwapChain();
 	void createSwapChain();
 	void createImageView();
 

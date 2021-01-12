@@ -37,7 +37,6 @@ class Core {
     private:
         Renderer* _renderer;
 
-        void initVulkan();
         void loop();
         void cleanup();
 

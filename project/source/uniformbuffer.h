@@ -35,7 +35,7 @@ struct UniformBufferData {
 
 class UniformBuffer : Buffer {
 public:
-	UniformBuffer(VkInstance _instance, VkCommandPool _commandPool, int _swapChainImageSize);
+	UniformBuffer();
 	~UniformBuffer();
 
 	void setupBuffer();
@@ -46,7 +46,5 @@ public:
 private:
 	std::vector<VkBuffer> _uniformBuffers;
 	std::vector<VkDeviceMemory> _uniformBuffersMemory;
-
-	int _swapChainImageSize;
 };
 #endif

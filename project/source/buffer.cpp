@@ -1,15 +1,13 @@
 #include "buffer.h"
 
-Buffer::Buffer(VkInstance _instance, VkCommandPool _commandPool) {
-    this->_instance = _instance;
-    this->_commandPool = _commandPool;
+Buffer::Buffer() {
 }
 
 VkCommandBuffer Buffer::beginSingleTimeCommands() {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = _commandPool;
+    allocInfo.commandPool = DeviceHandler::getInstance()->getCommandPool();
     allocInfo.commandBufferCount = 1;
 
     VkCommandBuffer commandBuffer;
@@ -35,7 +33,7 @@ void Buffer::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
     vkQueueSubmit(DeviceHandler::getInstance()->getDeviceGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
     vkQueueWaitIdle(DeviceHandler::getInstance()->getDeviceGraphicsQueue());
 
-    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, 1, &commandBuffer);
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), 1, &commandBuffer);
 }
 
 void Buffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) { // TODO: new

@@ -1,5 +1,3 @@
-#include <cstdint>
-
 
 #ifndef VULKANHANDLER_CLASS
 #define VULKANHANDLER_CLASS

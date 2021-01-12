@@ -1,28 +1,18 @@
 #include "renderer.h"
 
-Renderer::Renderer(VkInstance _instance, GLFWwindow* _window) {
-	this->_instance = _instance;
-    this->_window = _window;
-
+Renderer::Renderer() {
     this->_children = std::vector<Entity*>();
 
-
-    _presentQueue = DeviceHandler::getInstance()->getDevicePresentQueue();
-    _graphicsQueue = DeviceHandler::getInstance()->getDeviceGraphicsQueue();
-
-    this->setupCommandPool();
-
-    _children.push_back(new Entity(_instance, _commandPool));
-    _children.push_back(new Entity(_instance, _commandPool));
+    _children.push_back(new Entity());
+    _children.push_back(new Entity());
     _children[1]->pos.x = -1;
 
     _children[0]->texture()->loadTexture("assets/logo.png");
     _children[1]->texture()->loadTexture("assets/banaan.jpg");
 
-    this->_shader = new Shader(this->_instance, "shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
+    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
 
-    _depthBuffer = new DepthBuffer(_instance, _commandPool);
-    _depthBuffer->setupBuffer(SwapChainHandler::getInstance()->getSwapChainExtent());
+    _depthBuffer = new DepthBuffer();
 
     _framebuffers = new FrameBuffers();
     _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
@@ -87,7 +77,7 @@ void Renderer::setupCommandBuffers(Entity* _entity) {
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = this->_commandPool;
+    allocInfo.commandPool = DeviceHandler::getInstance()->getCommandPool();
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = (uint32_t)this->_commandBuffers.size();
 
@@ -179,7 +169,7 @@ void Renderer::draw() {
 
     vkResetFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame]);
 
-    if (vkQueueSubmit(this->_graphicsQueue, 1, &submitInfo, this->_inFlightFences[this->_currentFrame]) != VK_SUCCESS) {
+    if (vkQueueSubmit(DeviceHandler::getInstance()->getDeviceGraphicsQueue(), 1, &submitInfo, this->_inFlightFences[this->_currentFrame]) != VK_SUCCESS) {
         throw std::runtime_error("failed to submit draw command buffer!");
     }
 
@@ -195,7 +185,7 @@ void Renderer::draw() {
     presentInfo.pImageIndices = &imageIndex;
     presentInfo.pResults = nullptr; // Optional
 
-    result = vkQueuePresentKHR(_presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(DeviceHandler::getInstance()->getDevicePresentQueue(), &presentInfo);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || _framebufferResized) {
         this->_framebufferResized = false;
@@ -207,14 +197,14 @@ void Renderer::draw() {
 
     this->_currentFrame = (this->_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
-    vkQueueWaitIdle(this->_presentQueue);
+    vkQueueWaitIdle(DeviceHandler::getInstance()->getDevicePresentQueue());
 }
 
 void Renderer::recreate() {
     int width = 0, height = 0;
-    glfwGetFramebufferSize(_window, &width, &height);
+    glfwGetFramebufferSize(VulkanHandler::getInstance()->getWindow(), &width, &height);
     while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(_window, &width, &height);
+        glfwGetFramebufferSize(VulkanHandler::getInstance()->getWindow(), &width, &height);
         glfwWaitEvents();
     }
 
@@ -223,7 +213,7 @@ void Renderer::recreate() {
     this->cleanup();
     SwapChainHandler::getInstance()->recreate();
     delete _shader;
-    this->_shader = new Shader(this->_instance, "shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
+    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
     _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
     _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
@@ -238,27 +228,11 @@ void Renderer::recreate() {
 }
 
 void Renderer::cleanup() {
-    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
 }
 
 void Renderer::setFramebufferResized() {
     this->_framebufferResized = true;
-}
-
-void Renderer::setupCommandPool() {
-    QueueFamilyIndices queueFamilyIndices = DeviceHandler::getInstance()->findQueueFamilies(DeviceHandler::getInstance()->getPhysicalDevice());
-
-    VkCommandPoolCreateInfo poolInfo{};
-    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-    poolInfo.flags = 0; // Optional
-
-    if (vkCreateCommandPool(DeviceHandler::getInstance()->getLogicalDevice(), &poolInfo, nullptr, &this->_commandPool) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create command pool!");
-    }
-    else {
-        std::cout << "created command pool!" << std::endl;
-    }
 }
 
 void Renderer::setupSyncObjects() {
@@ -296,8 +270,7 @@ Renderer::~Renderer() {
         vkDestroyFence(DeviceHandler::getInstance()->getLogicalDevice(), this->_inFlightFences[i], nullptr);
     }
 
-    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), _commandPool, static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
-    vkDestroyCommandPool(DeviceHandler::getInstance()->getLogicalDevice(), this->_commandPool, nullptr);
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
 
     delete _depthBuffer;
     delete _framebuffers;

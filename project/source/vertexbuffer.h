@@ -11,7 +11,7 @@
 
 class VertexBuffer : Buffer {
 public:
-	VertexBuffer(VkInstance _instance, VkCommandPool _commandPool);
+	VertexBuffer();
 	~VertexBuffer();
 
 	void setupBuffer();

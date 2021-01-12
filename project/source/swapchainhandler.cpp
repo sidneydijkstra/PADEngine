@@ -13,10 +13,9 @@ SwapChainHandler* SwapChainHandler::getInstance() {
     return _instance;
 }
 
-void SwapChainHandler::init(VkInstance _instance, VkSurfaceKHR _surface) {
-    this->_vulkaninstance = _instance;
-    this->_surface = _surface;
-    this->setupSwapChain();
+void SwapChainHandler::init() {
+    //if(!_swapChain)
+        this->setupSwapChain();
 }
 
 void SwapChainHandler::deleteInstance() {
@@ -89,7 +88,7 @@ void SwapChainHandler::createSwapChain() {
 
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = this->_surface;
+    createInfo.surface = VulkanHandler::getInstance()->getSurface();
 
     createInfo.minImageCount = imageCount;
     createInfo.imageFormat = surfaceFormat.format;

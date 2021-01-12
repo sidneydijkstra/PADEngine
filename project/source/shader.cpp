@@ -1,7 +1,6 @@
 #include "shader.h"
 
-Shader::Shader(VkInstance _instance, std::string _vertexPath, std::string _fragmentPath, VkDescriptorSetLayout _descriptions) {
-	this->_instance = _instance;
+Shader::Shader(std::string _vertexPath, std::string _fragmentPath, VkDescriptorSetLayout _descriptions) {
 
 	this->setupRenderPass();
 	this->setupGraphicsPipeline(_vertexPath, _fragmentPath, _descriptions);

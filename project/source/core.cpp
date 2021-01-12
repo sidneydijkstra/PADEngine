@@ -13,18 +13,16 @@ void Core::run() {
     VulkanHandler::getInstance()->init();
 
     // setup window options / callbacks
+    glfwSetWindowUserPointer(VulkanHandler::getInstance()->getWindow(), this);
     glfwSetFramebufferSizeCallback(VulkanHandler::getInstance()->getWindow(), framebufferResizeCallback);
 
-    DeviceHandler::getInstance()->init(VulkanHandler::getInstance()->getVkInstance(), VulkanHandler::getInstance()->getSurface());
-    SwapChainHandler::getInstance()->init(VulkanHandler::getInstance()->getVkInstance(), VulkanHandler::getInstance()->getSurface());
+    DeviceHandler::getInstance()->init();
+    SwapChainHandler::getInstance()->init();
 
-    _renderer = new Renderer(VulkanHandler::getInstance()->getVkInstance(), VulkanHandler::getInstance()->getWindow());
+    _renderer = new Renderer();
 
     loop();
     cleanup();
-}
-
-void Core::initVulkan() {
 }
 
 void Core::framebufferResizeCallback(GLFWwindow* window, int width, int height) {

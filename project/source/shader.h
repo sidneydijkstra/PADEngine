@@ -24,7 +24,7 @@
 
 class Shader {
 public:
-	Shader(VkInstance _instance, std::string _vertexPath, std::string _fragmentPath, VkDescriptorSetLayout _descriptions);
+	Shader(std::string _vertexPath, std::string _fragmentPath, VkDescriptorSetLayout _descriptions);
 	~Shader();
 
 	VkRenderPass getRenderPass();
@@ -33,8 +33,6 @@ public:
 	VkPipeline getGraphicsPipeline();
 
 private:
-	VkInstance _instance;
-
 	VkRenderPass _renderPass;
 	VkPipelineLayout _pipelineLayout;
 	VkPipeline _graphicsPipeline;

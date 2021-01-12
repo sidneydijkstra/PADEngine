@@ -10,7 +10,7 @@
 
 class IndexBuffer : Buffer {
 public:
-	IndexBuffer(VkInstance _instance, VkCommandPool _commandPool);
+	IndexBuffer();
 	~IndexBuffer();
 
 	void setupBuffer();

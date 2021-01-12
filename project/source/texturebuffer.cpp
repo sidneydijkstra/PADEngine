@@ -1,7 +1,7 @@
 #include "texturebuffer.h"
 
 
-TextureBuffer::TextureBuffer(VkInstance _instance, VkCommandPool _commandPool) : Buffer(_instance, _commandPool) {
+TextureBuffer::TextureBuffer() : Buffer() {
     _textureSampler = NULL;
 }
 

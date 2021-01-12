@@ -1,7 +1,7 @@
 #include "vertexbuffer.h"
 
-VertexBuffer::VertexBuffer(VkInstance _instance, VkCommandPool _commandPool) :
-Buffer(_instance, _commandPool){
+VertexBuffer::VertexBuffer() :
+Buffer(){
     this->setupBuffer();
 }
 

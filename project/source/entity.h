@@ -30,7 +30,7 @@ struct DescriptionData {
 
 class Entity {
     public:
-        Entity(VkInstance _instance, VkCommandPool _commandPool);
+        Entity();
         ~Entity();
 
         VertexBuffer* vertex() {
@@ -53,7 +53,7 @@ class Entity {
             return DescriptionData { _descriptorSetLayout, _descriptorPool, _descriptorSets };
         };
 
-        void recreate() {
+        virtual void recreate() {
             _descriptorSets.clear();
             vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorPool, nullptr);
             vkDestroyDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorSetLayout, nullptr);
@@ -63,15 +63,15 @@ class Entity {
         };
 
         glm::vec3 pos;
-    private:
+    protected:
         VertexBuffer* _vertexBuffer;
         IndexBuffer* _indexBuffer;
         UniformBuffer* _uniformBuffer;
         TextureBuffer* _textureBuffer;
 
         // TODO: good?
-        void setupDescriptor();
-        void setupDescriptorSets();
+        virtual void setupDescriptor();
+        virtual void setupDescriptorSets();
         VkDescriptorSetLayout _descriptorSetLayout;
         VkDescriptorPool _descriptorPool;
         std::vector<VkDescriptorSet> _descriptorSets;

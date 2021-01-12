@@ -1,11 +1,11 @@
 #include "depthbuffer.h"
 
-DepthBuffer::DepthBuffer(VkInstance _instance, VkCommandPool _commandPool) :
-Buffer(_instance, _commandPool){
+DepthBuffer::DepthBuffer() : Buffer(){
+    this->setupBuffer();
 }
 
-void DepthBuffer::setupBuffer(VkExtent2D _swapChainExtent) {
-    setupDepthResources(_swapChainExtent);
+void DepthBuffer::setupBuffer() {
+    setupDepthResources(SwapChainHandler::getInstance()->getSwapChainExtent());
 }
 
 DepthBufferData DepthBuffer::getBuffer() {
@@ -17,7 +17,7 @@ void DepthBuffer::recreate(VkExtent2D _swapChainExtent) {
     vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _depthImage, nullptr);
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _depthImageMemory, nullptr);
 
-    this->setupBuffer(_swapChainExtent);
+    this->setupBuffer();
 }
 
 void DepthBuffer::setupDepthResources(VkExtent2D _swapChainExtent) {

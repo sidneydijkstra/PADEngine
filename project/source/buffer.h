@@ -12,6 +12,7 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "vulkanhandler.h"
 #include "devicehandler.h"
 
 #include <iostream>
@@ -25,13 +26,10 @@ struct BufferData {
 
 class Buffer {
 public:
-	Buffer(VkInstance _instance, VkCommandPool _commandPool);
+	Buffer();
 	~Buffer();
 
 protected:
-	VkInstance _instance;
-
-	VkCommandPool _commandPool;
 
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);

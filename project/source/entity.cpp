@@ -1,27 +1,17 @@
 #include "entity.h"
 
-Entity::Entity(VkInstance _instance, VkCommandPool _commandPool) {
+Entity::Entity() {
 	this->pos = glm::vec3(0, 0, 0);
 
-    _vertexBuffer = new VertexBuffer(_instance, _commandPool);
-    _indexBuffer = new IndexBuffer(_instance, _commandPool);
-    _uniformBuffer = new UniformBuffer(_instance, _commandPool, SwapChainHandler::getInstance()->getSwapChainImagesSize());
+    _vertexBuffer = new VertexBuffer();
+    _indexBuffer = new IndexBuffer();
+    _uniformBuffer = new UniformBuffer();
 
-    _textureBuffer = new TextureBuffer(_instance, _commandPool);
+    _textureBuffer = new TextureBuffer();
 	_textureBuffer->loadTexture("assets/logo.png");
 
 	this->setupDescriptor();
 	this->setupDescriptorSets();
-}
-
-Entity::~Entity() {
-    delete _vertexBuffer;
-    delete _indexBuffer;
-    delete _uniformBuffer;
-    delete _textureBuffer;
-
-	vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorPool, nullptr);
-	vkDestroyDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorSetLayout, nullptr);
 }
 
 void Entity::setupDescriptor() {
@@ -116,4 +106,14 @@ void Entity::setupDescriptorSets() {
 
 		vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
+}
+
+Entity::~Entity() {
+	delete _vertexBuffer;
+	delete _indexBuffer;
+	delete _uniformBuffer;
+	delete _textureBuffer;
+
+	vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorPool, nullptr);
+	vkDestroyDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorSetLayout, nullptr);
 }

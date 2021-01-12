@@ -14,6 +14,7 @@
 
 #include "devicehandler.h"
 #include "swapchainhandler.h"
+#include "vulkanhandler.h"
 #include "framebuffers.h"
 #include "shader.h"
 #include "indexbuffer.h"
@@ -34,14 +35,12 @@
 
 class Renderer {
 public:
-	Renderer(VkInstance _instance, GLFWwindow* _window);
+	Renderer();
 	~Renderer();
 
 	void draw();
 	void setFramebufferResized();
 private:
-	VkInstance _instance;
-	GLFWwindow* _window;
 	Shader* _shader;
 
 	std::vector<Entity*> _children;
@@ -49,11 +48,7 @@ private:
 
 	FrameBuffers* _framebuffers;
 
-	VkCommandPool _commandPool;
 	std::vector<VkCommandBuffer> _commandBuffers;
-
-	VkQueue _graphicsQueue;
-	VkQueue _presentQueue;
 
 	std::vector<VkSemaphore> _imageAvailableSemaphores;
 	std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -71,7 +66,6 @@ private:
 	void beginCommandBuffer(int _index);
 	void endCommandBuffer(int _index);
 
-	void setupCommandPool();
 	void setupCommandBuffers(Entity* _entity);
 	void setupSyncObjects();
 

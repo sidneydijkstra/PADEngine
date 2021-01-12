@@ -9,6 +9,7 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "vulkanhandler.h"
 
 #include <iostream>
 #include <fstream>
@@ -42,7 +43,7 @@ class DeviceHandler {
 
 		static DeviceHandler* getInstance();
 		static void deleteInstance();
-		void init(VkInstance _instance, VkSurfaceKHR _surface);
+		void init();
 
 		VkPhysicalDevice getPhysicalDevice();
 		VkDevice getLogicalDevice();
@@ -57,14 +58,6 @@ class DeviceHandler {
 		VkFormat findDepthFormat();
 		bool hasStencilComponent(VkFormat _format);
 	private:
-		// add device extensions
-		const std::vector<const char*> _deviceExtensions = {
-			VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		};
-
-		VkInstance _vulkanInstance;
-		VkSurfaceKHR _surface;
-
 		VkPhysicalDevice _physicalDevice;
 		VkDevice _logicaldevice;
 
@@ -81,5 +74,10 @@ class DeviceHandler {
 		void setupCommandPool();
 
 		VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+
+		// add device extensions
+		const std::vector<const char*> _deviceExtensions = {
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
 };
 #endif

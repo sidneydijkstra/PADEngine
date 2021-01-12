@@ -17,7 +17,6 @@ void VulkanHandler::init() {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     this->_window = glfwCreateWindow(Config::WIDTH, Config::HEIGHT, "PAD-Engine", nullptr, nullptr);
-    glfwSetWindowUserPointer(VulkanHandler::getInstance()->getWindow(), this);
 
     // check if validation layers ar available
     if (this->_enableValidationLayers && !checkValidationLayerSupport()) {
@@ -132,5 +131,5 @@ void VulkanHandler::deleteInstance() {
 VulkanHandler::~VulkanHandler() {
     vkDestroySurfaceKHR(_vkInstance, this->_surface, nullptr);
     vkDestroyInstance(this->_vkInstance, nullptr);
-    glfwDestroyWindow(_window);
+    glfwDestroyWindow(this->_window);
 }
