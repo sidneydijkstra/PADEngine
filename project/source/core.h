@@ -18,7 +18,7 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "shader.h"
-#include "renderer.h"
+#include "sequencemanager.h"
 
 #include <iostream>
 #include <fstream>
@@ -35,7 +35,8 @@ class Core {
         void run();
 
     private:
-        Renderer* _renderer;
+        SequenceManager* _seqManager;
+        Scene* _scene;
 
         void loop();
         void cleanup();

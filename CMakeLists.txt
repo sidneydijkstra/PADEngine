@@ -18,6 +18,8 @@ add_executable(PADEngine
   project/source/swapchainhandler.h
   project/source/resourcemanager.cpp
   project/source/resourcemanager.h
+  project/source/sequencemanager.cpp
+  project/source/sequencemanager.h
   project/source/shader.cpp
   project/source/shader.h
   project/source/renderer.cpp
@@ -38,6 +40,8 @@ add_executable(PADEngine
   project/source/depthbuffer.h
   project/source/framebuffers.cpp
   project/source/framebuffers.h
+  project/source/scene.cpp
+  project/source/scene.h
   project/source/texture.cpp
   project/source/texture.h
   project/source/entity.cpp

@@ -19,7 +19,8 @@ void Core::run() {
     DeviceHandler::getInstance()->init();
     SwapChainHandler::getInstance()->init();
 
-    _renderer = new Renderer();
+    _seqManager = new SequenceManager();
+    _scene = new Scene();
 
     loop();
     cleanup();
@@ -27,20 +28,22 @@ void Core::run() {
 
 void Core::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto app = reinterpret_cast<Core*>(glfwGetWindowUserPointer(window));
-    app->_renderer->setFramebufferResized();
+    app->_seqManager->setFramebufferResized();
 }
 
 void Core::loop() {
     while (!glfwWindowShouldClose(VulkanHandler::getInstance()->getWindow())) {
         glfwPollEvents();
-        _renderer->draw();
+        _seqManager->draw(_scene);
     }
 
     vkDeviceWaitIdle(DeviceHandler::getInstance()->getLogicalDevice());
 }
 
 void Core::cleanup() {
-    delete _renderer;
+    delete _seqManager;
+    delete _scene;
+
     ResourceManager::deleteInstance();
     SwapChainHandler::deleteInstance();
 	DeviceHandler::deleteInstance();

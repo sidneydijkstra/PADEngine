@@ -29,6 +29,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include "scene.h"
 
 #ifndef RENDERER_CLASS
 #define RENDERER_CLASS
@@ -38,38 +39,19 @@ public:
 	Renderer();
 	~Renderer();
 
-	void draw();
-	void setFramebufferResized();
+	void recreate();
+	VkCommandBuffer renderScene(Scene* _scene, int _index);
+
 private:
 	Shader* _shader;
-
-	std::vector<Entity*> _children;
 	DepthBuffer* _depthBuffer;
-
 	FrameBuffers* _framebuffers;
-
 	std::vector<VkCommandBuffer> _commandBuffers;
-
-	std::vector<VkSemaphore> _imageAvailableSemaphores;
-	std::vector<VkSemaphore> _renderFinishedSemaphores;
-	std::vector<VkFence> _inFlightFences;
-	std::vector<VkFence> _imagesInFlight;
-	size_t _currentFrame = 0;
-	bool _framebufferResized = false;
-
-	void recreate();
-	void cleanup();
-
-	void update(int _index);
-	void renderEntitys(int _index);
 
 	void beginCommandBuffer(int _index);
 	void endCommandBuffer(int _index);
 
 	void setupCommandBuffers();
-	void updateCommandBuffers(int _index);
-	void setupSyncObjects();
-
-	const int MAX_FRAMES_IN_FLIGHT = 2;
+	VkCommandBuffer updateCommandBuffers(Scene* _scene, int _index);
 };
 #endif

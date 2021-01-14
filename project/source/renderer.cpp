@@ -1,14 +1,6 @@
 #include "renderer.h"
 
 Renderer::Renderer() {
-    this->_children = std::vector<Entity*>();
-
-    _children.push_back(new Entity());
-    _children.push_back(new Entity());
-    _children[1]->pos.x = -1;
-
-    _children[1]->texture()->loadTexture("assets/banaan.jpg");
-
     this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
 
     _depthBuffer = new DepthBuffer();
@@ -17,36 +9,10 @@ Renderer::Renderer() {
     _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
     setupCommandBuffers();
-
-    this->setupSyncObjects();
 }
 
-void Renderer::update(int _index) {
-    static auto startTime = std::chrono::high_resolution_clock::now();
-
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-    for (Entity* e : _children) {
-        UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.model = glm::translate(ubo.model, e->pos);
-
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-        ubo.proj = glm::perspective(glm::radians(45.0f), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 10.0f);
-
-        ubo.proj[1][1] *= -1;
-
-        e->uniform()->updateBuffer(_index, ubo);
-        int index = (_index);
-        e->recreate(index);
-    }
-    this->renderEntitys(_index);
-}
-
-void Renderer::renderEntitys(int _index) {
-    this->updateCommandBuffers(_index);
+VkCommandBuffer Renderer::renderScene(Scene* _scene, int _index) {
+    return this->updateCommandBuffers(_scene, _index);
 }
 
 void Renderer::beginCommandBuffer(int _index) {
@@ -83,11 +49,11 @@ void Renderer::setupCommandBuffers() {
     }
 
     for (size_t i = 0; i < this->_commandBuffers.size(); i++) {
-        this->updateCommandBuffers(i);
+        //this->updateCommandBuffers(i);
     }
 }
 
-void Renderer::updateCommandBuffers(int _index) {
+VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
     beginCommandBuffer(_index);
 
     VkRenderPassBeginInfo renderPassInfo{};
@@ -109,7 +75,7 @@ void Renderer::updateCommandBuffers(int _index) {
 
     vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
 
-    for (Entity* ent : _children) {
+    for (Entity* ent : _scene->getChildren()) {
         BufferData vertexData = ent->vertex()->getBuffer();
         BufferData indexData = ent->index()->getBuffer();
 
@@ -125,77 +91,8 @@ void Renderer::updateCommandBuffers(int _index) {
     vkCmdEndRenderPass(this->_commandBuffers[_index]);
 
     endCommandBuffer(_index);
-}
 
-void Renderer::draw() {
-    vkWaitForFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame], VK_TRUE, UINT64_MAX);
-
-    uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(DeviceHandler::getInstance()->getLogicalDevice(), SwapChainHandler::getInstance()->getSwapChain(), UINT64_MAX, this->_imageAvailableSemaphores[this->_currentFrame], VK_NULL_HANDLE, &imageIndex);
-
-    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-        this->recreate();
-        return;
-    }else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-        throw std::runtime_error("failed to acquire swap chain image!");
-    }
-
-    // Check if a previous frame is using this image (i.e. there is its fence to wait on)
-    if (imageIndex == UINT64_MAX || this->_imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
-        vkWaitForFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
-    }
-    // Mark the image as now being in use by this frame
-    this->_imagesInFlight[imageIndex] = this->_inFlightFences[this->_currentFrame];
-
-    update(imageIndex);
-
-    VkSubmitInfo submitInfo{};
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-    VkSemaphore waitSemaphores[] = { this->_imageAvailableSemaphores[this->_currentFrame] };
-    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = waitSemaphores;
-    submitInfo.pWaitDstStageMask = waitStages;
-
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &this->_commandBuffers[imageIndex];
-
-    VkSemaphore signalSemaphores[] = { this->_renderFinishedSemaphores[this->_currentFrame] };
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = signalSemaphores;
-
-    vkResetFences(DeviceHandler::getInstance()->getLogicalDevice(), 1, &this->_inFlightFences[this->_currentFrame]);
-
-    if (vkQueueSubmit(DeviceHandler::getInstance()->getDeviceGraphicsQueue(), 1, &submitInfo, this->_inFlightFences[this->_currentFrame]) != VK_SUCCESS) {
-        throw std::runtime_error("failed to submit draw command buffer!");
-    }
-
-    VkPresentInfoKHR presentInfo{};
-    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
-    presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = signalSemaphores;
-
-    VkSwapchainKHR swapChains[] = { SwapChainHandler::getInstance()->getSwapChain() };
-    presentInfo.swapchainCount = 1;
-    presentInfo.pSwapchains = swapChains;
-    presentInfo.pImageIndices = &imageIndex;
-    presentInfo.pResults = nullptr; // Optional
-
-    result = vkQueuePresentKHR(DeviceHandler::getInstance()->getDevicePresentQueue(), &presentInfo);
-
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || _framebufferResized) {
-        this->_framebufferResized = false;
-        this->recreate();
-    }
-    else if (result != VK_SUCCESS) {
-        throw std::runtime_error("failed to present swap chain image!");
-    }
-
-    this->_currentFrame = (this->_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
-
-    vkQueueWaitIdle(DeviceHandler::getInstance()->getDevicePresentQueue());
+    return this->_commandBuffers[_index];
 }
 
 void Renderer::recreate() {
@@ -208,66 +105,21 @@ void Renderer::recreate() {
 
     vkDeviceWaitIdle(DeviceHandler::getInstance()->getLogicalDevice());
 
-    this->cleanup();
     SwapChainHandler::getInstance()->recreate();
+
     delete _shader;
     this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
+
     _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
     _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
-    for (Entity* e : _children) {
-        //e->vertex()->recreate();
-        //e->index()->recreate();
-        //e->uniform()->recreate();
-        //e->recreate();
-    }
-
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
     setupCommandBuffers();
 }
 
-void Renderer::cleanup() {
-    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
-}
 
-void Renderer::setFramebufferResized() {
-    this->_framebufferResized = true;
-}
-
-void Renderer::setupSyncObjects() {
-    this->_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-    this->_imagesInFlight.resize(SwapChainHandler::getInstance()->getSwapChainImages().size(), VK_NULL_HANDLE);
-
-    VkSemaphoreCreateInfo semaphoreInfo{};
-    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-    VkFenceCreateInfo fenceInfo{};
-    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        if (vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_imageAvailableSemaphores[i]) != VK_SUCCESS || vkCreateSemaphore(DeviceHandler::getInstance()->getLogicalDevice(), &semaphoreInfo, nullptr, &this->_renderFinishedSemaphores[i]) != VK_SUCCESS || vkCreateFence(DeviceHandler::getInstance()->getLogicalDevice(), &fenceInfo, nullptr, &this->_inFlightFences[i]) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create synchronization objects for a frame!");
-        }
-        else {
-            std::cout << "\t- created synchronization object for a frame!" << std::endl;
-        }
-    }
-}
 
 Renderer::~Renderer() {
-    for (Entity* e : _children) {
-        delete e;
-    }
-    _children.clear();
-
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        vkDestroySemaphore(DeviceHandler::getInstance()->getLogicalDevice(), this->_renderFinishedSemaphores[i], nullptr);
-        vkDestroySemaphore(DeviceHandler::getInstance()->getLogicalDevice(), this->_imageAvailableSemaphores[i], nullptr);
-        vkDestroyFence(DeviceHandler::getInstance()->getLogicalDevice(), this->_inFlightFences[i], nullptr);
-    }
-
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
 
     delete _depthBuffer;
