@@ -63,7 +63,7 @@ class Entity {
         float getRotation() { return _rotation; }
         void setRotation(float rotation) { _rotation = rotation; }
     protected:
-        Vector3 _position;
+        Vector3 _position = Vector3(0, 0, 0);
         float _rotation;
         Vector3 _scale = Vector3(1, 1, 1);
 

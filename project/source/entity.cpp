@@ -1,7 +1,6 @@
 #include "entity.h"
 
 Entity::Entity() {
-	this->pos = glm::vec3(0, 0, 0);
 
     _vertexBuffer = new VertexBuffer();
     _indexBuffer = new IndexBuffer();

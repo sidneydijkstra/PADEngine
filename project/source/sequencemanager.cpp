@@ -37,10 +37,16 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
+    
+
+    if (Input::getKeyDown(KeyCode::Space)) {
+        rotSpeed += 10.0f;
+    }
+
     for (Entity* e : _scene->getChildren()) {
         UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.model = glm::translate(ubo.model, e->pos);
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(rotSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::translate(ubo.model, glm::vec3(e->getPostion().x, e->getPostion().y, e->getPostion().z));
 
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 

@@ -46,6 +46,8 @@ add_executable(PADEngine
   project/source/texture.h
   project/source/entity.cpp
   project/source/entity.h
+  project/source/vector3.cpp
+  project/source/vector3.h
   project/source/vertex.h
   project/source/stb_image.h
   project/source/input.h

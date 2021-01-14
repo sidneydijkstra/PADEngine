@@ -19,6 +19,7 @@
 #include "swapchainhandler.h"
 #include "shader.h"
 #include "sequencemanager.h"
+#include "input.h"
 
 #include <iostream>
 #include <fstream>

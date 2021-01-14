@@ -5,7 +5,7 @@ Scene::Scene() {
 
 	_children.push_back(new Entity());
 	_children.push_back(new Entity());
-	_children[1]->pos.x = -1;
+	_children[1]->setPosition(Vector3(0, -1, 0));
 
 	_children[0]->texture()->loadTexture("assets/logo.png");
 	_children[1]->texture()->loadTexture("assets/banaan.jpg");

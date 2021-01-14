@@ -18,6 +18,7 @@ void Core::run() {
 
     DeviceHandler::getInstance()->init();
     SwapChainHandler::getInstance()->init();
+    Input::attachToWindow(VulkanHandler::getInstance()->getWindow());
 
     _seqManager = new SequenceManager();
     _scene = new Scene();
@@ -33,7 +34,7 @@ void Core::framebufferResizeCallback(GLFWwindow* window, int width, int height) 
 
 void Core::loop() {
     while (!glfwWindowShouldClose(VulkanHandler::getInstance()->getWindow())) {
-        glfwPollEvents();
+        Input::update();
         _seqManager->draw(_scene);
     }
 

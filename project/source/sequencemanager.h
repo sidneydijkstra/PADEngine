@@ -5,6 +5,7 @@
 
 #include "renderer.h"
 #include "scene.h"
+#include "input.h"
 
 #include <vector>
 
@@ -20,6 +21,8 @@ class SequenceManager {
 		void setFramebufferResized();
 	private:
 		Renderer* _renderer;
+
+		float rotSpeed = 10.0f;
 
 		uint32_t getImageIndex();
 
