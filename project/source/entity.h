@@ -16,6 +16,8 @@
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
 #include "texture.h"
+#include "hierarchy.h"
+#include "vector3.h"
 
 #include <iostream>
 #include <vector>
@@ -56,8 +58,15 @@ class Entity {
 
         virtual void recreate(int _index);
 
-        glm::vec3 pos;
+        Vector3 getPostion() { return _position; }
+        void setPosition(Vector3 position) { _position = position; }
+        float getRotation() { return _rotation; }
+        void setRotation(float rotation) { _rotation = rotation; }
     protected:
+        Vector3 _position;
+        float _rotation;
+        Vector3 _scale = Vector3(1, 1, 1);
+
         VertexBuffer* _vertexBuffer;
         IndexBuffer* _indexBuffer;
         UniformBuffer* _uniformBuffer;
