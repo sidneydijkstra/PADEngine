@@ -1,33 +1,34 @@
 #include "texturebuffer.h"
 
 
-TextureBuffer::TextureBuffer() : Buffer() {
-    _textureSampler = NULL;
-}
-
-void TextureBuffer::loadTexture(const char* _path) {
-    if(_textureSampler != NULL){
-        vkDestroySampler(DeviceHandler::getInstance()->getLogicalDevice(), _textureSampler, nullptr);
-        vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageView, nullptr);
-        vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _textureImage, nullptr);
-        vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageMemory, nullptr);
-    }
-
+TextureBuffer::TextureBuffer(const char* _path) : Buffer() {
     this->createTextureImage(_path);
     createTextureImageView();
     createTextureSampler();
 }
 
-void TextureBuffer::textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format) {
-    _swapChainImageViews.resize(_swapChainImages.size());
+//void TextureBuffer::textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format) {
+//    _swapChainImageViews.resize(_swapChainImages.size());
+//
+//    for (size_t i = 0; i < _swapChainImageViews.size(); i++) {
+//        _swapChainImageViews[i] = createImageView(_swapChainImages[i], _format);
+//    }
+//}
 
-    for (size_t i = 0; i < _swapChainImageViews.size(); i++) {
-        _swapChainImageViews[i] = createImageView(_swapChainImages[i], _format);
-    }
+VkImage TextureBuffer::getImage() {
+    return _textureImage;
 }
 
-TextureBufferData TextureBuffer::getBuffer() {
-    return TextureBufferData{this->_textureImageView, this->_textureSampler};
+VkDeviceMemory TextureBuffer::getImageMemory() {
+    return _textureImageMemory;
+}
+
+VkImageView TextureBuffer::getImageView() {
+    return _textureImageView;
+}
+
+VkSampler TextureBuffer::getSampler() {
+    return _textureSampler;
 }
 
 void TextureBuffer::createTextureImage(const char* _path) {

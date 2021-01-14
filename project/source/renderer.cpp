@@ -7,21 +7,21 @@ Renderer::Renderer() {
     _children.push_back(new Entity());
     _children[1]->pos.x = -1;
 
-    _children[0]->texture()->loadTexture("assets/logo.png");
     _children[1]->texture()->loadTexture("assets/banaan.jpg");
 
-    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
+    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
 
     _depthBuffer = new DepthBuffer();
 
     _framebuffers = new FrameBuffers();
     _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
-    this->renderEntitys();
+    setupCommandBuffers();
+
     this->setupSyncObjects();
 }
 
-void Renderer::update(uint32_t currentImage) {
+void Renderer::update(int _index) {
     static auto startTime = std::chrono::high_resolution_clock::now();
 
     auto currentTime = std::chrono::high_resolution_clock::now();
@@ -38,15 +38,15 @@ void Renderer::update(uint32_t currentImage) {
 
         ubo.proj[1][1] *= -1;
 
-        e->uniform()->updateBuffer(currentImage, ubo);
+        e->uniform()->updateBuffer(_index, ubo);
+        int index = (_index);
+        e->recreate(index);
     }
+    this->renderEntitys(_index);
 }
 
-void Renderer::renderEntitys() {
-    for (Entity* e : _children) {
-        e->recreate();
-    }
-    setupCommandBuffers(_children[0]);
+void Renderer::renderEntitys(int _index) {
+    this->updateCommandBuffers(_index);
 }
 
 void Renderer::beginCommandBuffer(int _index) {
@@ -58,21 +58,15 @@ void Renderer::beginCommandBuffer(int _index) {
     if (vkBeginCommandBuffer(this->_commandBuffers[_index], &beginInfo) != VK_SUCCESS) {
         throw std::runtime_error("failed to begin recording command buffer!");
     }
-    else {
-        std::cout << "\t- begin recording command buffer!" << std::endl;
-    }
 }
 
 void Renderer::endCommandBuffer(int _index) {
     if (vkEndCommandBuffer(this->_commandBuffers[_index]) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");
     }
-    else {
-        std::cout << "\t- recording command buffer!" << std::endl;
-    }
 }
 
-void Renderer::setupCommandBuffers(Entity* _entity) {
+void Renderer::setupCommandBuffers() {
     this->_commandBuffers.resize(_framebuffers->getFrameBuffersSize());
 
     VkCommandBufferAllocateInfo allocInfo{};
@@ -89,44 +83,48 @@ void Renderer::setupCommandBuffers(Entity* _entity) {
     }
 
     for (size_t i = 0; i < this->_commandBuffers.size(); i++) {
-        beginCommandBuffer(i);
+        this->updateCommandBuffers(i);
+    }
+}
 
-        VkRenderPassBeginInfo renderPassInfo{};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = this->_shader->getRenderPass();
-        renderPassInfo.framebuffer = _framebuffers->getFrameBuffers()[i];
+void Renderer::updateCommandBuffers(int _index) {
+    beginCommandBuffer(_index);
 
-        renderPassInfo.renderArea.offset = { 0, 0 };
-        renderPassInfo.renderArea.extent = SwapChainHandler::getInstance()->getSwapChainExtent();
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = this->_shader->getRenderPass();
+    renderPassInfo.framebuffer = _framebuffers->getFrameBuffers()[_index];
 
-        std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
-        clearValues[1].depthStencil = { 1.0f, 0 };
+    renderPassInfo.renderArea.offset = { 0, 0 };
+    renderPassInfo.renderArea.extent = SwapChainHandler::getInstance()->getSwapChainExtent();
 
-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-        renderPassInfo.pClearValues = clearValues.data();
+    std::array<VkClearValue, 2> clearValues{};
+    clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+    clearValues[1].depthStencil = { 1.0f, 0 };
 
-        vkCmdBeginRenderPass(this->_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+    renderPassInfo.pClearValues = clearValues.data();
 
-        vkCmdBindPipeline(this->_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
+    vkCmdBeginRenderPass(this->_commandBuffers[_index], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        BufferData vertexData = _entity->vertex()->getBuffer();
-        BufferData indexData = _entity->index()->getBuffer();
+    vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
+
+    for (Entity* ent : _children) {
+        BufferData vertexData = ent->vertex()->getBuffer();
+        BufferData indexData = ent->index()->getBuffer();
 
         VkBuffer vertexBuffers[] = { vertexData.buffer };
         VkDeviceSize offsets[] = { 0 };
-        vkCmdBindVertexBuffers(this->_commandBuffers[i], 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(this->_commandBuffers[i], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
-        
-        for(Entity* ent : _children){
-            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, & ent->description().descriptorSets[i], 0, nullptr);
-            vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
-        }
+        vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
+        vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
 
-        vkCmdEndRenderPass(this->_commandBuffers[i]);
-
-        endCommandBuffer(i);
+        vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &ent->description()[_index], 0, nullptr);
+        vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
     }
+
+    vkCmdEndRenderPass(this->_commandBuffers[_index]);
+
+    endCommandBuffer(_index);
 }
 
 void Renderer::draw() {
@@ -213,18 +211,18 @@ void Renderer::recreate() {
     this->cleanup();
     SwapChainHandler::getInstance()->recreate();
     delete _shader;
-    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", _children[0]->description().descriptorSetLayout);
+    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
     _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
     _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
 
     for (Entity* e : _children) {
-        e->vertex()->recreate();
-        e->index()->recreate();
-        e->uniform()->recreate();
-        e->recreate();
+        //e->vertex()->recreate();
+        //e->index()->recreate();
+        //e->uniform()->recreate();
+        //e->recreate();
     }
 
-    this->renderEntitys();
+    setupCommandBuffers();
 }
 
 void Renderer::cleanup() {

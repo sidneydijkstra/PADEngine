@@ -11,10 +11,11 @@
 
 #include "config.h"
 
+#include "resourcemanager.h"
 #include "indexbuffer.h"
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
-#include "texturebuffer.h"
+#include "texture.h"
 
 #include <iostream>
 #include <vector>
@@ -45,35 +46,27 @@ class Entity {
             return _uniformBuffer;
         };
 
-        TextureBuffer* texture() {
-            return _textureBuffer;
+        Texture* texture() {
+            return _texture;
         };
 
-        DescriptionData description() {
-            return DescriptionData { _descriptorSetLayout, _descriptorPool, _descriptorSets };
+        std::vector<VkDescriptorSet> description() {
+            return _descriptorSets;
         };
 
-        virtual void recreate() {
-            _descriptorSets.clear();
-            vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorPool, nullptr);
-            vkDestroyDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorSetLayout, nullptr);
-
-            setupDescriptor();
-            setupDescriptorSets();
-        };
+        virtual void recreate(int _index);
 
         glm::vec3 pos;
     protected:
         VertexBuffer* _vertexBuffer;
         IndexBuffer* _indexBuffer;
         UniformBuffer* _uniformBuffer;
-        TextureBuffer* _textureBuffer;
+        Texture* _texture;
 
         // TODO: good?
-        virtual void setupDescriptor();
-        virtual void setupDescriptorSets();
-        VkDescriptorSetLayout _descriptorSetLayout;
-        VkDescriptorPool _descriptorPool;
+        VkDescriptorPool _pool;
         std::vector<VkDescriptorSet> _descriptorSets;
+        virtual void setupDescriptorSets();
+        virtual void updateDescriptorSets(int _index);
 };
 #endif

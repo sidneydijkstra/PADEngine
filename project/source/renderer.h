@@ -60,13 +60,14 @@ private:
 	void recreate();
 	void cleanup();
 
-	void update(uint32_t currentImage);
-	void renderEntitys();
+	void update(int _index);
+	void renderEntitys(int _index);
 
 	void beginCommandBuffer(int _index);
 	void endCommandBuffer(int _index);
 
-	void setupCommandBuffers(Entity* _entity);
+	void setupCommandBuffers();
+	void updateCommandBuffers(int _index);
 	void setupSyncObjects();
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;

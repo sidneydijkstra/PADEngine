@@ -20,20 +20,20 @@ struct TextureBufferData {
 
 class TextureBuffer : Buffer {
 public:
-	TextureBuffer();
+	TextureBuffer(const char* _path);
 	~TextureBuffer();
 
-	void loadTexture(const char* _path);
-	void textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format);
-	TextureBufferData getBuffer();
+	//void textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format);
 
+	VkImage getImage();
+	VkDeviceMemory getImageMemory();
+	VkImageView getImageView();
+	VkSampler getSampler();
 
 private:
 	VkImage _textureImage;
 	VkDeviceMemory _textureImageMemory;
-
 	VkImageView _textureImageView;
-
 	VkSampler _textureSampler;
 
 	// image loading

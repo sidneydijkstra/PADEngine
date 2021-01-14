@@ -41,6 +41,7 @@ void Core::loop() {
 
 void Core::cleanup() {
     delete _renderer;
+    ResourceManager::deleteInstance();
     SwapChainHandler::deleteInstance();
 	DeviceHandler::deleteInstance();
     VulkanHandler::deleteInstance();
