@@ -10,14 +10,22 @@ add_executable(PADEngine
   project/source/config.h
   project/source/core.cpp
   project/source/core.h
+  project/source/vulkanhandler.cpp
+  project/source/vulkanhandler.h
   project/source/devicehandler.cpp
   project/source/devicehandler.h
   project/source/swapchainhandler.cpp
   project/source/swapchainhandler.h
+  project/source/resourcemanager.cpp
+  project/source/resourcemanager.h
+  project/source/sequencemanager.cpp
+  project/source/sequencemanager.h
   project/source/shader.cpp
   project/source/shader.h
   project/source/renderer.cpp
   project/source/renderer.h
+  project/source/descriptor.cpp
+  project/source/descriptor.h
   project/source/buffer.cpp
   project/source/buffer.h
   project/source/vertexbuffer.cpp
@@ -30,6 +38,14 @@ add_executable(PADEngine
   project/source/texturebuffer.h
   project/source/depthbuffer.cpp
   project/source/depthbuffer.h
+  project/source/framebuffers.cpp
+  project/source/framebuffers.h
+  project/source/scene.cpp
+  project/source/scene.h
+  project/source/texture.cpp
+  project/source/texture.h
+  project/source/entity.cpp
+  project/source/entity.h
   project/source/vertex.h
   project/source/stb_image.h
   project/source/input.h

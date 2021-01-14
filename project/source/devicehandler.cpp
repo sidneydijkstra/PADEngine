@@ -1,14 +1,31 @@
 #include "devicehandler.h"
 
-DeviceHandler::DeviceHandler(VkInstance _instance, VkSurfaceKHR _surface) {
-	this->_instance = _instance;
-	this->_surface = _surface;
+static DeviceHandler* _instance;
+
+DeviceHandler::DeviceHandler() {}
+
+DeviceHandler * DeviceHandler::getInstance() {
+	if (!_instance) {
+		_instance = new DeviceHandler();
+	}
+	return _instance;
 }
 
+void DeviceHandler::deleteInstance() {
+	delete _instance;
+	_instance = nullptr;
+}
 
-void DeviceHandler::setupDevices() {
+void DeviceHandler::init() {
 	this->pickPhysicalDevice();
 	this->createLogicalDevice();
+
+	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
+	vkGetDeviceQueue(this->_logicaldevice, indices.presentFamily.value(), 0, &_presentQueue);
+	indices = findQueueFamilies(this->_physicalDevice);
+	vkGetDeviceQueue(this->_logicaldevice, indices.graphicsFamily.value(), 0, &_graphicsQueue);
+
+	this->setupCommandPool();
 }
 
 VkPhysicalDevice DeviceHandler::getPhysicalDevice() {
@@ -19,21 +36,23 @@ VkDevice DeviceHandler::getLogicalDevice() {
 	return this->_logicaldevice;
 }
 
-void DeviceHandler::getDevicePresentQueue(VkQueue& _presentQueue) {
-	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
-	vkGetDeviceQueue(this->_logicaldevice, indices.presentFamily.value(), 0, &_presentQueue);
+VkQueue DeviceHandler::getDevicePresentQueue() {
+	return this->_presentQueue;
 }
 
-void DeviceHandler::getDeviceGraphicsQueue(VkQueue & _graphicsQueue) {
-	QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
-	vkGetDeviceQueue(this->_logicaldevice, indices.graphicsFamily.value(), 0, &_graphicsQueue);
+VkQueue DeviceHandler::getDeviceGraphicsQueue() {
+	return this->_graphicsQueue;
+}
+
+VkCommandPool DeviceHandler::getCommandPool() {
+	return this->_commandPool;
 }
 
 void DeviceHandler::pickPhysicalDevice() {
 	this->_physicalDevice = VK_NULL_HANDLE;
 
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(this->_instance, &deviceCount, nullptr);
+	vkEnumeratePhysicalDevices(VulkanHandler::getInstance()->getVkInstance(), &deviceCount, nullptr);
 
 	if (deviceCount == 0) {
 		throw std::runtime_error("failed to find GPUs with Vulkan support!");
@@ -43,7 +62,7 @@ void DeviceHandler::pickPhysicalDevice() {
 	}
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(this->_instance, &deviceCount, devices.data());
+	vkEnumeratePhysicalDevices(VulkanHandler::getInstance()->getVkInstance(), &deviceCount, devices.data());
 
 	for (const auto& device : devices) {
 		if (isDeviceSuitable(device)) {
@@ -160,7 +179,7 @@ QueueFamilyIndices DeviceHandler::findQueueFamilies(VkPhysicalDevice _device) {
 	int i = 0;
 	for (const auto& queueFamily : queueFamilies) {
 		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(_device, i, this->_surface, &presentSupport);
+		vkGetPhysicalDeviceSurfaceSupportKHR(_device, i, VulkanHandler::getInstance()->getSurface(), &presentSupport);
 
 		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
 			indices.graphicsFamily = i;
@@ -183,25 +202,41 @@ QueueFamilyIndices DeviceHandler::findQueueFamilies(VkPhysicalDevice _device) {
 SwapChainSupportDetails DeviceHandler::querySwapChainSupport(VkPhysicalDevice _device) {
 	SwapChainSupportDetails details;
 
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_device, this->_surface, &details.capabilities);
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_device, VulkanHandler::getInstance()->getSurface(), &details.capabilities);
 
 	uint32_t formatCount;
-	vkGetPhysicalDeviceSurfaceFormatsKHR(_device, this->_surface, &formatCount, nullptr);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(_device, VulkanHandler::getInstance()->getSurface(), &formatCount, nullptr);
 
 	if (formatCount != 0) {
 		details.formats.resize(formatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(_device, this->_surface, &formatCount, details.formats.data());
+		vkGetPhysicalDeviceSurfaceFormatsKHR(_device, VulkanHandler::getInstance()->getSurface(), &formatCount, details.formats.data());
 	}
 
 	uint32_t presentModeCount;
-	vkGetPhysicalDeviceSurfacePresentModesKHR(_device, this->_surface, &presentModeCount, nullptr);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(_device, VulkanHandler::getInstance()->getSurface(), &presentModeCount, nullptr);
 
 	if (presentModeCount != 0) {
 		details.presentModes.resize(presentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(_device, this->_surface, &presentModeCount, details.presentModes.data());
+		vkGetPhysicalDeviceSurfacePresentModesKHR(_device, VulkanHandler::getInstance()->getSurface(), &presentModeCount, details.presentModes.data());
 	}
 
 	return details;
+}
+
+void DeviceHandler::setupCommandPool() {
+	QueueFamilyIndices queueFamilyIndices = findQueueFamilies(_physicalDevice);
+
+	VkCommandPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; // Optional
+
+	if (vkCreateCommandPool(_logicaldevice, &poolInfo, nullptr, &this->_commandPool) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create command pool!");
+	}
+	else {
+		std::cout << "created command pool!" << std::endl;
+	}
 }
 
 VkFormat DeviceHandler::findDepthFormat() {
@@ -214,5 +249,6 @@ VkFormat DeviceHandler::findDepthFormat() {
 
 
 DeviceHandler::~DeviceHandler() {
+	vkDestroyCommandPool(this->_logicaldevice , this->_commandPool, nullptr);
 	vkDestroyDevice(this->_logicaldevice, nullptr);
 }

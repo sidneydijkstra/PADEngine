@@ -1,22 +1,17 @@
 #include "buffer.h"
 
-Buffer::Buffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool) {
-    this->_instance = _instance;
-    this->_deviceHandler = _deviceHandler;
-
-    this->_graphicsQueue = _graphicsQueue;
-    this->_commandPool = _commandPool;
+Buffer::Buffer() {
 }
 
 VkCommandBuffer Buffer::beginSingleTimeCommands() {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = _commandPool;
+    allocInfo.commandPool = DeviceHandler::getInstance()->getCommandPool();
     allocInfo.commandBufferCount = 1;
 
     VkCommandBuffer commandBuffer;
-    vkAllocateCommandBuffers(this->_deviceHandler->getLogicalDevice(), &allocInfo, &commandBuffer);
+    vkAllocateCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, &commandBuffer);
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -35,10 +30,10 @@ void Buffer::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    vkQueueSubmit(_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(_graphicsQueue);
+    vkQueueSubmit(DeviceHandler::getInstance()->getDeviceGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(DeviceHandler::getInstance()->getDeviceGraphicsQueue());
 
-    vkFreeCommandBuffers(this->_deviceHandler->getLogicalDevice(), _commandPool, 1, &commandBuffer);
+    vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), 1, &commandBuffer);
 }
 
 void Buffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) { // TODO: new
@@ -48,28 +43,28 @@ void Buffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryP
     bufferInfo.usage = usage;
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateBuffer(this->_deviceHandler->getLogicalDevice(), &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+    if (vkCreateBuffer(DeviceHandler::getInstance()->getLogicalDevice(), &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to create buffer!");
     }
 
     VkMemoryRequirements memRequirements;
-    vkGetBufferMemoryRequirements(this->_deviceHandler->getLogicalDevice(), buffer, &memRequirements);
+    vkGetBufferMemoryRequirements(DeviceHandler::getInstance()->getLogicalDevice(), buffer, &memRequirements);
 
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-    if (vkAllocateMemory(this->_deviceHandler->getLogicalDevice(), &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
+    if (vkAllocateMemory(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate buffer memory!");
     }
 
-    vkBindBufferMemory(this->_deviceHandler->getLogicalDevice(), buffer, bufferMemory, 0);
+    vkBindBufferMemory(DeviceHandler::getInstance()->getLogicalDevice(), buffer, bufferMemory, 0);
 }
 
 uint32_t Buffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) { // TODO: new
     VkPhysicalDeviceMemoryProperties memProperties;
-    vkGetPhysicalDeviceMemoryProperties(this->_deviceHandler->getPhysicalDevice(), &memProperties);
+    vkGetPhysicalDeviceMemoryProperties(DeviceHandler::getInstance()->getPhysicalDevice(), &memProperties);
 
     for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
         if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {

@@ -13,6 +13,7 @@
 #include <glm/mat4x4.hpp>
 
 #include "config.h"
+#include "vulkanhandler.h"
 #include "devicehandler.h"
 #include "depthbuffer.h"
 
@@ -26,38 +27,35 @@
 
 class SwapChainHandler {
 public:
-	SwapChainHandler(VkInstance _instance, VkSurfaceKHR _surface, DeviceHandler* _deviceHandler);
+	SwapChainHandler();
 	~SwapChainHandler();
 
-	void recreate();
-	void cleanup();
+	static SwapChainHandler* getInstance();
+	static void deleteInstance();
+	void init();
 
-	void setupSwapChain();
-	void setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _depthBuffer);
+	void recreate();
 
 	// TODO: maby chaing to struct
 	VkSwapchainKHR getSwapChain();
 	std::vector<VkImage> getSwapChainImages();
+	std::vector<VkImageView> getSwapChainImageViews();
+	int getSwapChainImagesSize();
 	VkFormat getSwapChainImageFormat();
 	VkExtent2D getSwapChainExtent();
-	std::vector<VkFramebuffer> getSwapChainFramebuffers();
+	int getSwapChainWidth();
+	int getSwapChainHeight();
 
 private:
-	
-	VkInstance _instance;
-	VkSurfaceKHR _surface;
-	DeviceHandler* _deviceHandler;
-	VkPhysicalDevice _physicalDevice;
-	VkDevice _device;
-
 	VkSwapchainKHR _swapChain;
 	std::vector<VkImage> _swapChainImages;
 	VkFormat _swapChainImageFormat;
 	VkExtent2D _swapChainExtent;
 
 	std::vector<VkImageView> _swapChainImageViews;
-	std::vector<VkFramebuffer> _swapChainFramebuffers;
 
+	void cleanup();
+	void setupSwapChain();
 	void createSwapChain();
 	void createImageView();
 

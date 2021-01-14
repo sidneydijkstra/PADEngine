@@ -1,26 +1,13 @@
 #include "shader.h"
 
-Shader::Shader(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, std::string _vertexPath, std::string _fragmentPath) {
-	this->_instance = _instance;
-	this->_deviceHandler = _deviceHandler;
-	this->_swapChainHandler = _swapChainHandler;
+Shader::Shader(std::string _vertexPath, std::string _fragmentPath, VkDescriptorSetLayout _descriptions) {
 
 	this->setupRenderPass();
-	this->setupDescriptorSetLayout();
-	this->setupDescriptorPool();
-	this->setupGraphicsPipeline(_vertexPath, _fragmentPath);
+	this->setupGraphicsPipeline(_vertexPath, _fragmentPath, _descriptions);
 }
 
 VkRenderPass Shader::getRenderPass() {
 	return this->_renderPass;
-}
-
-VkDescriptorSetLayout Shader::getDescriptorSetLayout() {
-	return this->_descriptorSetLayout;
-}
-
-std::vector<VkDescriptorSet> Shader::getDescriptiorSets() {
-	return this->_descriptorSets;
 }
 
 VkPipelineLayout Shader::getPipelineLayout() {
@@ -31,13 +18,9 @@ VkPipeline Shader::getGraphicsPipeline() {
 	return this->_graphicsPipeline;
 }
 
-void Shader::setBuffers(UniformBuffer* _ubuffer, TextureBuffer* _tbuffer) {
-	this->setupDescriptorSets(_ubuffer, _tbuffer);
-}
-
 void Shader::setupRenderPass() {
 	VkAttachmentDescription colorAttachment{};
-	colorAttachment.format = _swapChainHandler->getSwapChainImageFormat();
+	colorAttachment.format = SwapChainHandler::getInstance()->getSwapChainImageFormat();
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -52,7 +35,7 @@ void Shader::setupRenderPass() {
 
 
 	VkAttachmentDescription depthAttachment{}; // new
-	depthAttachment.format = _deviceHandler->findDepthFormat();
+	depthAttachment.format = DeviceHandler::getInstance()->findDepthFormat();
 	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -93,7 +76,7 @@ void Shader::setupRenderPass() {
 	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-	if (vkCreateRenderPass(_deviceHandler->getLogicalDevice(), &renderPassInfo, nullptr, &this->_renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(DeviceHandler::getInstance()->getLogicalDevice(), &renderPassInfo, nullptr, &this->_renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
 	else {
@@ -101,33 +84,7 @@ void Shader::setupRenderPass() {
 	}
 }
 
-void Shader::setupDescriptorSetLayout() {
-	VkDescriptorSetLayoutBinding uboLayoutBinding{};
-	uboLayoutBinding.binding = 0;
-	uboLayoutBinding.descriptorCount = 1;
-	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	uboLayoutBinding.pImmutableSamplers = nullptr;
-	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-	VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-	samplerLayoutBinding.binding = 1;
-	samplerLayoutBinding.descriptorCount = 1;
-	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	samplerLayoutBinding.pImmutableSamplers = nullptr;
-	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
-	VkDescriptorSetLayoutCreateInfo layoutInfo{};
-	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-	layoutInfo.pBindings = bindings.data();
-
-	if (vkCreateDescriptorSetLayout(this->_deviceHandler->getLogicalDevice(), &layoutInfo, nullptr, &_descriptorSetLayout) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create descriptor set layout!");
-	}
-}
-
-void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmentPath) {
+void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmentPath, VkDescriptorSetLayout _descriptions) {
 	auto vertShaderCode = readFile(_vertexPath);
 	auto fragShaderCode = readFile(_fragmentPath);
 
@@ -167,14 +124,14 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = (float)_swapChainHandler->getSwapChainExtent().width;
-	viewport.height = (float)_swapChainHandler->getSwapChainExtent().height;
+	viewport.width = (float)SwapChainHandler::getInstance()->getSwapChainWidth();
+	viewport.height = (float)SwapChainHandler::getInstance()->getSwapChainHeight();
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = this->_swapChainHandler->getSwapChainExtent();
+	scissor.extent = SwapChainHandler::getInstance()->getSwapChainExtent();
 
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -239,11 +196,13 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 1;
-	pipelineLayoutInfo.pSetLayouts = &_descriptorSetLayout;
+	pipelineLayoutInfo.pSetLayouts = &_descriptions; // TODO: set
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-	if (vkCreatePipelineLayout(this->_deviceHandler->getLogicalDevice(), &pipelineLayoutInfo, nullptr, &this->_pipelineLayout) != VK_SUCCESS) {
+	
+
+	if (vkCreatePipelineLayout(DeviceHandler::getInstance()->getLogicalDevice(), &pipelineLayoutInfo, nullptr, &this->_pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 	else {
@@ -285,83 +244,15 @@ void Shader::setupGraphicsPipeline(std::string _vertexPath, std::string _fragmen
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 	pipelineInfo.basePipelineIndex = -1; // Optional
 
-	if (vkCreateGraphicsPipelines(this->_deviceHandler->getLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->_graphicsPipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(DeviceHandler::getInstance()->getLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->_graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 	else {
 		std::cout << "created graphics pipeline!" << std::endl;
 	}
 
-	vkDestroyShaderModule(this->_deviceHandler->getLogicalDevice(), fragShaderModule, nullptr);
-	vkDestroyShaderModule(this->_deviceHandler->getLogicalDevice(), vertShaderModule, nullptr);
-}
-
-void Shader::setupDescriptorPool() {
-	int swapChainImageSize = _swapChainHandler->getSwapChainImages().size();
-	std::array<VkDescriptorPoolSize, 2> poolSizes{};
-	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = static_cast<uint32_t>(swapChainImageSize);
-	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = static_cast<uint32_t>(swapChainImageSize);
-
-	VkDescriptorPoolCreateInfo poolInfo{};
-	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = static_cast<uint32_t>(swapChainImageSize);
-
-	if (vkCreateDescriptorPool(this->_deviceHandler->getLogicalDevice(), &poolInfo, nullptr, &_descriptorPool) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create descriptor pool!");
-	}
-}
-
-void Shader::setupDescriptorSets(UniformBuffer* _ubuffer, TextureBuffer* _tbuffer) {
-	int swapChainImageSize = _swapChainHandler->getSwapChainImages().size();
-	std::vector<VkDescriptorSetLayout> layouts(swapChainImageSize, this->_descriptorSetLayout);
-	VkDescriptorSetAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = _descriptorPool;
-	allocInfo.descriptorSetCount = static_cast<uint32_t>(swapChainImageSize);
-	allocInfo.pSetLayouts = layouts.data();
-
-	_descriptorSets.resize(swapChainImageSize);
-	if (vkAllocateDescriptorSets(this->_deviceHandler->getLogicalDevice(), &allocInfo, _descriptorSets.data()) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate descriptor sets!");
-	}
-
-	UniformBufferData uniform = _ubuffer->getBuffer();
-	TextureBufferData texture = _tbuffer->getBuffer();
-	for (size_t i = 0; i < swapChainImageSize; i++) {
-		VkDescriptorBufferInfo bufferInfo{};
-		bufferInfo.buffer = uniform.uniformBuffers[i];
-		bufferInfo.offset = 0;
-		bufferInfo.range = sizeof(UniformBufferObject);
-
-		VkDescriptorImageInfo imageInfo{};
-		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = texture.textureImageView;
-		imageInfo.sampler = texture.textureSampler;
-
-		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
-
-		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[0].dstSet = _descriptorSets[i];
-		descriptorWrites[0].dstBinding = 0;
-		descriptorWrites[0].dstArrayElement = 0;
-		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		descriptorWrites[0].descriptorCount = 1;
-		descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-		descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[1].dstSet = _descriptorSets[i];
-		descriptorWrites[1].dstBinding = 1;
-		descriptorWrites[1].dstArrayElement = 0;
-		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[1].descriptorCount = 1;
-		descriptorWrites[1].pImageInfo = &imageInfo;
-
-		vkUpdateDescriptorSets(this->_deviceHandler->getLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-	}
+	vkDestroyShaderModule(DeviceHandler::getInstance()->getLogicalDevice(), fragShaderModule, nullptr);
+	vkDestroyShaderModule(DeviceHandler::getInstance()->getLogicalDevice(), vertShaderModule, nullptr);
 }
 
 std::vector<char> Shader::readFile(const std::string& _filename) {
@@ -388,7 +279,7 @@ VkShaderModule Shader::createShaderModule(const std::vector<char>& _code) {
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(_code.data());
 
 	VkShaderModule shaderModule;
-	if (vkCreateShaderModule(this->_deviceHandler->getLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+	if (vkCreateShaderModule(DeviceHandler::getInstance()->getLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create shader module!");
 	}
 	else {
@@ -399,9 +290,7 @@ VkShaderModule Shader::createShaderModule(const std::vector<char>& _code) {
 }
 
 Shader::~Shader() {
-	vkDestroyDescriptorPool(this->_deviceHandler->getLogicalDevice(), _descriptorPool, nullptr);
-	vkDestroyDescriptorSetLayout(this->_deviceHandler->getLogicalDevice(), _descriptorSetLayout, nullptr);
-	vkDestroyPipeline(this->_deviceHandler->getLogicalDevice(), this->_graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(this->_deviceHandler->getLogicalDevice(), this->_pipelineLayout, nullptr);
-	vkDestroyRenderPass(this->_deviceHandler->getLogicalDevice(), this->_renderPass, nullptr);
+	vkDestroyPipeline(DeviceHandler::getInstance()->getLogicalDevice(), this->_graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(DeviceHandler::getInstance()->getLogicalDevice(), this->_pipelineLayout, nullptr);
+	vkDestroyRenderPass(DeviceHandler::getInstance()->getLogicalDevice(), this->_renderPass, nullptr);
 }

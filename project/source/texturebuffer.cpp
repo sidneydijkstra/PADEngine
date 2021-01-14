@@ -1,25 +1,34 @@
 #include "texturebuffer.h"
 
 
-TextureBuffer::TextureBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool) : Buffer(_instance, _deviceHandler, _graphicsQueue, _commandPool) {
-}
-
-void TextureBuffer::loadTexture(const char* _path) {
+TextureBuffer::TextureBuffer(const char* _path) : Buffer() {
     this->createTextureImage(_path);
     createTextureImageView();
     createTextureSampler();
 }
 
-void TextureBuffer::textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format) {
-    _swapChainImageViews.resize(_swapChainImages.size());
+//void TextureBuffer::textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format) {
+//    _swapChainImageViews.resize(_swapChainImages.size());
+//
+//    for (size_t i = 0; i < _swapChainImageViews.size(); i++) {
+//        _swapChainImageViews[i] = createImageView(_swapChainImages[i], _format);
+//    }
+//}
 
-    for (size_t i = 0; i < _swapChainImageViews.size(); i++) {
-        _swapChainImageViews[i] = createImageView(_swapChainImages[i], _format);
-    }
+VkImage TextureBuffer::getImage() {
+    return _textureImage;
 }
 
-TextureBufferData TextureBuffer::getBuffer() {
-    return TextureBufferData{this->_textureImageView, this->_textureSampler};
+VkDeviceMemory TextureBuffer::getImageMemory() {
+    return _textureImageMemory;
+}
+
+VkImageView TextureBuffer::getImageView() {
+    return _textureImageView;
+}
+
+VkSampler TextureBuffer::getSampler() {
+    return _textureSampler;
 }
 
 void TextureBuffer::createTextureImage(const char* _path) {
@@ -36,9 +45,9 @@ void TextureBuffer::createTextureImage(const char* _path) {
     createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
-    vkMapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
+    vkMapMemory(DeviceHandler::getInstance()->getLogicalDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
     memcpy(data, pixels, static_cast<size_t>(imageSize));
-    vkUnmapMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory);
+    vkUnmapMemory(DeviceHandler::getInstance()->getLogicalDevice(), stagingBufferMemory);
     stbi_image_free(pixels);
 
     createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _textureImage, _textureImageMemory);
@@ -46,8 +55,8 @@ void TextureBuffer::createTextureImage(const char* _path) {
     copyBufferToImage(stagingBuffer, _textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
     transitionImageLayout(_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-    vkDestroyBuffer(this->_deviceHandler->getLogicalDevice(), stagingBuffer, nullptr);
-    vkFreeMemory(this->_deviceHandler->getLogicalDevice(), stagingBufferMemory, nullptr);
+    vkDestroyBuffer(DeviceHandler::getInstance()->getLogicalDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
 void TextureBuffer::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory) {
@@ -66,23 +75,23 @@ void TextureBuffer::createImage(uint32_t width, uint32_t height, VkFormat format
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateImage(this->_deviceHandler->getLogicalDevice(), &imageInfo, nullptr, &image) != VK_SUCCESS) {
+    if (vkCreateImage(DeviceHandler::getInstance()->getLogicalDevice(), &imageInfo, nullptr, &image) != VK_SUCCESS) {
         throw std::runtime_error("failed to create image!");
     }
 
     VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(this->_deviceHandler->getLogicalDevice(), image, &memRequirements);
+    vkGetImageMemoryRequirements(DeviceHandler::getInstance()->getLogicalDevice(), image, &memRequirements);
 
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-    if (vkAllocateMemory(this->_deviceHandler->getLogicalDevice(), &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
+    if (vkAllocateMemory(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate image memory!");
     }
 
-    vkBindImageMemory(this->_deviceHandler->getLogicalDevice(), image, imageMemory, 0);
+    vkBindImageMemory(DeviceHandler::getInstance()->getLogicalDevice(), image, imageMemory, 0);
 }
 
 void TextureBuffer::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
@@ -185,7 +194,7 @@ VkImageView TextureBuffer::createImageView(VkImage image, VkFormat format) {
     viewInfo.subresourceRange.layerCount = 1;
 
     VkImageView imageView;
-    if (vkCreateImageView(this->_deviceHandler->getLogicalDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+    if (vkCreateImageView(DeviceHandler::getInstance()->getLogicalDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
         throw std::runtime_error("failed to create texture image view!");
     }
 
@@ -194,7 +203,7 @@ VkImageView TextureBuffer::createImageView(VkImage image, VkFormat format) {
 
 void TextureBuffer::createTextureSampler() {
     VkPhysicalDeviceProperties properties{};
-    vkGetPhysicalDeviceProperties(this->_deviceHandler->getPhysicalDevice(), &properties);
+    vkGetPhysicalDeviceProperties(DeviceHandler::getInstance()->getPhysicalDevice(), &properties);
 
     VkSamplerCreateInfo samplerInfo{};
     samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -216,14 +225,14 @@ void TextureBuffer::createTextureSampler() {
     samplerInfo.anisotropyEnable = VK_FALSE;
     samplerInfo.maxAnisotropy = 1.0f;
 
-    if (vkCreateSampler(this->_deviceHandler->getLogicalDevice(), &samplerInfo, nullptr, &_textureSampler) != VK_SUCCESS) {
+    if (vkCreateSampler(DeviceHandler::getInstance()->getLogicalDevice(), &samplerInfo, nullptr, &_textureSampler) != VK_SUCCESS) {
         throw std::runtime_error("failed to create texture sampler!");
     }
 }
 
 TextureBuffer::~TextureBuffer() {
-    vkDestroySampler(this->_deviceHandler->getLogicalDevice(), _textureSampler, nullptr);
-    vkDestroyImageView(this->_deviceHandler->getLogicalDevice(), _textureImageView, nullptr);
-    vkDestroyImage(this->_deviceHandler->getLogicalDevice(), _textureImage, nullptr);
-    vkFreeMemory(this->_deviceHandler->getLogicalDevice(), _textureImageMemory, nullptr);
+    vkDestroySampler(DeviceHandler::getInstance()->getLogicalDevice(), _textureSampler, nullptr);
+    vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageView, nullptr);
+    vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _textureImage, nullptr);
+    vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageMemory, nullptr);
 }

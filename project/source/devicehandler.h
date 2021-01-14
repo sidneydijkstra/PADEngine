@@ -9,6 +9,7 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "vulkanhandler.h"
 
 #include <iostream>
 #include <fstream>
@@ -37,40 +38,46 @@ struct SwapChainSupportDetails {
 
 class DeviceHandler {
 	public:
-		DeviceHandler(VkInstance _instance, VkSurfaceKHR _surface);
+		DeviceHandler();
 		~DeviceHandler();
 
-		void setupDevices();
+		static DeviceHandler* getInstance();
+		static void deleteInstance();
+		void init();
 
 		VkPhysicalDevice getPhysicalDevice();
 		VkDevice getLogicalDevice();
-
-		// TODO: might not need this, we can get QueueFamilyIndices from findQueueFamilies();
-		void getDevicePresentQueue(VkQueue& _presentQueue);
-		void getDeviceGraphicsQueue(VkQueue& _graphicsQueue);
+		VkQueue getDevicePresentQueue();
+		VkQueue getDeviceGraphicsQueue();
+		VkCommandPool getCommandPool();
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice _device);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice _device);
 
+
 		VkFormat findDepthFormat();
+		bool hasStencilComponent(VkFormat _format);
 	private:
-		// add device extensions
-		const std::vector<const char*> _deviceExtensions = {
-			VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		};
-
-		VkInstance _instance;
-		VkSurfaceKHR _surface;
-
 		VkPhysicalDevice _physicalDevice;
 		VkDevice _logicaldevice;
+
+		VkQueue _presentQueue;
+		VkQueue _graphicsQueue;
+
+		VkCommandPool _commandPool;
 
 		void pickPhysicalDevice();
 		void createLogicalDevice();
 		bool isDeviceSuitable(VkPhysicalDevice _device);
 		bool checkDeviceExtensionSupport(VkPhysicalDevice _device);
 
+		void setupCommandPool();
+
 		VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
-		bool hasStencilComponent(VkFormat _format);
+
+		// add device extensions
+		const std::vector<const char*> _deviceExtensions = {
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
 };
 #endif

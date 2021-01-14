@@ -3,6 +3,7 @@
 #define DEPTHBUFFER_CLASS
 
 #include "buffer.h"
+#include "swapchainhandler.h"
 
 #include <iostream>
 #include <vector>
@@ -14,10 +15,10 @@ struct DepthBufferData {
 
 class DepthBuffer : Buffer {
 public:
-	DepthBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	DepthBuffer();
 	~DepthBuffer();
 
-	void setupBuffer(VkExtent2D _swapChainExtent);
+	void setupBuffer();
 	DepthBufferData getBuffer();
 	void recreate(VkExtent2D _swapChainExtent);
 
