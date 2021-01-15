@@ -54,6 +54,8 @@ add_executable(PADEngine
   project/source/input.cpp
   project/source/time.h
   project/source/time.cpp
+  project/source/camera.h
+  project/source/camera.cpp
 )
 
 file(
