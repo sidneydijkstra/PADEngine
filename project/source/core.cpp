@@ -35,6 +35,7 @@ void Core::framebufferResizeCallback(GLFWwindow* window, int width, int height) 
 void Core::loop() {
     while (!glfwWindowShouldClose(VulkanHandler::getInstance()->getWindow())) {
         Input::update();
+        Time::update();
         _seqManager->draw(_scene);
     }
 

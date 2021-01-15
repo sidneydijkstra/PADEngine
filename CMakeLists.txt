@@ -52,6 +52,8 @@ add_executable(PADEngine
   project/source/stb_image.h
   project/source/input.h
   project/source/input.cpp
+  project/source/time.h
+  project/source/time.cpp
 )
 
 file(

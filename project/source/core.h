@@ -20,6 +20,7 @@
 #include "shader.h"
 #include "sequencemanager.h"
 #include "input.h"
+#include "time.h"
 
 #include <iostream>
 #include <fstream>
