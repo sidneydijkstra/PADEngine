@@ -60,11 +60,13 @@ class Entity {
 
         Vector3 getPostion() { return _position; }
         void setPosition(Vector3 position) { _position = position; }
-        float getRotation() { return _rotation; }
-        void setRotation(float rotation) { _rotation = rotation; }
+        Vector3 getRotation() { return _rotation; }
+        void setRotation(Vector3 rotation) { _rotation = rotation; }
+        Vector3 getScale() { return _scale; }
+        void setScale(Vector3 scale) { _scale = scale; }
     protected:
         Vector3 _position = Vector3(0, 0, 0);
-        float _rotation;
+        Vector3 _rotation = Vector3(0, 0, 0);
         Vector3 _scale = Vector3(1, 1, 1);
 
         VertexBuffer* _vertexBuffer;

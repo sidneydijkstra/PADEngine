@@ -32,25 +32,20 @@ Renderer* SequenceManager::getRenderer() {
 }
 
 void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
-    static auto startTime = std::chrono::high_resolution_clock::now();
 
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-    
-
-    if (Input::getKeyDown(KeyCode::Space)) {
-        rotSpeed += 10.0f;
-    }
-
+    _scene->update();
     for (Entity* e : _scene->getChildren()) {
         UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(rotSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.model = glm::translate(ubo.model, glm::vec3(e->getPostion().x, e->getPostion().y, e->getPostion().z));
+        ubo.model = glm::scale(ubo.model, glm::vec3(e->getScale().x, e->getScale().y, e->getScale().z));
+        //ubo.model = glm::rotate(ubo.model, e->getRotation().x, glm::vec3(1, 0, 0));
+        //ubo.model = glm::rotate(ubo.model, e->getRotation().y, glm::vec3(0, 1, 0));
+        //ubo.model = glm::rotate(ubo.model, e->getRotation().z, glm::vec3(0, 0, 1));
 
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(_scene->camera()->position, _scene->camera()->position + _scene->camera()->front, _scene->camera()->up);
 
-        ubo.proj = glm::perspective(glm::radians(45.0f), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 10.0f);
+        ubo.proj = glm::perspective(glm::radians(_scene->camera()->fov), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 100.0f);
 
         ubo.proj[1][1] *= -1;
 

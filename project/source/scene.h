@@ -5,6 +5,7 @@
 #define SCENE_CLASS
 
 #include "entity.h"
+#include "camera.h"
 
 class Scene {
 	public:
@@ -18,7 +19,10 @@ class Scene {
 			return _children;
 		};
 
+		Camera* camera();
+
 	private:
 		std::vector<Entity*> _children;
+		Camera* _camera;
 };
 #endif
