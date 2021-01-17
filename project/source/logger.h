@@ -50,8 +50,8 @@ public:
     /// @brief Sets an optional log file to be written to whenever a message is logged.
     /// @param fileName The name of the file to write to.
     inline void setLogFile(const std::string& fileName) {
-        if (logFile.is_open()) logFile.close();
-        logFile.open(fileName);
+        if (m_logFile.is_open()) m_logFile.close();
+        m_logFile.open(fileName);
     }
 
     /// @brief Logs a message to the console and the log file if it was set.
@@ -67,7 +67,7 @@ public:
     template<typename T>
     void log(Level level, const T& message) {
         this->log(std::cout, level, message);
-        if (logFile.is_open()) this->log(logFile, level, message);
+        if (m_logFile.is_open()) this->log(m_logFile, level, message);
     }
     
     /// @brief If debugging is enabled, logs a message to the console and the log file if it was set.
@@ -85,8 +85,8 @@ private:
     static constexpr bool debugging_enabled = true;
 #endif
 
-    const std::string name;
-    std::ofstream logFile;
+    std::string m_name;
+    std::ofstream m_logFile;
 
     /// @brief Constructs a new Logger object with the given name.
     ///
@@ -101,7 +101,7 @@ private:
     /// for easy and global access to every existing Logger object.
     ///
     /// @param name The name of the logger.
-    inline Logger(const std::string& name) noexcept : name(name) {
+    inline Logger(const std::string& name) noexcept : m_name(name) {
         // Empty.
     }
 
@@ -112,7 +112,7 @@ private:
     template<typename T>
     void log(std::ostream& out, Level level, const T& message) {
         out << Logger::getCurrentTimeStamp()
-            << " [" << name << "] [" << levelToString(level) << "]\t"
+            << " [" << m_name << "] [" << levelToString(level) << "]\t"
             << message << '\n';
     }
 
