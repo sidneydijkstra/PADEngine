@@ -35,18 +35,18 @@ std::pair<double, double> Input::getMouseScrollDelta() noexcept {
 }
 
 bool Input::getMouseButton(int button) noexcept {
-    assert(("The parameter 'key', must be either 0 (Left), 1 (Right) or 2 (Middle)", 0 <= button && button <= 2));
+    assert((0 <= button && button <= 2) && "The parameter 'button', must be either 0 (Left), 1 (Right) or 2 (Middle)");
     return s_keyStates[button] == KeyState::PRESSED;
 }
 
 bool Input::getMouseButtonDown(int button) noexcept {
-    assert(("The parameter 'key', must be either 0 (Left), 1 (Right) or 2 (Middle)", 0 <= button && button <= 2));
+    assert((0 <= button && button <= 2) && "The parameter 'button', must be either 0 (Left), 1 (Right) or 2 (Middle)");
     auto [state, frame] = s_keyStates[button];
     return state==KeyState::PRESSED && frame==s_currentFrame;
 }
 
 bool Input::getMouseButtonUp(int button) noexcept {
-    assert(("The parameter 'key', must be either 0 (Left), 1 (Right) or 2 (Middle)", 0 <= button && button <= 2));
+    assert((0 <= button && button <= 2) && "The parameter 'button', must be either 0 (Left), 1 (Right) or 2 (Middle)");
     auto [state, frame] = s_keyStates[button];
     return state==KeyState::RELEASED && frame==s_currentFrame;
 }
