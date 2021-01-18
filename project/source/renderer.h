@@ -12,66 +12,47 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "renderfactory.h"
 #include "devicehandler.h"
 #include "swapchainhandler.h"
+#include "vulkanhandler.h"
+#include "framebuffers.h"
 #include "shader.h"
 #include "indexbuffer.h"
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
 #include "texturebuffer.h"
 #include "depthbuffer.h"
+#include "entity.h"
 
 #include <chrono>
 
 #include <iostream>
 #include <array>
 #include <vector>
+#include "scene.h"
 
 #ifndef RENDERER_CLASS
 #define RENDERER_CLASS
 
 class Renderer {
 public:
-	Renderer(VkInstance _instance, DeviceHandler* _deviceHandler, SwapChainHandler* _swapChainHandler, GLFWwindow* _window);
+	Renderer();
 	~Renderer();
 
-	void draw();
-	void setFramebufferResized();
+	void recreate();
+	VkCommandBuffer renderScene(Scene* _scene, int _index);
+
 private:
-	VkInstance _instance;
-	DeviceHandler* _deviceHandler;
-	SwapChainHandler* _swapChainHandler;
-	GLFWwindow* _window;
 	Shader* _shader;
-
-	VertexBuffer* _vertexBuffer;
-	IndexBuffer* _indexBuffer;
-	UniformBuffer* _uniformBuffer;
-	TextureBuffer* _textureBuffer;
 	DepthBuffer* _depthBuffer;
-
-	VkCommandPool _commandPool;
+	FrameBuffers* _framebuffers;
 	std::vector<VkCommandBuffer> _commandBuffers;
 
-	VkQueue _graphicsQueue;
-	VkQueue _presentQueue;
+	void beginCommandBuffer(int _index);
+	void endCommandBuffer(int _index);
 
-	std::vector<VkSemaphore> _imageAvailableSemaphores;
-	std::vector<VkSemaphore> _renderFinishedSemaphores;
-	std::vector<VkFence> _inFlightFences;
-	std::vector<VkFence> _imagesInFlight;
-	size_t _currentFrame = 0;
-	bool _framebufferResized = false;
-
-	void recreate();
-	void cleanup();
-
-	void update(uint32_t currentImage);
-
-	void setupCommandPool();
 	void setupCommandBuffers();
-	void setupSyncObjects();
-
-	const int MAX_FRAMES_IN_FLIGHT = 2;
+	VkCommandBuffer updateCommandBuffers(Scene* _scene, int _index);
 };
 #endif

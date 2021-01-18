@@ -6,6 +6,7 @@
 #include "core.h"
 
 int main() {
+    // std::ios::sync_with_stdio(false); // -> speed of fps in console
     Core core;
 
     try {

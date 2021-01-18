@@ -11,28 +11,17 @@
 
 class VertexBuffer : Buffer {
 public:
-	VertexBuffer(VkInstance _instance, DeviceHandler* _deviceHandler, VkQueue _graphicsQueue, VkCommandPool _commandPool);
+	VertexBuffer(const std::vector<Vertex> _vertices);
 	~VertexBuffer();
 
-	void setupBuffer();
 	BufferData getBuffer();
-	void recreate();
 
 private:
 	VkBuffer _vertexBuffer;
 	VkDeviceMemory _vertexBufferMemory;
+	uint32_t _vertexSize;
 
-	const std::vector<Vertex> vertices = {
-		{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-		{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-
-		{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-		{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-		{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-		{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-	};
+	void setupBuffer(const std::vector<Vertex> _vertices);
 
 };
 #endif
