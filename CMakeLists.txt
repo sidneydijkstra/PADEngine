@@ -24,6 +24,7 @@ add_executable(PADEngine
   project/source/shader.h
   project/source/renderer.cpp
   project/source/renderer.h
+  project/source/renderfactory.h
   project/source/descriptor.cpp
   project/source/descriptor.h
   project/source/buffer.cpp
@@ -42,6 +43,10 @@ add_executable(PADEngine
   project/source/framebuffers.h
   project/source/scene.cpp
   project/source/scene.h
+  project/source/meshbuffer.cpp
+  project/source/meshbuffer.h
+  project/source/mesh.cpp
+  project/source/mesh.h
   project/source/texture.cpp
   project/source/texture.h
   project/source/entity.cpp

@@ -10,19 +10,16 @@
 
 class IndexBuffer : Buffer {
 public:
-	IndexBuffer();
+	IndexBuffer(std::vector<uint16_t> _indices);
 	~IndexBuffer();
 
-	void setupBuffer();
 	BufferData getBuffer();
-	void recreate();
 
 private:
 	VkBuffer _indexBuffer;
 	VkDeviceMemory _indexBufferMemory;
+	uint32_t _indexSize;
 
-	const std::vector<uint16_t> indices = {
-		0, 1, 2, 2, 3, 0
-	};
+	void setupBuffer(std::vector<uint16_t> _indices);
 };
 #endif

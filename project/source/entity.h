@@ -12,8 +12,7 @@
 #include "config.h"
 
 #include "resourcemanager.h"
-#include "indexbuffer.h"
-#include "vertexbuffer.h"
+#include "mesh.h"
 #include "uniformbuffer.h"
 #include "texture.h"
 #include "hierarchy.h"
@@ -36,16 +35,12 @@ class Entity {
         Entity();
         ~Entity();
 
-        VertexBuffer* vertex() {
-            return _vertexBuffer;
-        };
-
-        IndexBuffer* index() {
-            return _indexBuffer;
-        };
-
         UniformBuffer* uniform() {
             return _uniformBuffer;
+        };
+
+        Mesh* mesh() {
+            return _mesh;
         };
 
         Texture* texture() {
@@ -69,8 +64,7 @@ class Entity {
         Vector3 _rotation = Vector3(0, 0, 0);
         Vector3 _scale = Vector3(1, 1, 1);
 
-        VertexBuffer* _vertexBuffer;
-        IndexBuffer* _indexBuffer;
+        Mesh* _mesh;
         UniformBuffer* _uniformBuffer;
         Texture* _texture;
 

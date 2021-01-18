@@ -27,7 +27,7 @@ void Time::calculateFps() {
 	Time::_currentTime = glfwGetTime();
 	Time::_fps++;
 	if (Time::_currentTime - Time::_lastTime >= 1) {
-		//std::cout << "fps: " << std::to_string(Time::_fps) << std::endl;
+		std::cout << "fps: " << std::to_string(Time::_fps) << std::endl;
 		Time::_lastTime = glfwGetTime();
 		Time::_fps = 0;
 	}

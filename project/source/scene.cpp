@@ -4,12 +4,27 @@ Scene::Scene() {
 	_children = std::vector<Entity*>();
 	_camera = new Camera();
 
-	_children.push_back(new Entity());
-	_children.push_back(new Entity());
-	_children[1]->setPosition(Vector3(0, -1, 0));
+	for (size_t i = 0; i < 250; i++) {
+		_children.push_back(new Entity());
 
-	_children[0]->texture()->loadTexture("assets/logo.png");
-	_children[1]->texture()->loadTexture("assets/banaan.jpg");
+		int x = (rand() % 100) - 50;
+		int y = (rand() % 100) - 50;
+		int z = (rand() % 100) - 50;
+
+		_children[i]->setPosition(Vector3(x, y, z));
+	}
+
+	for (size_t i = 250; i < 500; i++) {
+		_children.push_back(new Entity());
+
+		int x = (rand() % 100) - 50;
+		int y = (rand() % 100) - 50;
+		int z = (rand() % 100) - 50;
+
+		_children[i]->setPosition(Vector3(x, y, z));
+		_children[i]->texture()->loadTexture("assets/banaan.jpg");
+		_children[i]->mesh()->loadShape(MeshType::PLANE);
+	}
 }
 
 void Scene::update() {

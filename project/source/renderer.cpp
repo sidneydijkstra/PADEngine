@@ -75,17 +75,31 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
     vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
 
-    for (Entity* ent : _scene->getChildren()) {
-        BufferData vertexData = ent->vertex()->getBuffer();
-        BufferData indexData = ent->index()->getBuffer();
+    // get children sorted by mesh type
+    std::map<MeshType, std::vector<Entity*>> children = RenderFactory::sortEntitiesByMeshType(_scene->getChildren());
+
+    // iterate all the diffrent meshes
+    std::map<MeshType, std::vector<Entity*>>::iterator children_it;
+    for (children_it = children.begin(); children_it != children.end(); ++children_it) {
+
+        // get children vector
+        std::vector<Entity*> childVector = children_it->second;
+
+        // get and bind vertex/index buffer
+        BufferData vertexData = childVector[0]->mesh()->getBuffer()->vertex()->getBuffer();
+        BufferData indexData = childVector[0]->mesh()->getBuffer()->index()->getBuffer();
 
         VkBuffer vertexBuffers[] = { vertexData.buffer };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
 
-        vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &ent->description()[_index], 0, nullptr);
-        vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+        for (Entity* entity : childVector) {
+            // set descriptor and draw mesh
+            vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &entity->description()[_index], 0, nullptr);
+            vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+        }
+
     }
 
     vkCmdEndRenderPass(this->_commandBuffers[_index]);

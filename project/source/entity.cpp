@@ -2,8 +2,8 @@
 
 Entity::Entity() {
 
-    _vertexBuffer = new VertexBuffer();
-    _indexBuffer = new IndexBuffer();
+    _mesh = new Mesh();
+	_mesh->loadShape(MeshType::CUBE);
     _uniformBuffer = new UniformBuffer();
 
     _texture = new Texture();
@@ -73,8 +73,7 @@ void Entity::updateDescriptorSets(int _index) {
 }
 
 Entity::~Entity() {
-	delete _vertexBuffer;
-	delete _indexBuffer;
+	delete _mesh;
 	delete _uniformBuffer;
 	
 	ResourceManager::getInstance()->getEntityDescriptor()->freePool(_pool);

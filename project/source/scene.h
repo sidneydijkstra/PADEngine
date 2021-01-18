@@ -1,8 +1,8 @@
-#include <cstdint>
-
 
 #ifndef SCENE_CLASS
 #define SCENE_CLASS
+
+#include <stdlib.h>
 
 #include "entity.h"
 #include "camera.h"
