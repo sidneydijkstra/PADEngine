@@ -2,6 +2,8 @@
 #ifndef TEXTUREBUFFER_CLASS
 #define TEXTUREBUFFER_CLASS
 
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #include "buffer.h"

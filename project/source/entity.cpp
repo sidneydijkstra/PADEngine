@@ -1,7 +1,7 @@
 #include "entity.h"
 
 Entity::Entity() {
-	_rotation = 0;
+	_rotation = Vector3();
 	_position = Vector3();
   
     _mesh = new Mesh();
