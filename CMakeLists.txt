@@ -54,7 +54,12 @@ add_executable(PADEngine
   project/source/vector3.cpp
   project/source/vector3.h
   project/source/vertex.h
-  project/source/stb_image.h
+  project/source/hierarchy.cpp
+  project/source/hierarchy.h
+  project/source/entity.cpp
+  project/source/entity.h
+  project/source/modelloader.cpp
+  project/source/modelloader.h
   project/source/input.h
   project/source/input.cpp
   project/source/time.h
@@ -79,6 +84,8 @@ add_subdirectory(external/glm-0.9.9.8)
 include_directories(
 	external/glfw-3.3.2/include
 	external/glm-0.9.9.8/glm
+	external/tiny_obj_loader
+	external/stb-images-2.26
 )
 find_package(Vulkan REQUIRED)
 target_include_directories(PADEngine PUBLIC ${Vulkan_INCLUDE_DIRS})
