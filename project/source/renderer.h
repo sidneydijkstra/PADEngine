@@ -17,42 +17,48 @@
 #include "swapchainhandler.h"
 #include "vulkanhandler.h"
 #include "framebuffers.h"
-#include "shader.h"
+#include "shadereffect.h"
 #include "indexbuffer.h"
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
 #include "texturebuffer.h"
 #include "depthbuffer.h"
 #include "entity.h"
+#include "scene.h"
+
+#include "renderpass.h"
+#include "shaderpass.h"
 
 #include <chrono>
 
 #include <iostream>
 #include <array>
 #include <vector>
-#include "scene.h"
 
 #ifndef RENDERER_CLASS
 #define RENDERER_CLASS
 
 class Renderer {
-public:
-	Renderer();
-	~Renderer();
+	public:
+		Renderer();
+		~Renderer();
 
-	void recreate();
-	VkCommandBuffer renderScene(Scene* _scene, int _index);
+		void recreate();
+		VkCommandBuffer renderScene(Scene* _scene, int _index);
 
-private:
-	Shader* _shader;
-	DepthBuffer* _depthBuffer;
-	FrameBuffers* _framebuffers;
-	std::vector<VkCommandBuffer> _commandBuffers;
+	private:
+		ShaderEffect* _shaderEffect;
+		ShaderPass* _shaderPass;
+		RenderPass* _renderPass;
 
-	void beginCommandBuffer(int _index);
-	void endCommandBuffer(int _index);
+		DepthBuffer* _depthBuffer;
+		FrameBuffers* _framebuffers;
+		std::vector<VkCommandBuffer> _commandBuffers;
 
-	void setupCommandBuffers();
-	VkCommandBuffer updateCommandBuffers(Scene* _scene, int _index);
+		void beginCommandBuffer(int _index);
+		void endCommandBuffer(int _index);
+
+		void setupCommandBuffers();
+		VkCommandBuffer updateCommandBuffers(Scene* _scene, int _index);
 };
 #endif

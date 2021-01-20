@@ -5,8 +5,8 @@ Descriptor::Descriptor() {
 	//this->setupDescriptorPool();
 }
 
-VkDescriptorSetLayout Descriptor::getLayout() {
-	return this->_descriptorSetLayout;
+VkDescriptorSetLayout& Descriptor::getLayout() {
+	return _descriptorSetLayout;
 }
 
 VkDescriptorPool Descriptor::getPool() {

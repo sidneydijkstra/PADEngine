@@ -1,12 +1,14 @@
 #include "renderer.h"
 
 Renderer::Renderer() {
-    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
+    this->_renderPass = new RenderPass();
+    this->_shaderEffect = new ShaderEffect("shaders/vert.spv", "shaders/frag.spv");
+    this->_shaderPass = new ShaderPass(_renderPass->getRenderPass(), _shaderEffect);
 
     _depthBuffer = new DepthBuffer();
 
     _framebuffers = new FrameBuffers();
-    _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
+    _framebuffers->setupFramebuffers(_renderPass->getRenderPass(), _depthBuffer);
 
     setupCommandBuffers();
 }
@@ -58,7 +60,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = this->_shader->getRenderPass();
+    renderPassInfo.renderPass = _renderPass->getRenderPass();
     renderPassInfo.framebuffer = _framebuffers->getFrameBuffers()[_index];
 
     renderPassInfo.renderArea.offset = { 0, 0 };
@@ -73,7 +75,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
     vkCmdBeginRenderPass(this->_commandBuffers[_index], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shader->getGraphicsPipeline());
+    vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shaderPass->getPipeline());
 
     // get children sorted by mesh type
     std::map<MeshType, std::vector<Entity*>> children = RenderFactory::sortEntitiesByMeshType(_scene->getChildren());
@@ -96,7 +98,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
         for (Entity* entity : childVector) {
             // set descriptor and draw mesh
-            vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, _shader->getPipelineLayout(), 0, 1, &entity->description()[_index], 0, nullptr);
+            vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, _shaderPass->getPipelineLayout(), 0, 1, &entity->description()[_index], 0, nullptr);
             vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
         }
 
@@ -121,11 +123,13 @@ void Renderer::recreate() {
 
     SwapChainHandler::getInstance()->recreate();
 
-    delete _shader;
-    this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
+    //delete _shader;
+    //this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
+
+    _shaderPass->recreate();
 
     _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
-    _framebuffers->setupFramebuffers(_shader->getRenderPass(), _depthBuffer);
+    _framebuffers->setupFramebuffers(_renderPass->getRenderPass(), _depthBuffer);
 
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
     setupCommandBuffers();
@@ -138,6 +142,8 @@ Renderer::~Renderer() {
 
     delete _depthBuffer;
     delete _framebuffers;
-    delete _shader;
+    delete _renderPass;
+    delete _shaderPass;
+    delete _shaderEffect;
 }
 

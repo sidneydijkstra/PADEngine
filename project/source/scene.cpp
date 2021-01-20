@@ -7,9 +7,9 @@ Scene::Scene() {
 	for (size_t i = 0; i < 250; i++) {
 		_children.push_back(new Entity());
 
-		int x = (rand() % 100) - 50;
-		int y = (rand() % 100) - 50;
-		int z = (rand() % 100) - 50;
+		int x = (rand() % 50) - 25;
+		int y = (rand() % 50) - 25;
+		int z = (rand() % 50) - 25;
 
 		_children[i]->setPosition(Vector3(x, y, z));
 	}
@@ -17,9 +17,9 @@ Scene::Scene() {
 	for (size_t i = 250; i < 500; i++) {
 		_children.push_back(new Entity());
 
-		int x = (rand() % 100) - 50;
-		int y = (rand() % 100) - 50;
-		int z = (rand() % 100) - 50;
+		int x = (rand() % 50) - 25;
+		int y = (rand() % 50) - 25;
+		int z = (rand() % 50) - 25;
 
 		_children[i]->setPosition(Vector3(x, y, z));
 		_children[i]->texture()->loadTexture("assets/banaan.jpg");

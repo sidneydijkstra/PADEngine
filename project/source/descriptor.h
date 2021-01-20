@@ -26,19 +26,16 @@ class Descriptor {
 		Descriptor();
 		~Descriptor();
 
-		VkDescriptorSetLayout getLayout();
+		VkDescriptorSetLayout& getLayout();
 		VkDescriptorPool getPool();
 		void freePool(VkDescriptorPool _pool);
 
-	private:
+	protected:
 		VkDescriptorSetLayout _descriptorSetLayout;
 		std::vector<VkDescriptorPool> _descriptorPools;
 
-		//std::vector<VkDescriptorSet> _descriptorSets;
-
+		virtual void setupDescriptorLayout();
+		virtual VkDescriptorPool setupDescriptorPool();
 	private:
-		void setupDescriptorLayout();
-		VkDescriptorPool setupDescriptorPool();
-		//void setupDescriptorSets();
 };
 #endif
