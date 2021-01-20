@@ -17,7 +17,6 @@
 #include "vulkanhandler.h"
 #include "devicehandler.h"
 #include "swapchainhandler.h"
-#include "shader.h"
 #include "sequencemanager.h"
 #include "input.h"
 #include "time.h"

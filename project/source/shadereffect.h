@@ -10,6 +10,7 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "resourcemanager.h"
+#include "shadermanager.h"
 #include "descriptor.h"
 #include "vertex.h"
 

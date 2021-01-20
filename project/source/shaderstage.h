@@ -9,7 +9,6 @@
 
 #include "devicehandler.h"
 #include "swapchainhandler.h"
-#include "resourcemanager.h"
 #include "vertex.h"
 
 #include <iostream>

@@ -20,6 +20,8 @@ add_executable(PADEngine
   project/source/resourcemanager.h
   project/source/sequencemanager.cpp
   project/source/sequencemanager.h
+  project/source/shadermanager.cpp
+  project/source/shadermanager.h
   project/source/shaderstage.cpp
   project/source/shaderstage.h
   project/source/shadereffect.cpp
