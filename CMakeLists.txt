@@ -30,6 +30,10 @@ add_executable(PADEngine
   project/source/shaderpass.h
   project/source/renderpass.cpp
   project/source/renderpass.h
+  project/source/material.cpp
+  project/source/material.h
+  project/source/materialmanager.cpp
+  project/source/materialmanager.h
   project/source/renderer.cpp
   project/source/renderer.h
   project/source/renderfactory.h

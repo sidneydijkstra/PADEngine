@@ -5,6 +5,8 @@ Renderer::Renderer() {
     this->_shaderEffect = new ShaderEffect("shaders/vert.spv", "shaders/frag.spv");
     this->_shaderPass = new ShaderPass(_renderPass->getRenderPass(), _shaderEffect);
 
+    MaterialManager::getInstance()->load("mat_normal_PBR", _shaderPass);
+
     _depthBuffer = new DepthBuffer();
 
     _framebuffers = new FrameBuffers();
@@ -123,9 +125,6 @@ void Renderer::recreate() {
 
     SwapChainHandler::getInstance()->recreate();
 
-    //delete _shader;
-    //this->_shader = new Shader("shaders/vert.spv", "shaders/frag.spv", ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
-
     _shaderPass->recreate();
 
     _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
@@ -139,6 +138,8 @@ void Renderer::recreate() {
 
 Renderer::~Renderer() {
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
+
+    ShaderManager::deleteInsance();
 
     delete _depthBuffer;
     delete _framebuffers;

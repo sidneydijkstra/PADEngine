@@ -12,6 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "materialmanager.h"
 #include "renderfactory.h"
 #include "devicehandler.h"
 #include "swapchainhandler.h"
