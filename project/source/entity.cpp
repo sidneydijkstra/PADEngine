@@ -1,7 +1,9 @@
 #include "entity.h"
 
 Entity::Entity() {
-
+	_rotation = Vector3();
+	_position = Vector3();
+  
     _mesh = new Mesh();
 	_mesh->loadShape(MeshType::CUBE);
     _uniformBuffer = new UniformBuffer();
