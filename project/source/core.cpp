@@ -43,9 +43,10 @@ void Core::loop() {
 }
 
 void Core::cleanup() {
-    delete _seqManager;
     delete _scene;
+    delete _seqManager;
 
+    ShaderManager::deleteInsance();
     ResourceManager::deleteInstance();
     SwapChainHandler::deleteInstance();
 	DeviceHandler::deleteInstance();

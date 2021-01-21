@@ -139,8 +139,6 @@ void Renderer::recreate() {
 Renderer::~Renderer() {
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
 
-    ShaderManager::deleteInsance();
-
     delete _depthBuffer;
     delete _framebuffers;
     delete _renderPass;

@@ -13,6 +13,8 @@
 
 #include "resourcemanager.h"
 #include "mesh.h"
+#include "materialmanager.h"
+#include "material.h"
 #include "uniformbuffer.h"
 #include "texture.h"
 #include "hierarchy.h"
@@ -67,6 +69,7 @@ class Entity {
         Mesh* _mesh;
         UniformBuffer* _uniformBuffer;
         Texture* _texture;
+        Material* _material;
 
         // TODO: good?
         VkDescriptorPool _pool;

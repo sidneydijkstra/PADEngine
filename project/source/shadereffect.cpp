@@ -11,8 +11,6 @@ std::vector<ShaderStage*> ShaderEffect::getStages() {
 }
 
 ShaderEffect::~ShaderEffect() {
-	for (size_t i = 0; i < _stages.size(); i++) {
-		delete _stages[i];
-	}
+	_stages.clear();
 }
 

@@ -7,7 +7,7 @@ Entity::Entity() {
     _uniformBuffer = new UniformBuffer();
 
     _texture = new Texture();
-
+	_material = MaterialManager::getInstance()->get("mat_normal_PBR");
 
 	this->setupDescriptorSets();
 }
@@ -18,9 +18,9 @@ void Entity::recreate(int _index) {
 
 void Entity::setupDescriptorSets() {
 	int swapChainImageSize = SwapChainHandler::getInstance()->getSwapChainImagesSize();
-	_pool = ResourceManager::getInstance()->getEntityDescriptor()->getPool();
 
 	std::vector<VkDescriptorSetLayout> layouts(swapChainImageSize, ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
+	_pool = _material->getDescriptor()->getPool();
 
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -75,6 +75,6 @@ void Entity::updateDescriptorSets(int _index) {
 Entity::~Entity() {
 	delete _mesh;
 	delete _uniformBuffer;
-	
-	ResourceManager::getInstance()->getEntityDescriptor()->freePool(_pool);
+	delete _texture;
+	_material->getDescriptor()->freePool(_pool);
 }
