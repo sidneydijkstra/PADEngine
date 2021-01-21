@@ -19,7 +19,7 @@ void MaterialManager::deleteInstance() {
 }
 
 void MaterialManager::load(const char* _name, ShaderPass* _shaderPass) {
-	Material* t = new Material(_shaderPass);
+	Material* t = new Material(_name, _shaderPass);
 	std::cout << _name << " => " << " -> material loaded" << '\n';
 
 	_materials[_name] = t;

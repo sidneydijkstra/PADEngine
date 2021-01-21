@@ -49,6 +49,14 @@ class Entity {
             return _texture;
         };
 
+        Material* getMaterial() {
+            return _material;
+        }
+
+        void setMaterial(Material* _material) {
+            this->_material = _material;
+        }
+
         std::vector<VkDescriptorSet> description() {
             return _descriptorSets;
         };

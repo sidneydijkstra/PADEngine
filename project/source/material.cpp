@@ -1,7 +1,12 @@
 #include "material.h"
 
-Material::Material(ShaderPass* _shaderPass) {
+Material::Material(const char* _name, ShaderPass* _shaderPass) {
+	this->_name = _name;
 	this->_shaderPass = _shaderPass;
+}
+
+std::string Material::getName() {
+	return this->_name;
 }
 
 Descriptor* Material::getDescriptor() {

@@ -17,5 +17,16 @@ class RenderFactory {
 			
 			return entities;
 		};
+
+		static std::map<std::string, std::map<MeshType, std::vector<Entity*>>> sortEnitiesByMaterialAndMeshType(std::vector<Entity*> _entities) {
+			std::map<std::string, std::map<MeshType, std::vector<Entity*>>> entities = std::map<std::string, std::map<MeshType, std::vector<Entity*>>>();
+			for (Entity* entity : _entities) {
+				std::string name = entity->getMaterial()->getName();
+				MeshType type = entity->mesh()->getType();
+				entities[name][type].push_back(entity);
+			}
+
+			return entities;
+		}
 };
 #endif

@@ -25,6 +25,17 @@ Scene::Scene() {
 		_children[i]->texture()->loadTexture("assets/banaan.jpg");
 		_children[i]->mesh()->loadShape(MeshType::PLANE);
 	}
+
+	for (size_t i = 500; i < 600; i++) {
+		_children.push_back(new Entity());
+
+		int x = (rand() % 50) - 25;
+		int y = (rand() % 50) - 25;
+		int z = (rand() % 50) - 25;
+
+		_children[i]->setPosition(Vector3(x, y, z));
+		_children[i]->setMaterial(MaterialManager::getInstance()->get("mat_red_PBR"));
+	}
 }
 
 void Scene::update() {

@@ -78,5 +78,6 @@ Entity::~Entity() {
 	delete _mesh;
 	delete _uniformBuffer;
 	delete _texture;
+
 	_material->getDescriptor()->freePool(_pool);
 }

@@ -5,7 +5,11 @@ Renderer::Renderer() {
     this->_shaderEffect = new ShaderEffect("shaders/vert.spv", "shaders/frag.spv");
     this->_shaderPass = new ShaderPass(_renderPass->getRenderPass(), _shaderEffect);
 
+    this->_shaderEffect_red = new ShaderEffect("shaders/vert.spv", "shaders/frag_red.spv");
+    this->_shaderPass_red = new ShaderPass(_renderPass->getRenderPass(), _shaderEffect_red);
+
     MaterialManager::getInstance()->load("mat_normal_PBR", _shaderPass);
+    MaterialManager::getInstance()->load("mat_red_PBR", _shaderPass_red);
 
     _depthBuffer = new DepthBuffer();
 
@@ -77,34 +81,44 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
     vkCmdBeginRenderPass(this->_commandBuffers[_index], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, this->_shaderPass->getPipeline());
+    std::map<std::string, std::map<MeshType, std::vector<Entity*>>> _ents = RenderFactory::sortEnitiesByMaterialAndMeshType(_scene->getChildren());
 
-    // get children sorted by mesh type
-    std::map<MeshType, std::vector<Entity*>> children = RenderFactory::sortEntitiesByMeshType(_scene->getChildren());
+    std::map<std::string, std::map<MeshType, std::vector<Entity*>>>::iterator mat_children_it;
+    for (mat_children_it = _ents.begin(); mat_children_it != _ents.end(); ++mat_children_it) {
+        Material* mat = MaterialManager::getInstance()->get(mat_children_it->first.c_str());
 
-    // iterate all the diffrent meshes
-    std::map<MeshType, std::vector<Entity*>>::iterator children_it;
-    for (children_it = children.begin(); children_it != children.end(); ++children_it) {
+        vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipeline());
+        
 
-        // get children vector
-        std::vector<Entity*> childVector = children_it->second;
+        // get children sorted by mesh type
+        std::map<MeshType, std::vector<Entity*>> children = mat_children_it->second;
 
-        // get and bind vertex/index buffer
-        BufferData vertexData = childVector[0]->mesh()->getBuffer()->vertex()->getBuffer();
-        BufferData indexData = childVector[0]->mesh()->getBuffer()->index()->getBuffer();
+        // iterate all the diffrent meshes
+        std::map<MeshType, std::vector<Entity*>>::iterator children_it;
+        for (children_it = children.begin(); children_it != children.end(); ++children_it) {
 
-        VkBuffer vertexBuffers[] = { vertexData.buffer };
-        VkDeviceSize offsets[] = { 0 };
-        vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
+            // get children vector
+            std::vector<Entity*> childVector = children_it->second;
 
-        for (Entity* entity : childVector) {
-            // set descriptor and draw mesh
-            vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, _shaderPass->getPipelineLayout(), 0, 1, &entity->description()[_index], 0, nullptr);
-            vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+            // get and bind vertex/index buffer
+            BufferData vertexData = childVector[0]->mesh()->getBuffer()->vertex()->getBuffer();
+            BufferData indexData = childVector[0]->mesh()->getBuffer()->index()->getBuffer();
+
+            VkBuffer vertexBuffers[] = { vertexData.buffer };
+            VkDeviceSize offsets[] = { 0 };
+            vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
+            vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT16);
+
+            for (Entity* entity : childVector) {
+                // set descriptor and draw mesh
+                vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &entity->description()[_index], 0, nullptr);
+                vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+            }
+
         }
-
     }
+
+
 
     vkCmdEndRenderPass(this->_commandBuffers[_index]);
 
@@ -144,5 +158,8 @@ Renderer::~Renderer() {
     delete _renderPass;
     delete _shaderPass;
     delete _shaderEffect;
+
+    delete _shaderPass_red;
+    delete _shaderEffect_red;
 }
 

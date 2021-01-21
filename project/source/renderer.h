@@ -52,6 +52,9 @@ class Renderer {
 		ShaderPass* _shaderPass;
 		RenderPass* _renderPass;
 
+		ShaderEffect* _shaderEffect_red;
+		ShaderPass* _shaderPass_red;
+
 		DepthBuffer* _depthBuffer;
 		FrameBuffers* _framebuffers;
 		std::vector<VkCommandBuffer> _commandBuffers;

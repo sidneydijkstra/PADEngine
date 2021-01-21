@@ -13,13 +13,15 @@ struct MaterialData {
 
 class Material {
 	public:
-		Material(ShaderPass* _shaderPass);
+		Material(const char* _name, ShaderPass* _shaderPass);
 		~Material();
 
+		std::string getName();
 		Descriptor* getDescriptor();
 		ShaderPass* getShaderPass();
 
 	private:
+		std::string _name;
 		ShaderPass* _shaderPass;
 };
 #endif
