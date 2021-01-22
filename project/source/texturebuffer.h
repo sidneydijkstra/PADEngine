@@ -6,7 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include "buffer.h"
+#include "imagebuffer.h"
 
 #include <iostream>
 #include <vector>
@@ -18,7 +18,7 @@ struct TextureBufferData {
 	VkSampler textureSampler;
 };
 
-class TextureBuffer : Buffer {
+class TextureBuffer : ImageBuffer {
 public:
 	TextureBuffer(const char* _path);
 	~TextureBuffer();
@@ -38,13 +38,9 @@ private:
 
 	// image loading
 	void createTextureImage(const char* _path);
-	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
 	// image view and sampler
 	void createTextureImageView();
-	VkImageView createImageView(VkImage image, VkFormat format);
 	void createTextureSampler();
 };
 #endif
