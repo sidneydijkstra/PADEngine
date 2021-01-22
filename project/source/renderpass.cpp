@@ -23,7 +23,6 @@ void RenderPass::setup() {
 	colorAttachmentRef.attachment = 0;
 	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-
 	VkAttachmentDescription depthAttachment{}; // new
 	depthAttachment.format = DeviceHandler::getInstance()->findDepthFormat();
 	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;

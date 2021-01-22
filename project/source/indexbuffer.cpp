@@ -1,12 +1,12 @@
 #include "indexbuffer.h"
 
-IndexBuffer::IndexBuffer(std::vector<uint16_t> _indices) : Buffer() {
+IndexBuffer::IndexBuffer(std::vector<uint32_t> _indices) : Buffer() {
     this->_indexSize = (uint32_t)_indices.size();
     this->setupBuffer(_indices);
 }
 
 
-void IndexBuffer::setupBuffer(std::vector<uint16_t> _indices) {
+void IndexBuffer::setupBuffer(std::vector<uint32_t> _indices) {
     VkDeviceSize bufferSize = sizeof(_indices[0]) * _indices.size();
 
     VkBuffer stagingBuffer;

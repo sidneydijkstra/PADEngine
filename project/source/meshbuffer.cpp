@@ -6,6 +6,12 @@ MeshBuffer::MeshBuffer() {
 	_type = MeshType::CUBE;
 }
 
+MeshBuffer::MeshBuffer(MeshType _type, MeshData _data) {
+	_indexBuffer = new IndexBuffer(_data.indices);
+	_vertexBuffer = new VertexBuffer(_data.vertices);
+	this->_type = _type;
+}
+
 MeshType MeshBuffer::getType() {
 	return this->_type;
 }
@@ -21,7 +27,7 @@ VertexBuffer* MeshBuffer::vertex() {
 MeshBuffer::MeshBuffer(MeshType _type) {
 	this->_type = _type;
 	switch (_type) {
-		case MeshType::TRYANGLE:
+		case MeshType::TRIANGLE:
 			_indexBuffer = new IndexBuffer(plane_indices);
 			_vertexBuffer = new VertexBuffer(plane_vertices);
 			break;

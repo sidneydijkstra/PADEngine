@@ -34,7 +34,9 @@ Scene::Scene() {
 		int z = (rand() % 50) - 25;
 
 		_children[i]->setPosition(Vector3(x, y, z));
-		_children[i]->setMaterial(MaterialManager::getInstance()->get("mat_red_PBR"));
+		_children[i]->texture()->loadTexture("assets/viking_room.png");
+		_children[i]->mesh()->loadObject("assets/viking_room.obj");
+		// _children[i]->setMaterial(MaterialManager::getInstance()->get("mat_red_PBR"));
 	}
 }
 

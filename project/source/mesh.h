@@ -11,6 +11,7 @@ class Mesh {
 		~Mesh();
 
 		void loadShape(MeshType _type);
+		void loadObject(const char* _path);
 		MeshBuffer* getBuffer();
 		MeshType getType();
 
