@@ -12,14 +12,11 @@ class Scene {
 		Scene();
 		~Scene();
 
-		void update();
+		virtual void update();
 		void recreate(int _index);
 
-		std::vector<Entity*> getChildren() {
-			return _children;
-		};
-
-		Camera* camera();
+		std::vector<Entity*>& getChildren();
+		Camera* getCamera();
 
 	private:
 		std::vector<Entity*> _children;

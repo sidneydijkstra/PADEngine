@@ -43,9 +43,9 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
         //ubo.model = glm::rotate(ubo.model, e->getRotation().y, glm::vec3(0, 1, 0));
         //ubo.model = glm::rotate(ubo.model, e->getRotation().z, glm::vec3(0, 0, 1));
 
-        ubo.view = glm::lookAt(_scene->camera()->position, _scene->camera()->position + _scene->camera()->front, _scene->camera()->up);
+        ubo.view = glm::lookAt(_scene->getCamera()->position, _scene->getCamera()->position + _scene->getCamera()->front, _scene->getCamera()->up);
 
-        ubo.proj = glm::perspective(glm::radians(_scene->camera()->fov), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 100.0f);
+        ubo.proj = glm::perspective(glm::radians(_scene->getCamera()->fov), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 100.0f);
 
         ubo.proj[1][1] *= -1;
 

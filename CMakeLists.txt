@@ -1,12 +1,41 @@
+option(BUILD_START "build the start directory" ON)
+option(BUILD_DEMO "build the demo directory" ON)
+
 cmake_minimum_required(VERSION 3.14)
 project(PADEngine)
 
-
 set(CMAKE_CXX_STANDARD 20)
 
+file(
+	COPY project/assets
+	DESTINATION ${CMAKE_BINARY_DIR}
+)
+file(
+	COPY project/shaders
+	DESTINATION ${CMAKE_BINARY_DIR}
+)
 
-add_executable(PADEngine
+add_subdirectory(external/glfw-3.3.2)
+add_subdirectory(external/glm-0.9.9.8)
+
+find_package(Vulkan REQUIRED)
+include_directories(
+	external/glfw-3.3.2/include
+	external/glm-0.9.9.8/glm
+	external/tiny_obj_loader
+	external/stb-images-2.26
+)
+
+set(ALL_LIBS
+  Vulkan::Vulkan
+  glfw
+  glm
+)
+
+add_library(PADEngine STATIC
   project/source/main.cpp
+
+  # PADEngine core engine files
   project/source/config.h
   project/source/core.cpp
   project/source/core.h
@@ -20,20 +49,6 @@ add_executable(PADEngine
   project/source/resourcemanager.h
   project/source/sequencemanager.cpp
   project/source/sequencemanager.h
-  project/source/shadermanager.cpp
-  project/source/shadermanager.h
-  project/source/shaderstage.cpp
-  project/source/shaderstage.h
-  project/source/shadereffect.cpp
-  project/source/shadereffect.h
-  project/source/shaderpass.cpp
-  project/source/shaderpass.h
-  project/source/renderpass.cpp
-  project/source/renderpass.h
-  project/source/material.cpp
-  project/source/material.h
-  project/source/materialmanager.cpp
-  project/source/materialmanager.h
   project/source/renderer.cpp
   project/source/renderer.h
   project/source/renderfactory.h
@@ -53,10 +68,32 @@ add_executable(PADEngine
   project/source/depthbuffer.h
   project/source/framebuffers.cpp
   project/source/framebuffers.h
-  project/source/scene.cpp
-  project/source/scene.h
   project/source/meshbuffer.cpp
   project/source/meshbuffer.h
+  project/source/modelloader.cpp
+  project/source/modelloader.h
+
+  # PADEngine shader files
+  project/source/shadermanager.cpp
+  project/source/shadermanager.h
+  project/source/shaderstage.cpp
+  project/source/shaderstage.h
+  project/source/shadereffect.cpp
+  project/source/shadereffect.h
+  project/source/shaderpass.cpp
+  project/source/shaderpass.h
+  project/source/renderpass.cpp
+  project/source/renderpass.h
+
+  # PadEngine material files
+  project/source/material.cpp
+  project/source/material.h
+  project/source/materialmanager.cpp
+  project/source/materialmanager.h
+
+  # PADEgine engine logic files
+  project/source/scene.cpp
+  project/source/scene.h
   project/source/mesh.cpp
   project/source/mesh.h
   project/source/texture.cpp
@@ -70,8 +107,6 @@ add_executable(PADEngine
   project/source/hierarchy.h
   project/source/entity.cpp
   project/source/entity.h
-  project/source/modelloader.cpp
-  project/source/modelloader.h
   project/source/input.h
   project/source/input.cpp
   project/source/time.h
@@ -81,28 +116,25 @@ add_executable(PADEngine
   project/source/logger.h
 )
 
-file(
-	COPY project/assets
-	DESTINATION ${CMAKE_BINARY_DIR}
-)
-file(
-	COPY project/shaders
-	DESTINATION ${CMAKE_BINARY_DIR}
-)
-
-add_subdirectory(external/glfw-3.3.2)
-add_subdirectory(external/glm-0.9.9.8)
-
-include_directories(
-	external/glfw-3.3.2/include
-	external/glm-0.9.9.8/glm
-	external/tiny_obj_loader
-	external/stb-images-2.26
-)
-find_package(Vulkan REQUIRED)
 target_include_directories(PADEngine PUBLIC ${Vulkan_INCLUDE_DIRS})
 target_link_libraries(PADEngine
-  Vulkan::Vulkan
-  glfw
-  glm
+	${ALL_LIBS}
 )
+
+include_directories(
+	project/source
+)
+
+if(BUILD_START)
+  add_executable(PADEngine_startup
+    startup/main.cpp
+    startup/myscene.cpp
+    startup/myscene.h
+  )
+
+  target_link_libraries(PADEngine_startup
+    PADEngine
+  )
+
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PADEngine_startup)
+endif(BUILD_START)

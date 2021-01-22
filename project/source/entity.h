@@ -65,11 +65,11 @@ class Entity {
 
         virtual void recreate(int _index);
 
-        Vector3 getPostion() { return _position; }
+        Vector3& getPostion() { return _position; }
         void setPosition(Vector3 position) { _position = position; }
-        Vector3 getRotation() { return _rotation; }
+        Vector3& getRotation() { return _rotation; }
         void setRotation(Vector3 rotation) { _rotation = rotation; }
-        Vector3 getScale() { return _scale; }
+        Vector3& getScale() { return _scale; }
         void setScale(Vector3 scale) { _scale = scale; }
     protected:
         Vector3 _position = Vector3(0, 0, 0);
