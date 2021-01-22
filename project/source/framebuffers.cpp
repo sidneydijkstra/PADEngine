@@ -3,7 +3,7 @@
 FrameBuffers::FrameBuffers() {
 }
 
-void FrameBuffers::setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _depthBuffer) {
+void FrameBuffers::setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _depthBuffer, SamplingBuffer* _samplingBuffer) {
     if (!this->_framebuffers.empty()) {
         for (size_t i = 0; i < _framebuffers.size(); i++) {
             vkDestroyFramebuffer(DeviceHandler::getInstance()->getLogicalDevice(), _framebuffers[i], nullptr);
@@ -15,9 +15,10 @@ void FrameBuffers::setupFramebuffers(VkRenderPass _renderPass, DepthBuffer* _dep
     this->_framebuffers.resize(size);
 
     for (size_t i = 0; i < size; i++) {
-        std::array<VkImageView, 2> attachments = {
-            SwapChainHandler::getInstance()->getSwapChainImageViews()[i],
-            _depthBuffer->getBuffer().depthImageView
+        std::array<VkImageView, 3> attachments = {
+            _samplingBuffer->getImageView(),
+            _depthBuffer->getImageView(),
+            SwapChainHandler::getInstance()->getSwapChainImageViews()[i]
         };
 
         VkFramebufferCreateInfo framebufferInfo{};

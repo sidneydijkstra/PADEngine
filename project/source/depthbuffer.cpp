@@ -11,7 +11,7 @@ VkImageView DepthBuffer::getImageView() {
 void DepthBuffer::setupDepthResources() {
     VkFormat depthFormat = DeviceHandler::getInstance()->findDepthFormat();
 
-    createImage(SwapChainHandler::getInstance()->getSwapChainExtent().width, SwapChainHandler::getInstance()->getSwapChainExtent().height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _depthImage, _depthImageMemory);
+    createImage(SwapChainHandler::getInstance()->getSwapChainExtent().width, SwapChainHandler::getInstance()->getSwapChainExtent().height, DeviceHandler::getInstance()->getMsaaSamples(), depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _depthImage, _depthImageMemory);
     _depthImageView = createImageView(_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
     transitionImageLayout(_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }

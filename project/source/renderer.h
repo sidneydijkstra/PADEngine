@@ -24,6 +24,7 @@
 #include "uniformbuffer.h"
 #include "texturebuffer.h"
 #include "depthbuffer.h"
+#include "samplingbuffer.h"
 #include "entity.h"
 #include "scene.h"
 
@@ -51,7 +52,9 @@ class Renderer {
 		RenderPass* _renderPass;
 
 		DepthBuffer* _depthBuffer;
+		SamplingBuffer* _samplingBuffer;
 		FrameBuffers* _framebuffers;
+
 		std::vector<VkCommandBuffer> _commandBuffers;
 
 		void beginCommandBuffer(int _index);

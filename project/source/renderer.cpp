@@ -19,9 +19,10 @@ Renderer::Renderer() {
     MaterialManager::getInstance()->load(mat_red_PBR);
 
     _depthBuffer = new DepthBuffer();
+    _samplingBuffer = new SamplingBuffer();
 
     _framebuffers = new FrameBuffers();
-    _framebuffers->setupFramebuffers(_renderPass->getRenderPass(), _depthBuffer);
+    _framebuffers->setupFramebuffers(_renderPass->getRenderPass(), _depthBuffer, _samplingBuffer);
 
     setupCommandBuffers();
 }
@@ -161,8 +162,10 @@ void Renderer::recreate() {
 
     MaterialManager::getInstance()->recreateAll();
 
-    _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
-    _framebuffers->setupFramebuffers(_renderPass->getRenderPass(), _depthBuffer);
+    _depthBuffer->recreate();
+    _samplingBuffer->recreate();
+
+    _framebuffers->setupFramebuffers(_renderPass->getRenderPass(), _depthBuffer, _samplingBuffer);
 
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
     setupCommandBuffers();
@@ -174,6 +177,7 @@ Renderer::~Renderer() {
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), static_cast<uint32_t>(_commandBuffers.size()), _commandBuffers.data());
 
     delete _depthBuffer;
+    delete _samplingBuffer;
     delete _framebuffers;
     delete _renderPass;
 }

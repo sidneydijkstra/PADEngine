@@ -17,6 +17,7 @@ void DeviceHandler::deleteInstance() {
 }
 
 void DeviceHandler::init() {
+	_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
 	this->pickPhysicalDevice();
 	this->createLogicalDevice();
 
@@ -48,6 +49,10 @@ VkCommandPool DeviceHandler::getCommandPool() {
 	return this->_commandPool;
 }
 
+VkSampleCountFlagBits DeviceHandler::getMsaaSamples() {
+	return this->_msaaSamples;
+}
+
 void DeviceHandler::pickPhysicalDevice() {
 	this->_physicalDevice = VK_NULL_HANDLE;
 
@@ -67,6 +72,7 @@ void DeviceHandler::pickPhysicalDevice() {
 	for (const auto& device : devices) {
 		if (isDeviceSuitable(device)) {
 			this->_physicalDevice = device;
+			this->_msaaSamples = getMaxUsableSampleCount();
 			break;
 		}
 	}
@@ -96,6 +102,7 @@ void DeviceHandler::createLogicalDevice() {
 	}
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
+	deviceFeatures.sampleRateShading = VK_TRUE; // enable sample shading feature for the device
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -162,6 +169,21 @@ VkFormat DeviceHandler::findSupportedFormat(const std::vector<VkFormat>& candida
 	}
 
 	throw std::runtime_error("failed to find supported format!");
+}
+
+VkSampleCountFlagBits DeviceHandler::getMaxUsableSampleCount() {
+	VkPhysicalDeviceProperties physicalDeviceProperties;
+	vkGetPhysicalDeviceProperties(this->_physicalDevice, &physicalDeviceProperties);
+
+	VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+	if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
+	if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
+	if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }
+	if (counts & VK_SAMPLE_COUNT_8_BIT) { return VK_SAMPLE_COUNT_8_BIT; }
+	if (counts & VK_SAMPLE_COUNT_4_BIT) { return VK_SAMPLE_COUNT_4_BIT; }
+	if (counts & VK_SAMPLE_COUNT_2_BIT) { return VK_SAMPLE_COUNT_2_BIT; }
+
+	return VK_SAMPLE_COUNT_1_BIT;
 }
 
 bool DeviceHandler::hasStencilComponent(VkFormat _format) {

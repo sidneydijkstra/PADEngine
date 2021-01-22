@@ -6,7 +6,7 @@ ImageBuffer::ImageBuffer() : Buffer() {
 ImageBuffer::~ImageBuffer() {
 }
 
-void ImageBuffer::createImage(uint32_t _width, uint32_t _height, VkFormat _format, VkImageTiling _tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory) {
+void ImageBuffer::createImage(uint32_t _width, uint32_t _height, VkSampleCountFlagBits _numSamples, VkFormat _format, VkImageTiling _tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory) {
     VkImageCreateInfo imageInfo{};
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -19,7 +19,7 @@ void ImageBuffer::createImage(uint32_t _width, uint32_t _height, VkFormat _forma
     imageInfo.tiling = _tiling;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = _usage;
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imageInfo.samples = _numSamples;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     if (vkCreateImage(DeviceHandler::getInstance()->getLogicalDevice(), &imageInfo, nullptr, &_image) != VK_SUCCESS) {

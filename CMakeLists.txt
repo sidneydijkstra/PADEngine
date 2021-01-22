@@ -68,6 +68,8 @@ add_library(PADEngine STATIC
   project/source/texturebuffer.h
   project/source/depthbuffer.cpp
   project/source/depthbuffer.h
+  project/source/samplingbuffer.cpp
+  project/source/samplingbuffer.h
   project/source/framebuffers.cpp
   project/source/framebuffers.h
   project/source/meshbuffer.cpp
