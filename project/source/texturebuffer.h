@@ -23,8 +23,6 @@ public:
 	TextureBuffer(const char* _path);
 	~TextureBuffer();
 
-	//void textureToSwapChain(const char* _path, std::vector<VkImageView>& _swapChainImageViews, std::vector<VkImage> _swapChainImages, VkFormat _format);
-
 	VkImage getImage();
 	VkDeviceMemory getImageMemory();
 	VkImageView getImageView();

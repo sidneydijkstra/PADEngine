@@ -9,24 +9,19 @@
 #include <vector>
 #include <string>
 
-struct DepthBufferData {
-	VkImageView depthImageView;
-};
-
 class DepthBuffer : ImageBuffer {
 public:
 	DepthBuffer();
 	~DepthBuffer();
 
-	void setupBuffer();
-	DepthBufferData getBuffer();
-	void recreate(VkExtent2D _swapChainExtent);
+	VkImageView getImageView();
+	void recreate();
 
 private:
 	VkImage _depthImage;
 	VkDeviceMemory _depthImageMemory;
 	VkImageView _depthImageView;
 
-	void setupDepthResources(VkExtent2D _swapChainExtent);
+	void setupDepthResources();
 };
 #endif
