@@ -46,6 +46,7 @@ void Core::cleanup() {
     delete _scene;
     delete _seqManager;
 
+    MaterialManager::deleteInstance();
     ShaderManager::deleteInsance();
     ResourceManager::deleteInstance();
     SwapChainHandler::deleteInstance();

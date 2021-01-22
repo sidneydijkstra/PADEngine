@@ -20,9 +20,9 @@ void Entity::recreate(int _index) {
 
 void Entity::setupDescriptorSets() {
 	int swapChainImageSize = SwapChainHandler::getInstance()->getSwapChainImagesSize();
-
-	std::vector<VkDescriptorSetLayout> layouts(swapChainImageSize, ResourceManager::getInstance()->getEntityDescriptor()->getLayout());
 	_pool = _material->getDescriptor()->getPool();
+
+	std::vector<VkDescriptorSetLayout> layouts(swapChainImageSize, _material->getDescriptor()->getLayout());
 
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;

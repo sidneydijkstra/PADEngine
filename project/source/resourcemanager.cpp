@@ -3,7 +3,6 @@
 static ResourceManager* _instance;
 
 ResourceManager::ResourceManager() {
-	_entityDescriptor = new Descriptor();
 	_textures = std::map<std::string, TextureBuffer*>();
 	_meshes = std::map<MeshType, MeshBuffer*>();
 }
@@ -13,10 +12,6 @@ ResourceManager* ResourceManager::getInstance() {
 		_instance = new ResourceManager();
 	}
 	return _instance;
-}
-
-Descriptor* ResourceManager::getEntityDescriptor() {
-	return _entityDescriptor;
 }
 
 TextureBuffer* ResourceManager::getTextureBuffer(const char* path) {
@@ -49,8 +44,6 @@ void ResourceManager::deleteInstance() {
 }
 
 ResourceManager::~ResourceManager() {
-	delete _entityDescriptor;
-
 	// delete loaded textures
 	std::map<std::string, TextureBuffer*>::iterator text_it;
 	for (text_it = _textures.begin(); text_it != _textures.end(); ++text_it) {

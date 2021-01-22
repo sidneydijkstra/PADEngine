@@ -18,16 +18,25 @@ void MaterialManager::deleteInstance() {
 	_instance = nullptr;
 }
 
-void MaterialManager::load(const char* _name, ShaderPass* _shaderPass) {
-	Material* t = new Material(_name, _shaderPass);
-	std::cout << _name << " => " << " -> material loaded" << '\n';
+void MaterialManager::load(MaterialData _data) {
+	Material* t = new Material(_data);
+	std::cout << _data.name << " => " << " -> material loaded" << '\n';
 
-	_materials[_name] = t;
+	_materials[_data.name] = t;
 }
 
 Material* MaterialManager::get(const char* _name) {
 	if (_materials[_name] != NULL) {
 		return _materials[_name];
+	}
+}
+
+void MaterialManager::recreateAll() {
+	std::map<std::string, Material*>::iterator mat_it;
+	for (mat_it = _materials.begin(); mat_it != _materials.end(); ++mat_it) {
+		if (mat_it->second != NULL) {
+			mat_it->second->getShaderPass()->recreate();
+		}
 	}
 }
 

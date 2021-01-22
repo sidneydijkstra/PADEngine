@@ -48,12 +48,7 @@ class Renderer {
 		VkCommandBuffer renderScene(Scene* _scene, int _index);
 
 	private:
-		ShaderEffect* _shaderEffect;
-		ShaderPass* _shaderPass;
 		RenderPass* _renderPass;
-
-		ShaderEffect* _shaderEffect_red;
-		ShaderPass* _shaderPass_red;
 
 		DepthBuffer* _depthBuffer;
 		FrameBuffers* _framebuffers;

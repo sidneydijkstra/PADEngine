@@ -15,8 +15,10 @@ class MaterialManager {
 		static MaterialManager* getInstance();
 		static void deleteInstance();
 
-		void load(const char* _name, ShaderPass* _shaderPass);
+		void load(MaterialData _data);
 		Material* get(const char* _name);
+
+		void recreateAll();
 
 	private:
 		std::map<std::string, Material*> _materials;

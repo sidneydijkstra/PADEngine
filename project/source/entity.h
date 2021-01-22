@@ -54,7 +54,9 @@ class Entity {
         }
 
         void setMaterial(Material* _material) {
+            this->_material->getDescriptor()->freePool(_pool);
             this->_material = _material;
+            this->setupDescriptorSets();
         }
 
         std::vector<VkDescriptorSet> description() {

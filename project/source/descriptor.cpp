@@ -18,8 +18,9 @@ VkDescriptorPool Descriptor::getPool() {
 void Descriptor::freePool(VkDescriptorPool _pool) {
 	for (std::vector<VkDescriptorPool>::iterator it = _descriptorPools.begin(); it != _descriptorPools.end(); ++it){
 		if (*it == _pool) {
-			it = _descriptorPools.erase(it);
 			vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), _pool, nullptr);
+			it = _descriptorPools.erase(it);
+			return;
 		}
 
 		if (_descriptorPools.empty())
@@ -78,4 +79,11 @@ VkDescriptorPool Descriptor::setupDescriptorPool() {
 
 Descriptor::~Descriptor() {
 	vkDestroyDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), _descriptorSetLayout, nullptr);
+
+	for (std::vector<VkDescriptorPool>::iterator it = _descriptorPools.begin(); it != _descriptorPools.end(); ++it) {
+		if (*it != NULL) {
+			vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), *it, nullptr);
+			it = _descriptorPools.erase(it);
+		}
+	}
 }

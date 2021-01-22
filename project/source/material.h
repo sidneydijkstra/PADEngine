@@ -2,18 +2,20 @@
 #ifndef MATERIAL_CLASS
 #define MATERIAL_CLASS
 
+#include "renderpass.h"
 #include "shaderpass.h";
 #include "shadereffect.h"
 
 struct MaterialData {
-	ShaderEffect* shaderEffect;
-	ShaderPass* shaderPass;
-	VkRenderPass renderPass;
+	const char* name;
+	RenderPass* renderPass;
+	const char* vertexPath;
+	const char* fragmentPath;
 };
 
 class Material {
 	public:
-		Material(const char* _name, ShaderPass* _shaderPass);
+		Material(MaterialData _data);
 		~Material();
 
 		std::string getName();
@@ -22,6 +24,7 @@ class Material {
 
 	private:
 		std::string _name;
+		ShaderEffect* _shaderEffect;
 		ShaderPass* _shaderPass;
 };
 #endif

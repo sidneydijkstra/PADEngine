@@ -2,14 +2,21 @@
 
 Renderer::Renderer() {
     this->_renderPass = new RenderPass();
-    this->_shaderEffect = new ShaderEffect("shaders/vert.spv", "shaders/frag.spv");
-    this->_shaderPass = new ShaderPass(_renderPass->getRenderPass(), _shaderEffect);
 
-    this->_shaderEffect_red = new ShaderEffect("shaders/vert.spv", "shaders/frag_red.spv");
-    this->_shaderPass_red = new ShaderPass(_renderPass->getRenderPass(), _shaderEffect_red);
+    MaterialData mat_normal_PBR{};
+    mat_normal_PBR.name = "mat_normal_PBR";
+    mat_normal_PBR.vertexPath = "shaders/vert.spv";
+    mat_normal_PBR.fragmentPath = "shaders/frag.spv";
+    mat_normal_PBR.renderPass = _renderPass;
 
-    MaterialManager::getInstance()->load("mat_normal_PBR", _shaderPass);
-    MaterialManager::getInstance()->load("mat_red_PBR", _shaderPass_red);
+    MaterialData mat_red_PBR{};
+    mat_red_PBR.name = "mat_red_PBR";
+    mat_red_PBR.vertexPath = "shaders/vert.spv";
+    mat_red_PBR.fragmentPath = "shaders/frag_red.spv";
+    mat_red_PBR.renderPass = _renderPass;
+
+    MaterialManager::getInstance()->load(mat_normal_PBR);
+    MaterialManager::getInstance()->load(mat_red_PBR);
 
     _depthBuffer = new DepthBuffer();
 
@@ -139,7 +146,7 @@ void Renderer::recreate() {
 
     SwapChainHandler::getInstance()->recreate();
 
-    _shaderPass->recreate();
+    MaterialManager::getInstance()->recreateAll();
 
     _depthBuffer->recreate(SwapChainHandler::getInstance()->getSwapChainExtent());
     _framebuffers->setupFramebuffers(_renderPass->getRenderPass(), _depthBuffer);
@@ -156,10 +163,5 @@ Renderer::~Renderer() {
     delete _depthBuffer;
     delete _framebuffers;
     delete _renderPass;
-    delete _shaderPass;
-    delete _shaderEffect;
-
-    delete _shaderPass_red;
-    delete _shaderEffect_red;
 }
 
