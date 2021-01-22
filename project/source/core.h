@@ -33,14 +33,15 @@ class Core {
         Core();
         ~Core();
 
-        void run();
+        void run(Scene* _scene);
+        void cleanup();
 
     private:
         SequenceManager* _seqManager;
         Scene* _scene;
 
         void loop();
-        void cleanup();
+        void _run();
 
         static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };

@@ -1,14 +1,6 @@
 #include "core.h"
 
 Core::Core() {
-
-}
-
-Core::~Core() {
-
-}
-
-void Core::run() {
     // init vulkan / window / surface
     VulkanHandler::getInstance()->init();
 
@@ -21,10 +13,22 @@ void Core::run() {
     Input::attachToWindow(VulkanHandler::getInstance()->getWindow());
 
     _seqManager = new SequenceManager();
-    _scene = new Scene();
+}
 
+void Core::run(Scene* _scene) {
+    this->_scene = _scene;
+
+    try {
+        this->_run();
+    }
+    catch (const std::exception & e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
+}
+
+void Core::_run() {
     loop();
-    cleanup();
 }
 
 void Core::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
@@ -43,7 +47,6 @@ void Core::loop() {
 }
 
 void Core::cleanup() {
-    delete _scene;
     delete _seqManager;
 
     MaterialManager::deleteInstance();
@@ -54,4 +57,8 @@ void Core::cleanup() {
     VulkanHandler::deleteInstance();
 
     glfwTerminate();
+}
+
+Core::~Core() {
+
 }
