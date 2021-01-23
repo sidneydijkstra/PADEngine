@@ -8,6 +8,6 @@
 
 class ModelLoader {
 	public:
-		static MeshData ModelLoader::loadObjectFile(std::string obj_file_path);
+		static MeshData loadObjectFile(std::string obj_file_path);
 };
 #endif
