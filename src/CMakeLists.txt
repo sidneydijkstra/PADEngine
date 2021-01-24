@@ -1,12 +1,3 @@
-file(
-    COPY ${CMAKE_SOURCE_DIR}/assets
-    DESTINATION ${CMAKE_BINARY_DIR}
-)
-
-file(
-    COPY ${CMAKE_SOURCE_DIR}/shaders
-    DESTINATION ${CMAKE_BINARY_DIR}
-)
 
 add_library(PADEngine STATIC
   main.cpp
@@ -99,10 +90,18 @@ add_library(PADEngine STATIC
 find_package(Vulkan REQUIRED)
 
 target_include_directories(PADEngine PUBLIC ${Vulkan_INCLUDE_DIRS})
+
+target_include_directories(PADEngine PUBLIC
+    ${PADEngine_SOURCE_DIR}/external/glfw-3.3.2/include
+    ${PADEngine_SOURCE_DIR}/external/glm-0.9.9.8/glm
+    ${PADEngine_SOURCE_DIR}/external/tiny_obj_loader
+    ${PADEngine_SOURCE_DIR}/external/stb-images-2.26
+)
+
 target_link_libraries(PADEngine
     Vulkan::Vulkan
     glfw
     glm
 )
 
-set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PADEngine)
+set_property(DIRECTORY ${PADEngine_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PADEngine)

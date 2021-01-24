@@ -3,21 +3,39 @@ project(PADEngine VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-option(PAD_ENGINE_BUILD_EXAMPLES "Build PADEngine example programs." ON)
+option(PADEngine_BUILD_EXAMPLES "Build PADEngine example programs." ON)
+option(PADEngine_BUILD_DOCS "Build PADEngine documentation." ON)
+
+#--------------------------------------------------------------------
+# Build dependencies
+#--------------------------------------------------------------------
+
+# Disable unnecessary build options and prevent name clashes with PAD Engine's build targets.
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(external/glfw-3.3.2)
 add_subdirectory(external/glm-0.9.9.8)
 
-include_directories(
-    external/glfw-3.3.2/include
-    external/glm-0.9.9.8/glm
-    external/tiny_obj_loader
-    external/stb-images-2.26
-)
+#--------------------------------------------------------------------
+# Build PAD Engine
+#--------------------------------------------------------------------
 
 add_subdirectory(src)
 
-if (PAD_ENGINE_BUILD_EXAMPLES)
-	add_subdirectory(examples)
+if(PADEngine_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+if(PADEngine_BUILD_DOCS)
+    set(DOXYGEN_SKIP_DOT TRUE)
+    find_package(Doxygen)
+
+    if(DOXYGEN_FOUND)
+        add_subdirectory(docs)
+    else()
+        message(WARNING "Doxygen not found! Could not build documentation.")
+    endif()
 endif()
 
