@@ -18,7 +18,6 @@ SET(PADEngine_DOXYGEN_SOURCES
     "src/scene.h"
     "src/framebuffers.h"
     "src/sequencemanager.h"
-    "src/boxcollider.h"
     "src/shadereffect.h"
     "src/entity.h"
     "src/shadermanager.h"
@@ -26,16 +25,13 @@ SET(PADEngine_DOXYGEN_SOURCES
     "src/shaderpass.h"
     "src/descriptor.h"
     "src/shaderstage.h"
-    "src/spherecollider.h"
     "src/depthbuffer.h"
     "src/swapchainhandler.h"
     "src/core.h"
     "src/texture.h"
     "src/config.h"
     "src/texturebuffer.h"
-    "src/collider.h"
     "src/time.h"
-    "src/topic.h"
     "src/vertexbuffer.h"
     "src/uniformbuffer.h"
     "src/camera.h"
@@ -53,4 +49,4 @@ configure_file(Doxyfile.in Doxyfile @ONLY)
 
 add_custom_target(docs ALL "${DOXYGEN_EXECUTABLE}"
                   WORKING_DIRECTORY "${PADEngine_BINARY_DIR}/docs"
-                  COMMENT "Generating HTML documentation" VERBATIM)
+                  COMMENT "Generating documentation" VERBATIM)
