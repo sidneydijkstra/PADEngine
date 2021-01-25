@@ -1,11 +1,11 @@
 
 file(
-    COPY ${PADEngine_SOURCE_DIR}/assets
+    COPY ${PADEngine_SOURCE_DIR}/examples/assets
     DESTINATION ${PADEngine_BINARY_DIR}/examples
 )
 
 file(
-    COPY ${PADEngine_SOURCE_DIR}/shaders
+    COPY ${PADEngine_SOURCE_DIR}/examples/shaders
     DESTINATION ${PADEngine_BINARY_DIR}/examples
 )
 
