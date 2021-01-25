@@ -1,5 +1,5 @@
 #include "core.h"
-#include "myscene.h";
+#include "myscene.h"
 
 int main() {
 

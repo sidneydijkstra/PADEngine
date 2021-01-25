@@ -3,7 +3,7 @@
 #define MATERIAL_CLASS
 
 #include "renderpass.h"
-#include "shaderpass.h";
+#include "shaderpass.h"
 #include "shadereffect.h"
 
 struct MaterialData {
