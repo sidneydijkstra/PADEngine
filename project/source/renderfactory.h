@@ -3,7 +3,7 @@
 #define RENDERFACTORY_CLASS
 
 #include "scene.h"
-#include "entity.h"
+#include "hierarchy.h"
 
 class RenderFactory {
 	public:
@@ -18,9 +18,10 @@ class RenderFactory {
 			return entities;
 		};
 
-		static std::map<std::string, std::map<MeshType, std::vector<Entity*>>> sortEnitiesByMaterialAndMeshType(std::vector<Entity*> _entities) {
+		static std::map<std::string, std::map<MeshType, std::vector<Entity*>>> sortEnitiesByMaterialAndMeshType(std::vector<Hierarchy*> _entities) {
 			std::map<std::string, std::map<MeshType, std::vector<Entity*>>> entities = std::map<std::string, std::map<MeshType, std::vector<Entity*>>>();
-			for (Entity* entity : _entities) {
+			for (Hierarchy* hierarchy : _entities) {
+				Entity* entity = (Entity*)hierarchy;
 				std::string name = entity->getMaterial()->getName();
 				MeshType type = entity->mesh()->getType();
 				entities[name][type].push_back(entity);

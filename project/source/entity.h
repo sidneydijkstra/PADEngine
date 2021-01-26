@@ -16,6 +16,7 @@
 #include "materialmanager.h"
 #include "material.h"
 #include "uniformbuffer.h"
+#include "storagebuffer.h"
 #include "texture.h"
 #include "hierarchy.h"
 #include "vector3.h"
@@ -32,7 +33,7 @@ struct DescriptionData {
     std::vector<VkDescriptorSet> descriptorSets;
 };
 
-class Entity {
+class Entity : public Hierarchy {
     public:
         Entity();
         ~Entity();
@@ -75,6 +76,7 @@ class Entity {
         Vector3 _position = Vector3(0, 0, 0);
         Vector3 _rotation = Vector3(0, 0, 0);
         Vector3 _scale = Vector3(1, 1, 1);
+        glm::vec3 _color = glm::vec3(1, 1, 1);
 
         Mesh* _mesh;
         UniformBuffer* _uniformBuffer;

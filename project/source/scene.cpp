@@ -1,7 +1,6 @@
 #include "scene.h"
 
-Scene::Scene() {
-	_children = std::vector<Entity*>();
+Scene::Scene() : Hierarchy(){
 	_camera = new Camera();
 }
 
@@ -9,13 +8,11 @@ void Scene::update() {
 }
 
 void Scene::recreate(int _index) {
-	for (Entity* e : _children) {
-		e->recreate(_index);
+	std::vector<Hierarchy*> list = this->getChildren();
+	for (size_t i = 0; i < list.size(); i++) {
+		Entity* ent = (Entity*)list[i];
+		ent->recreate(_index);
 	}
-}
-
-std::vector<Entity*>& Scene::getChildren() {
-	return _children;
 }
 
 Camera* Scene::getCamera() {
@@ -23,8 +20,4 @@ Camera* Scene::getCamera() {
 }
 
 Scene::~Scene() {
-	for (Entity* e : _children) {
-		delete e;
-	}
-	_children.clear();
 }

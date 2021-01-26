@@ -34,7 +34,9 @@ Renderer* SequenceManager::getRenderer() {
 void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
     _scene->update();
-    for (Entity* e : _scene->getChildren()) {
+    for (Hierarchy* h : _scene->getChildren()) {
+        Entity* e = (Entity*)h;
+
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.model = glm::translate(ubo.model, glm::vec3(e->getPostion().x, e->getPostion().y, e->getPostion().z));

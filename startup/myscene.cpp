@@ -1,11 +1,11 @@
 #include "myscene.h"
 
 MyScene::MyScene() : Scene() {
-	Entity* entity = new Entity();
+	_entity = new Entity();
 
-	entity->mesh()->loadObject("assets/viking_room.obj");
-	entity->texture()->loadTexture("assets/viking_room.png");
-	this->getChildren().push_back(entity);
+	_entity->mesh()->loadObject("assets/viking_room.obj");
+	_entity->texture()->loadTexture("assets/viking_room.png");
+	this->addChild(_entity);
 }
 
 
@@ -14,4 +14,5 @@ void MyScene::update() {
 }
 
 MyScene::~MyScene() {
+	delete _entity;
 }

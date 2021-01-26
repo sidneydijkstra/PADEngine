@@ -8,10 +8,6 @@ Hierarchy::Hierarchy() {
 	_parent = NULL;
 }
 
-Hierarchy::~Hierarchy() {
-
-}
-
 void Hierarchy::addChild(Hierarchy* _child) {
 	if (_child->_parent != NULL) {
 		_child->_parent->removeChild(_child);
@@ -32,4 +28,8 @@ void Hierarchy::removeChild(Hierarchy* child)
 		}
 	}
 	child->_parent = NULL;
+}
+
+Hierarchy::~Hierarchy() {
+	_children.clear();
 }

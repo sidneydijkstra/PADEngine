@@ -3,6 +3,7 @@
 #define MYSCENE_CLASS
 
 #include "scene.h"
+#include "entity.h"
 
 class MyScene : public Scene {
 	public:
@@ -11,6 +12,7 @@ class MyScene : public Scene {
 		
 		void update() override;
 
+		Entity* _entity;
 	private:
 };
 
