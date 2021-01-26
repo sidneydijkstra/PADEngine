@@ -3,8 +3,8 @@
 MyScene::MyScene() : Scene() {
 	_entity = new Entity();
 
-	_entity->mesh()->loadObject("assets/viking_room.obj");
-	_entity->texture()->loadTexture("assets/viking_room.png");
+	_entity->getMesh()->loadObject("assets/viking_room.obj");
+	_entity->getTexture()->loadTexture("assets/viking_room.png");
 	this->addChild(_entity);
 }
 

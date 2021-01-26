@@ -11,7 +11,7 @@ class RenderFactory {
 			std::map<MeshType, std::vector<Entity*>> entities = std::map<MeshType, std::vector<Entity*>>();
 			
 			for (Entity* entity : _entities) {
-				MeshType type = entity->mesh()->getType();
+				MeshType type = entity->getMesh()->getType();
 				entities[type].push_back(entity);
 			}
 			
@@ -23,7 +23,7 @@ class RenderFactory {
 			for (Hierarchy* hierarchy : _entities) {
 				Entity* entity = (Entity*)hierarchy;
 				std::string name = entity->getMaterial()->getName();
-				MeshType type = entity->mesh()->getType();
+				MeshType type = entity->getMesh()->getType();
 				entities[name][type].push_back(entity);
 			}
 
