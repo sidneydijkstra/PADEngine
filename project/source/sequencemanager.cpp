@@ -39,11 +39,11 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.model = glm::translate(ubo.model, glm::vec3(e->position.x, e->position.y, e->position.z));
-        ubo.model = glm::scale(ubo.model, glm::vec3(e->scale.x, e->scale.y, e->scale.z));
-        //ubo.model = glm::rotate(ubo.model, e->getRotation().x, glm::vec3(1, 0, 0));
-        //ubo.model = glm::rotate(ubo.model, e->getRotation().y, glm::vec3(0, 1, 0));
-        //ubo.model = glm::rotate(ubo.model, e->getRotation().z, glm::vec3(0, 0, 1));
+        ubo.model = glm::translate(ubo.model, e->position.glm());
+        ubo.model = glm::scale(ubo.model, e->scale.glm());
+        ubo.model = glm::rotate(ubo.model, e->rotation.x, glm::vec3(1, 0, 0));
+        ubo.model = glm::rotate(ubo.model, e->rotation.y, glm::vec3(0, 1, 0));
+        ubo.model = glm::rotate(ubo.model, e->rotation.z, glm::vec3(0, 0, 1));
 
         ubo.view = glm::lookAt(_scene->getCamera()->position, _scene->getCamera()->position + _scene->getCamera()->front, _scene->getCamera()->up);
 

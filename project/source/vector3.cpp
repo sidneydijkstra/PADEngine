@@ -12,8 +12,8 @@ Vector3::Vector3() {
 	z = 0;
 }
 
-Vector3::~Vector3() {
-	
+glm::vec3 Vector3::glm() {
+	return glm::vec3(x, y, z);
 }
 
 Vector3& Vector3::operator+=(const Vector3& rhs)
@@ -45,4 +45,8 @@ Vector3 Vector3::operator*(const float rhs) const
 Vector3 Vector3::operator/(const float rhs) const
 {
 	return Vector3(x / rhs, y / rhs, z /rhs);
+}
+
+Vector3::~Vector3() {
+
 }

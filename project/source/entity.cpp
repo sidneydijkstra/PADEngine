@@ -3,7 +3,7 @@
 Entity::Entity() : Hierarchy() {
 	rotation = Vector3(0, 0, 0);
 	position = Vector3(0, 0, 0);
-	scale = Vector3(0, 0, 0);
+	scale = Vector3(1, 1, 1);
 	
     _mesh = new Mesh();
 	_mesh->loadShape(MeshType::CUBE);

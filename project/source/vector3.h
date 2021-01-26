@@ -1,11 +1,15 @@
 #ifndef VECTOR3_CLASS
 #define VECTOR3_CLASS
 
+#include <glm/vec3.hpp>
+
 class Vector3 {
 public:
 	Vector3(float x, float y, float z);
 	Vector3();
 	~Vector3();
+
+	glm::vec3 glm();
 
 	float x, y, z = 0;
 private:

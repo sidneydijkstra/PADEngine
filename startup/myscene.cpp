@@ -11,6 +11,8 @@ MyScene::MyScene() : Scene() {
 
 void MyScene::update() {
 	this->getCamera()->move3D(5.0f);
+
+	_entity->rotation.z += 0.2f * Time::getDeltaTime();
 }
 
 MyScene::~MyScene() {
