@@ -34,14 +34,16 @@ Renderer* SequenceManager::getRenderer() {
 void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
     _scene->update();
-    for (Entity* e : _scene->getChildren()) {
+    for (Hierarchy* h : _scene->getChildren()) {
+        Entity* e = (Entity*)h;
+
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.model = glm::translate(ubo.model, glm::vec3(e->getPostion().x, e->getPostion().y, e->getPostion().z));
-        ubo.model = glm::scale(ubo.model, glm::vec3(e->getScale().x, e->getScale().y, e->getScale().z));
-        //ubo.model = glm::rotate(ubo.model, e->getRotation().x, glm::vec3(1, 0, 0));
-        //ubo.model = glm::rotate(ubo.model, e->getRotation().y, glm::vec3(0, 1, 0));
-        //ubo.model = glm::rotate(ubo.model, e->getRotation().z, glm::vec3(0, 0, 1));
+        ubo.model = glm::translate(ubo.model, e->position.glm());
+        ubo.model = glm::scale(ubo.model, e->scale.glm());
+        ubo.model = glm::rotate(ubo.model, e->rotation.x, glm::vec3(1, 0, 0));
+        ubo.model = glm::rotate(ubo.model, e->rotation.y, glm::vec3(0, 1, 0));
+        ubo.model = glm::rotate(ubo.model, e->rotation.z, glm::vec3(0, 0, 1));
 
         ubo.view = glm::lookAt(_scene->getCamera()->position, _scene->getCamera()->position + _scene->getCamera()->front, _scene->getCamera()->up);
 
@@ -49,7 +51,7 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
         ubo.proj[1][1] *= -1;
 
-        e->uniform()->updateBuffer(_imageIndex, ubo);
+        e->getUniform()->updateBuffer(_imageIndex, ubo);
         e->recreate(_imageIndex);
     }
 }

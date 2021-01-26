@@ -1,9 +1,10 @@
 #include "entity.h"
 
-Entity::Entity() {
-	_rotation = Vector3();
-	_position = Vector3();
-  
+Entity::Entity() : Hierarchy() {
+	rotation = Vector3(0, 0, 0);
+	position = Vector3(0, 0, 0);
+	scale = Vector3(1, 1, 1);
+	
     _mesh = new Mesh();
 	_mesh->loadShape(MeshType::CUBE);
     _uniformBuffer = new UniformBuffer();
@@ -12,6 +13,32 @@ Entity::Entity() {
 	_material = MaterialManager::getInstance()->get("mat_normal_PBR");
 
 	this->setupDescriptorSets();
+}
+
+UniformBuffer* Entity::getUniform() {
+	return this->_uniformBuffer;
+}
+
+Mesh* Entity::getMesh() {
+	return this->_mesh;
+}
+
+Texture* Entity::getTexture() {
+	return this->_texture;
+}
+
+Material* Entity::getMaterial() {
+	return this->_material;
+}
+
+void Entity::setMaterial(const char* _name) {
+	this->_material->getDescriptor()->freePool(_pool);
+	this->_material = MaterialManager::getInstance()->get(_name);
+	this->setupDescriptorSets();
+}
+
+std::vector<VkDescriptorSet> Entity::description() {
+	return this->_descriptorSets;
 }
 
 void Entity::recreate(int _index) {

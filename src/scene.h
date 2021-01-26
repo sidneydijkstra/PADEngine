@@ -7,7 +7,7 @@
 #include "entity.h"
 #include "camera.h"
 
-class Scene {
+class Scene : public Hierarchy {
 	public:
 		Scene();
 		~Scene();
@@ -15,11 +15,9 @@ class Scene {
 		virtual void update();
 		void recreate(int _index);
 
-		std::vector<Entity*>& getChildren();
 		Camera* getCamera();
 
 	private:
-		std::vector<Entity*> _children;
 		Camera* _camera;
 };
 #endif

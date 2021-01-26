@@ -16,7 +16,7 @@ Renderer::Renderer() {
     mat_red_PBR.renderPass = _renderPass;
 
     MaterialManager::getInstance()->load(mat_normal_PBR);
-    MaterialManager::getInstance()->load(mat_red_PBR);
+    //MaterialManager::getInstance()->load(mat_red_PBR);
 
     _depthBuffer = new DepthBuffer();
     _samplingBuffer = new SamplingBuffer();
@@ -108,8 +108,8 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
             if (children_it->first != MeshType::OBJECT) {
 
                 // get and bind vertex/index buffer
-                BufferData vertexData = childVector[0]->mesh()->getBuffer()->vertex()->getBuffer();
-                BufferData indexData = childVector[0]->mesh()->getBuffer()->index()->getBuffer();
+                BufferData vertexData = childVector[0]->getMesh()->getBuffer()->vertex()->getBuffer();
+                BufferData indexData = childVector[0]->getMesh()->getBuffer()->index()->getBuffer();
 
                 VkBuffer vertexBuffers[] = { vertexData.buffer };
                 VkDeviceSize offsets[] = { 0 };
@@ -125,8 +125,8 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
             else if (children_it->first == MeshType::OBJECT) {
                 for (Entity* entity : childVector) {
                     // get and bind vertex/index buffer
-                    BufferData vertexData = entity->mesh()->getBuffer()->vertex()->getBuffer();
-                    BufferData indexData = entity->mesh()->getBuffer()->index()->getBuffer();
+                    BufferData vertexData = entity->getMesh()->getBuffer()->vertex()->getBuffer();
+                    BufferData indexData = entity->getMesh()->getBuffer()->index()->getBuffer();
 
                     VkBuffer vertexBuffers[] = { vertexData.buffer };
                     VkDeviceSize offsets[] = { 0 };

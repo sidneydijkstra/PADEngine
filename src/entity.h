@@ -32,50 +32,25 @@ struct DescriptionData {
     std::vector<VkDescriptorSet> descriptorSets;
 };
 
-class Entity {
+class Entity : public Hierarchy {
     public:
         Entity();
         ~Entity();
 
-        UniformBuffer* uniform() {
-            return _uniformBuffer;
-        };
+        UniformBuffer* getUniform();
+        Mesh* getMesh();
+        Texture* getTexture();
+        Material* getMaterial();
+        void setMaterial(const char* _name);
 
-        Mesh* mesh() {
-            return _mesh;
-        };
-
-        Texture* texture() {
-            return _texture;
-        };
-
-        Material* getMaterial() {
-            return _material;
-        }
-
-        void setMaterial(Material* _material) {
-            this->_material->getDescriptor()->freePool(_pool);
-            this->_material = _material;
-            this->setupDescriptorSets();
-        }
-
-        std::vector<VkDescriptorSet> description() {
-            return _descriptorSets;
-        };
+        std::vector<VkDescriptorSet> description();
 
         virtual void recreate(int _index);
 
-        Vector3& getPostion() { return _position; }
-        void setPosition(Vector3 position) { _position = position; }
-        Vector3& getRotation() { return _rotation; }
-        void setRotation(Vector3 rotation) { _rotation = rotation; }
-        Vector3& getScale() { return _scale; }
-        void setScale(Vector3 scale) { _scale = scale; }
+        Vector3 position;
+        Vector3 rotation;
+        Vector3 scale;
     protected:
-        Vector3 _position = Vector3(0, 0, 0);
-        Vector3 _rotation = Vector3(0, 0, 0);
-        Vector3 _scale = Vector3(1, 1, 1);
-
         Mesh* _mesh;
         UniformBuffer* _uniformBuffer;
         Texture* _texture;
