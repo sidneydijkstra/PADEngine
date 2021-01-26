@@ -1,0 +1,23 @@
+/*!
+
+@mainpage notitle
+
+@section main_intro Introduction
+
+Every game developer starts by making a simple game with a free to use game engine,
+such as Unity, GameMaker or Unreal. Especially Unity and GameMaker are engines that
+a lot of game developers start their learning path with. These engines are perfect
+for the beginning of game development. However, in these engines the programming is
+component-based and not object-oriented. For many game developers, this creates a
+gap of knowledge that they will need in their later careers. Many game studios use
+their own frameworks and engines for their games, and this requires background
+knowledge about the operation of the frameworks and engines.
+
+We want to fill this gap by means of the open-source framework outlined above. By
+introducing novice game developers to both object-oriented programming and the
+operation of renderers and physics engines, they can acquire the missing knowledge.
+With the open-source framework users can actually look under the hood at how things
+like collisions work. By providing this engine for personal use, anyone can broaden
+their knowledge about game engines.
+
+*/

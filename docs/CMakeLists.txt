@@ -1,5 +1,7 @@
 
 SET(PADEngine_DOXYGEN_SOURCES
+    "docs/main.dox"
+
     "src/mesh.h"
     "src/materialmanager.h"
     "src/meshbuffer.h"
