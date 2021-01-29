@@ -11,6 +11,8 @@ public:
 
 	glm::vec3 glm();
 
+	operator glm::vec3() const;
+
 	float x, y, z = 0;
 private:
 

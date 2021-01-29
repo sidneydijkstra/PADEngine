@@ -16,6 +16,10 @@ glm::vec3 Vector3::glm() {
 	return glm::vec3(x, y, z);
 }
 
+Vector3::operator glm::vec3() const {
+	return glm::vec3(x, y, z);
+}
+
 Vector3& Vector3::operator+=(const Vector3& rhs)
 {
 	x += rhs.x;
