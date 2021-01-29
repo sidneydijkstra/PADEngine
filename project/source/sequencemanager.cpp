@@ -32,7 +32,6 @@ Renderer* SequenceManager::getRenderer() {
 }
 
 void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
-
     _scene->update();
     for (Hierarchy* h : _scene->getChildren()) {
         Entity* e = (Entity*)h;
