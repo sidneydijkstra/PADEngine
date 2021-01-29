@@ -50,7 +50,8 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
         ubo.proj[1][1] *= -1;
 
-        e->getUniform()->updateBuffer(_imageIndex, ubo);
+        e->getUniformBuffer()->updateBuffer(_imageIndex, ubo);
+        e->getColorBuffer()->updateBuffer(_imageIndex, StorageBufferData { e->color } );
         e->recreate(_imageIndex);
     }
 }

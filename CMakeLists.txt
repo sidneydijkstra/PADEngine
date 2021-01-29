@@ -62,6 +62,8 @@ add_library(PADEngine STATIC
   project/source/indexbuffer.h
   project/source/uniformbuffer.cpp
   project/source/uniformbuffer.h
+  project/source/storagebuffer.cpp
+  project/source/storagebuffer.h
   project/source/imagebuffer.cpp
   project/source/imagebuffer.h
   project/source/texturebuffer.cpp

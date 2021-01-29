@@ -4,9 +4,11 @@ Entity::Entity() : Hierarchy() {
 	rotation = Vector3(0, 0, 0);
 	position = Vector3(0, 0, 0);
 	scale = Vector3(1, 1, 1);
+	color = Color();
 	
     _mesh = new Mesh();
 	_mesh->loadShape(MeshType::CUBE);
+	_colorBuffer = new StorageBuffer();
     _uniformBuffer = new UniformBuffer();
 
     _texture = new Texture();
@@ -15,8 +17,12 @@ Entity::Entity() : Hierarchy() {
 	this->setupDescriptorSets();
 }
 
-UniformBuffer* Entity::getUniform() {
+UniformBuffer* Entity::getUniformBuffer() {
 	return this->_uniformBuffer;
+}
+
+StorageBuffer* Entity::getColorBuffer() {
+	return this->_colorBuffer;
 }
 
 Mesh* Entity::getMesh() {
@@ -70,7 +76,7 @@ void Entity::setupDescriptorSets() {
 void Entity::updateDescriptorSets(int _index) {
 	int swapChainImageSize = SwapChainHandler::getInstance()->getSwapChainImagesSize();
 
-	std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+	std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
 
 	VkDescriptorBufferInfo bufferInfo{};
 	bufferInfo.buffer = _uniformBuffer->getBuffer().uniformBuffers[_index];
@@ -98,12 +104,26 @@ void Entity::updateDescriptorSets(int _index) {
 	descriptorWrites[1].descriptorCount = 1;
 	descriptorWrites[1].pImageInfo = &imageInfo;
 
+	VkDescriptorBufferInfo colorInfo{};
+	colorInfo.buffer = _colorBuffer->getBuffer()[_index];
+	colorInfo.offset = 0;
+	colorInfo.range = sizeof(StorageBufferData);
+
+	descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrites[2].dstSet = _descriptorSets[_index];
+	descriptorWrites[2].dstBinding = 2;
+	descriptorWrites[2].dstArrayElement = 0;
+	descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorWrites[2].descriptorCount = 1;
+	descriptorWrites[2].pBufferInfo = &colorInfo;
+
 	vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
 
 Entity::~Entity() {
 	delete _mesh;
 	delete _uniformBuffer;
+	delete _colorBuffer;
 	delete _texture;
 
 	_material->getDescriptor()->freePool(_pool);
