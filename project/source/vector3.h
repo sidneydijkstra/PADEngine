@@ -37,6 +37,9 @@ struct Vector3 {
     Vector3(const Vector3&) noexcept = default;
     Vector3(Vector3&&) noexcept = default;
 
+    Vector3& operator=(const Vector3&) noexcept = default;
+    Vector3& operator=(Vector3&&) noexcept = default;
+
     const real& operator[](int n) const noexcept;
     real& operator[](int n) noexcept;
 
