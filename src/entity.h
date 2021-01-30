@@ -15,10 +15,12 @@
 #include "mesh.h"
 #include "materialmanager.h"
 #include "material.h"
+#include "storagebuffer.h"
 #include "uniformbuffer.h"
 #include "texture.h"
 #include "hierarchy.h"
 #include "vector3.h"
+#include "color.h"
 
 #include <iostream>
 #include <vector>
@@ -37,7 +39,8 @@ class Entity : public Hierarchy {
         Entity();
         ~Entity();
 
-        UniformBuffer* getUniform();
+        UniformBuffer* getUniformBuffer();
+        StorageBuffer* getColorBuffer();
         Mesh* getMesh();
         Texture* getTexture();
         Material* getMaterial();
@@ -50,9 +53,11 @@ class Entity : public Hierarchy {
         Vector3 position;
         Vector3 rotation;
         Vector3 scale;
+        Color color;
     protected:
         Mesh* _mesh;
         UniformBuffer* _uniformBuffer;
+        StorageBuffer* _colorBuffer;
         Texture* _texture;
         Material* _material;
 

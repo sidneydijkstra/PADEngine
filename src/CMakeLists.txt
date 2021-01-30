@@ -29,6 +29,8 @@ add_library(PADEngine STATIC
   indexbuffer.h
   uniformbuffer.cpp
   uniformbuffer.h
+  storagebuffer.cpp
+  storagebuffer.h
   imagebuffer.cpp
   imagebuffer.h
   texturebuffer.cpp
@@ -71,9 +73,9 @@ add_library(PADEngine STATIC
   texture.h
   entity.cpp
   entity.h
-  vector3.cpp
   vector3.h
   vertex.h
+  color.h
   hierarchy.cpp
   hierarchy.h
   entity.cpp

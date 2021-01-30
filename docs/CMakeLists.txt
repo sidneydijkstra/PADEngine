@@ -41,6 +41,8 @@ SET(PADEngine_DOXYGEN_SOURCES
     "src/vertex.h"
     "src/buffer.h"
     "src/vulkanhandler.h"
+    "src/storagebuffer.h"
+    "src/color.h"
 )
 
 foreach(path IN LISTS PADEngine_DOXYGEN_SOURCES)
