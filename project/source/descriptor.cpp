@@ -1,37 +1,40 @@
 #include "descriptor.h"
 
 Descriptor::Descriptor() {
-	_pool = new DescriptorPool();
 	_layout = new DescriptorLayout();
-	this->setup();
+	// this->setup();
+}
+
+DescriptorPool* Descriptor::getPool() {
+	DescriptorPool* pool = new DescriptorPool();
+	_descriptorPools.push_back(pool);
+	return pool;
+}
+
+void Descriptor::freePool(DescriptorPool* _pool) {
+	for (std::vector<DescriptorPool*>::iterator it = _descriptorPools.begin(); it != _descriptorPools.end(); ++it) {
+		if (*it == _pool) {
+			delete _pool;
+			it = _descriptorPools.erase(it);
+			return;
+		}
+
+		if (_descriptorPools.empty())
+			return;
+	}
 }
 
 VkDescriptorSetLayout Descriptor::getLayout() {
 	return this->_layout->getLayout();
 }
 
-VkDescriptorSet& Descriptor::getDescriptorSet(int _index) {
-	return this->_descriptorSets[_index];
-}
-
-void Descriptor::setup() {
-	int swapChainImageSize = SwapChainHandler::getInstance()->getSwapChainImagesSize();
-
-	std::vector<VkDescriptorSetLayout> layouts(swapChainImageSize, _layout->getLayout());
-
-	VkDescriptorSetAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = _pool->getPool();
-	allocInfo.descriptorSetCount = static_cast<uint32_t>(swapChainImageSize);
-	allocInfo.pSetLayouts = layouts.data();
-
-	_descriptorSets.resize(swapChainImageSize);
-	if (vkAllocateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, _descriptorSets.data()) != VK_SUCCESS) {
-		throw std::runtime_error("failed to allocate descriptor sets!");
-	}
-}
-
 Descriptor::~Descriptor() {
-	delete _pool;
 	delete _layout;
+
+	for (std::vector<DescriptorPool*>::iterator it = _descriptorPools.begin(); it != _descriptorPools.end(); ++it) {
+		if (*it != NULL) {
+			delete *it;
+			it = _descriptorPools.erase(it);
+		}
+	}
 }

@@ -11,9 +11,8 @@ class MyScene : public Scene {
 		~MyScene();
 		
 		void update() override;
-		void updateDescriptors(int _index, VkDescriptorSet _descriptorSets) override;
 
-		Entity* _entity;
+		std::vector<Entity*> list;
 	private:
 };
 

@@ -40,8 +40,10 @@ class Entity : public Hierarchy {
         Material* getMaterial();
         void setMaterial(const char* _name);
 
+        VkDescriptorSet& getDescriptorSet(int _index);
+
         virtual void recreate(int _index);
-        void updateDescriptors(int _index, VkDescriptorSet _descriptorSet);
+        void updateDescriptors(int _index);
 
         Vector3 position;
         Vector3 rotation;
@@ -53,5 +55,9 @@ class Entity : public Hierarchy {
         StorageBuffer* _colorBuffer;
         Texture* _texture;
         Material* _material;
+
+        DescriptorPool* _pool;
+        std::vector<VkDescriptorSet> _descriptorSets;
+        void setupDescriptorSets();
 };
 #endif

@@ -28,14 +28,12 @@ class Descriptor {
 		Descriptor();
 		~Descriptor();
 
+		DescriptorPool* getPool();
+		void freePool(DescriptorPool* _pool);
 		VkDescriptorSetLayout getLayout();
-		VkDescriptorSet&  getDescriptorSet(int _index);
 	protected:
-		DescriptorPool* _pool;
+		std::vector<DescriptorPool*> _descriptorPools;
 		DescriptorLayout* _layout;
-		std::vector<VkDescriptorSet> _descriptorSets;
-
-		void setup();
 	private:
 };
 #endif
