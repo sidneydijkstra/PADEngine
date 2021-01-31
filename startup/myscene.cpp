@@ -3,15 +3,16 @@
 int amount = 0;
 MyScene::MyScene() : Scene() {
 	_entity = new Entity();
-	_entity->color = PINK;
-	_entity->getMesh()->loadObject("assets/viking_room.obj");
-	_entity->getTexture()->loadTexture("assets/viking_room.png");
 	this->addChild(_entity);
 }
 
 
 void MyScene::update() {
 	this->getCamera()->move3D(5.0f);
+}
+
+void MyScene::updateDescriptors(int _index, VkDescriptorSet _descriptorSets) {
+	Scene::updateDescriptors(_index, _descriptorSets);
 }
 
 MyScene::~MyScene() {

@@ -16,7 +16,7 @@ Renderer::Renderer() {
     mat_red_PBR.renderPass = _renderPass;
 
     MaterialManager::getInstance()->load(mat_normal_PBR);
-    //MaterialManager::getInstance()->load(mat_red_PBR);
+    MaterialManager::getInstance()->load(mat_red_PBR);
 
     _depthBuffer = new DepthBuffer();
     _samplingBuffer = new SamplingBuffer();
@@ -97,6 +97,8 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
         vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipeline());
         
+        _scene->updateDescriptors(_index, mat->getDescriptor()->getDescriptorSet(_index));
+
         // get children sorted by mesh type
         std::map<MeshType, std::vector<Entity*>> children = mat_children_it->second;
 
@@ -117,8 +119,13 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
                 vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT32);
 
                 for (Entity* entity : childVector) {
-                    // set descriptor and draw mesh
-                    vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &entity->description()[_index], 0, nullptr);
+                    // update descriptors
+                    entity->updateDescriptors(_index, mat->getDescriptor()->getDescriptorSet(_index));
+
+                    // set descriptors
+                    vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &mat->getDescriptor()->getDescriptorSet(_index), 0, nullptr);
+
+                    // draw mesh
                     vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
                 }
             }
@@ -133,8 +140,13 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
                     vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
                     vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT32);
 
-                    // set descriptor and draw mesh
-                    vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &entity->description()[_index], 0, nullptr);
+                    // update descriptors
+                    entity->updateDescriptors(_index, mat->getDescriptor()->getDescriptorSet(_index));
+
+                    // set descriptors
+                    vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &mat->getDescriptor()->getDescriptorSet(_index), 0, nullptr);
+
+                    // draw mesh
                     vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
                 }
             }

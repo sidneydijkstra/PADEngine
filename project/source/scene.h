@@ -14,10 +14,13 @@ class Scene : public Hierarchy {
 
 		virtual void update();
 		void recreate(int _index);
+		virtual void updateDescriptors(int _index, VkDescriptorSet _descriptorSets);
 
 		Camera* getCamera();
 
+		StorageBuffer* _bufferData;
 	private:
 		Camera* _camera;
+
 };
 #endif

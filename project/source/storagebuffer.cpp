@@ -26,6 +26,25 @@ void StorageBuffer::updateBuffer(int _index, StorageBufferData _bufferData) {
     vkUnmapMemory(DeviceHandler::getInstance()->getLogicalDevice(), _buffersMemory[_index]);
 }
 
+void StorageBuffer::updateDescriptor(int _index, VkDescriptorSet _descriptor, int _dstBinding) {
+    VkDescriptorBufferInfo colorInfo{};
+    colorInfo.buffer = this->_buffers[_index];
+    colorInfo.offset = 0;
+    colorInfo.range = sizeof(StorageBufferData);
+
+    VkWriteDescriptorSet descriptorWrites{};
+
+    descriptorWrites.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites.dstSet = _descriptor;
+    descriptorWrites.dstBinding = _dstBinding;
+    descriptorWrites.dstArrayElement = 0;
+    descriptorWrites.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites.descriptorCount = 1;
+    descriptorWrites.pBufferInfo = &colorInfo;
+
+    vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(1), &descriptorWrites, 0, nullptr);
+}
+
 void StorageBuffer::recreate() {
     for (size_t i = 0; i < _buffersMemory.size(); i++) {
         vkDestroyBuffer(DeviceHandler::getInstance()->getLogicalDevice(), _buffers[i], nullptr);

@@ -23,6 +23,25 @@ VkSampler TextureBuffer::getSampler() {
     return _textureSampler;
 }
 
+void TextureBuffer::updateDescriptor(int _index, VkDescriptorSet _descriptor, int _dstBinding) {
+    VkDescriptorImageInfo imageInfo{};
+    imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo.imageView = this->_textureImageView;
+    imageInfo.sampler = this->_textureSampler;
+
+    VkWriteDescriptorSet descriptorWrites{};
+
+    descriptorWrites.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites.dstSet = _descriptor;
+    descriptorWrites.dstBinding = _dstBinding;
+    descriptorWrites.dstArrayElement = 0;
+    descriptorWrites.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrites.descriptorCount = 1;
+    descriptorWrites.pImageInfo = &imageInfo;
+
+    vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(1), &descriptorWrites, 0, nullptr);
+}
+
 void TextureBuffer::createTextureImage(const char* _path) {
     int texWidth, texHeight, texChannels;
     stbi_uc* pixels = stbi_load(_path, &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);

@@ -11,6 +11,7 @@ class MyScene : public Scene {
 		~MyScene();
 		
 		void update() override;
+		void updateDescriptors(int _index, VkDescriptorSet _descriptorSets) override;
 
 		Entity* _entity;
 	private:

@@ -23,6 +23,25 @@ void UniformBuffer::updateBuffer(int _index, UniformBufferObject _ubo) {
     vkUnmapMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[_index]);
 }
 
+void UniformBuffer::updateDescriptor(int _index, VkDescriptorSet _descriptor, int _dstBinding) {
+    VkDescriptorBufferInfo colorInfo{};
+    colorInfo.buffer = this->_uniformBuffers[_index];
+    colorInfo.offset = 0;
+    colorInfo.range = sizeof(UniformBufferData);
+
+    VkWriteDescriptorSet descriptorWrites{};
+
+    descriptorWrites.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites.dstSet = _descriptor;
+    descriptorWrites.dstBinding = _dstBinding;
+    descriptorWrites.dstArrayElement = 0;
+    descriptorWrites.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites.descriptorCount = 1;
+    descriptorWrites.pBufferInfo = &colorInfo;
+
+    vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(1), &descriptorWrites, 0, nullptr);
+}
+
 UniformBufferData UniformBuffer::getBuffer() {
     return UniformBufferData{this->_uniformBuffers, this->_uniformBuffersMemory};
 }

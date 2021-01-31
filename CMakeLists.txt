@@ -54,6 +54,10 @@ add_library(PADEngine STATIC
   project/source/renderfactory.h
   project/source/descriptor.cpp
   project/source/descriptor.h
+  project/source/descriptorpool.cpp
+  project/source/descriptorpool.h
+  project/source/descriptorlayout.cpp
+  project/source/descriptorlayout.h
   project/source/buffer.cpp
   project/source/buffer.h
   project/source/vertexbuffer.cpp

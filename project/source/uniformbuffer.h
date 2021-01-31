@@ -40,6 +40,7 @@ public:
 
 	void setupBuffer();
 	void updateBuffer(int _index, UniformBufferObject _ubo);
+	void updateDescriptor(int _index, VkDescriptorSet _descriptor, int _dstBinding);
 	UniformBufferData getBuffer();
 	void recreate();
 
