@@ -17,6 +17,7 @@ class StorageBuffer : Buffer {
 		std::vector<VkBuffer> getBuffer();
 
 		void updateBuffer(int _index, StorageBufferData _bufferData);
+		void updateDescriptor(int _index, VkDescriptorSet _descriptor, int _dstBinding);
 		void recreate();
 
 	private:

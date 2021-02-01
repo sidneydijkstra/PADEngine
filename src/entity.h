@@ -28,12 +28,6 @@
 #ifndef ENTITY_CLASS
 #define ENTITY_CLASS
 
-struct DescriptionData {
-    VkDescriptorSetLayout descriptorSetLayout;
-    VkDescriptorPool descriptorPool;
-    std::vector<VkDescriptorSet> descriptorSets;
-};
-
 class Entity : public Hierarchy {
     public:
         Entity();
@@ -46,9 +40,10 @@ class Entity : public Hierarchy {
         Material* getMaterial();
         void setMaterial(const char* _name);
 
-        std::vector<VkDescriptorSet> description();
+        VkDescriptorSet& getDescriptorSet(int _index);
 
         virtual void recreate(int _index);
+        void updateDescriptors(int _index);
 
         Vector3 position;
         Vector3 rotation;
@@ -61,10 +56,8 @@ class Entity : public Hierarchy {
         Texture* _texture;
         Material* _material;
 
-        // TODO: good?
-        VkDescriptorPool _pool;
+        DescriptorPool* _pool;
         std::vector<VkDescriptorSet> _descriptorSets;
-        virtual void setupDescriptorSets();
-        virtual void updateDescriptorSets(int _index);
+        void setupDescriptorSets();
 };
 #endif

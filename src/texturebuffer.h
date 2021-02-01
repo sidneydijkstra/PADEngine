@@ -28,6 +28,7 @@ public:
 	VkImageView getImageView();
 	VkSampler getSampler();
 
+	void updateDescriptor(int _index, VkDescriptorSet _descriptor, int _dstBinding);
 private:
 	VkImage _textureImage;
 	VkDeviceMemory _textureImageMemory;

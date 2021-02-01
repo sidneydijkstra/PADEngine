@@ -12,7 +12,7 @@ class MyScene : public Scene {
 		
 		void update() override;
 
-		Entity* _entity;
+		std::vector<Entity*> list;
 	private:
 };
 

@@ -21,6 +21,10 @@ add_library(PADEngine STATIC
   renderfactory.h
   descriptor.cpp
   descriptor.h
+  descriptorpool.cpp
+  descriptorpool.h
+  descriptorlayout.cpp
+  descriptorlayout.h
   buffer.cpp
   buffer.h
   vertexbuffer.cpp

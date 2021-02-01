@@ -43,23 +43,28 @@ void Entity::setMaterial(const char* _name) {
 	this->setupDescriptorSets();
 }
 
-std::vector<VkDescriptorSet> Entity::description() {
-	return this->_descriptorSets;
+VkDescriptorSet& Entity::getDescriptorSet(int _index) {
+	return this->_descriptorSets[_index];
 }
 
 void Entity::recreate(int _index) {
-	this->updateDescriptorSets(_index);
+}
+
+void Entity::updateDescriptors(int _index) {
+	this->_uniformBuffer->updateDescriptor(_index, _descriptorSets[_index], 0);
+	this->_texture->getBuffer()->updateDescriptor(_index, _descriptorSets[_index], 1);
+	this->_colorBuffer->updateDescriptor(_index, _descriptorSets[_index], 2);
 }
 
 void Entity::setupDescriptorSets() {
 	int swapChainImageSize = SwapChainHandler::getInstance()->getSwapChainImagesSize();
-	_pool = _material->getDescriptor()->getPool();
+	_pool = this->_material->getDescriptor()->getPool();
 
 	std::vector<VkDescriptorSetLayout> layouts(swapChainImageSize, _material->getDescriptor()->getLayout());
 
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = _pool;
+	allocInfo.descriptorPool = _pool->getPool();
 	allocInfo.descriptorSetCount = static_cast<uint32_t>(swapChainImageSize);
 	allocInfo.pSetLayouts = layouts.data();
 
@@ -67,57 +72,6 @@ void Entity::setupDescriptorSets() {
 	if (vkAllocateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), &allocInfo, _descriptorSets.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
-
-	for (size_t i = 0; i < swapChainImageSize; i++) {
-		this->updateDescriptorSets(i);
-	}
-}
-
-void Entity::updateDescriptorSets(int _index) {
-	int swapChainImageSize = SwapChainHandler::getInstance()->getSwapChainImagesSize();
-
-	std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
-
-	VkDescriptorBufferInfo bufferInfo{};
-	bufferInfo.buffer = _uniformBuffer->getBuffer().uniformBuffers[_index];
-	bufferInfo.offset = 0;
-	bufferInfo.range = sizeof(UniformBufferObject);
-
-	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[0].dstSet = _descriptorSets[_index];
-	descriptorWrites[0].dstBinding = 0;
-	descriptorWrites[0].dstArrayElement = 0;
-	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorWrites[0].descriptorCount = 1;
-	descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-	VkDescriptorImageInfo imageInfo{};
-	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-	imageInfo.imageView = _texture->getBuffer()->getImageView();
-	imageInfo.sampler = _texture->getBuffer()->getSampler();
-
-	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[1].dstSet = _descriptorSets[_index];
-	descriptorWrites[1].dstBinding = 1;
-	descriptorWrites[1].dstArrayElement = 0;
-	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	descriptorWrites[1].descriptorCount = 1;
-	descriptorWrites[1].pImageInfo = &imageInfo;
-
-	VkDescriptorBufferInfo colorInfo{};
-	colorInfo.buffer = _colorBuffer->getBuffer()[_index];
-	colorInfo.offset = 0;
-	colorInfo.range = sizeof(StorageBufferData);
-
-	descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrites[2].dstSet = _descriptorSets[_index];
-	descriptorWrites[2].dstBinding = 2;
-	descriptorWrites[2].dstArrayElement = 0;
-	descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorWrites[2].descriptorCount = 1;
-	descriptorWrites[2].pBufferInfo = &colorInfo;
-
-	vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 }
 
 Entity::~Entity() {
@@ -126,5 +80,5 @@ Entity::~Entity() {
 	delete _colorBuffer;
 	delete _texture;
 
-	_material->getDescriptor()->freePool(_pool);
+	this->_material->getDescriptor()->freePool(_pool);
 }
