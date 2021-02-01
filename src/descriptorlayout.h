@@ -16,7 +16,7 @@ class DescriptorLayout {
 		DescriptorLayout(VkDescriptorSetLayoutBinding _layoutBinding);
 		~DescriptorLayout();
 
-		VkDescriptorSetLayout getLayout();
+		VkDescriptorSetLayout& getLayout();
 	protected:
 		virtual void setup(int _size, VkDescriptorSetLayoutBinding* _layoutBinding);
 

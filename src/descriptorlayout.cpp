@@ -38,7 +38,7 @@ DescriptorLayout::DescriptorLayout(VkDescriptorSetLayoutBinding _layoutBinding){
 	this->setup(1, &_layoutBinding);
 }
 
-VkDescriptorSetLayout DescriptorLayout::getLayout() {
+VkDescriptorSetLayout& DescriptorLayout::getLayout() {
 	return this->_layout;
 }
 

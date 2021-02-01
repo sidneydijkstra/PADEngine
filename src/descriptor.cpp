@@ -24,7 +24,7 @@ void Descriptor::freePool(DescriptorPool* _pool) {
 	}
 }
 
-VkDescriptorSetLayout Descriptor::getLayout() {
+VkDescriptorSetLayout& Descriptor::getLayout() {
 	return this->_layout->getLayout();
 }
 

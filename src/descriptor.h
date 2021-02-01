@@ -30,7 +30,7 @@ class Descriptor {
 
 		DescriptorPool* getPool();
 		void freePool(DescriptorPool* _pool);
-		VkDescriptorSetLayout getLayout();
+		VkDescriptorSetLayout& getLayout();
 	protected:
 		std::vector<DescriptorPool*> _descriptorPools;
 		DescriptorLayout* _layout;
