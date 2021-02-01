@@ -7,7 +7,7 @@
 
 class MyScene : public Scene {
 	public:
-		MyScene();
+		MyScene(std::string _name);
 		~MyScene();
 		
 		void update() override;

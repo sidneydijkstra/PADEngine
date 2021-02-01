@@ -1,7 +1,7 @@
 #include "myscene.h"
 
 int amount = 0;
-MyScene::MyScene() : Scene() {
+MyScene::MyScene(std::string _name) : Scene(_name) {
 	list = std::vector<Entity*>();
 	
 	for (size_t i = 0; i < 10; i++) {

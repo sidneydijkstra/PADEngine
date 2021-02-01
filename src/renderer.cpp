@@ -97,6 +97,8 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
         vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipeline());
 
+
+
         // get children sorted by mesh type
         std::map<MeshType, std::vector<Entity*>> children = mat_children_it->second;
 

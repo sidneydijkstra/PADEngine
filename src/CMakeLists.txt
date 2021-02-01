@@ -1,7 +1,5 @@
 
 add_library(PADEngine STATIC
-  main.cpp
-
   # PADEngine core engine files
   config.h
   core.cpp
@@ -16,6 +14,8 @@ add_library(PADEngine STATIC
   resourcemanager.h
   sequencemanager.cpp
   sequencemanager.h
+  scenemanager.cpp
+  scenemanager.h
   renderer.cpp
   renderer.h
   renderfactory.h

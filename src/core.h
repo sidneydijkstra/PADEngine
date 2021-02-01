@@ -18,6 +18,7 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 #include "sequencemanager.h"
+#include "scenemanager.h"
 #include "input.h"
 #include "time.h"
 
@@ -33,7 +34,7 @@ class Core {
         Core();
         ~Core();
 
-        void run(Scene* _scene);
+        void run();
         void cleanup();
 
     private:

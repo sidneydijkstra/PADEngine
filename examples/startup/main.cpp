@@ -5,9 +5,13 @@ int main() {
 
 	Core core;
 
-    MyScene* scene = new MyScene();
+    MyScene* scene = new MyScene("myscene");
+    SceneManager::getInstance()->addScene(scene);
+    SceneManager::getInstance()->setCurrentScene(scene);
 
-    core.run(scene);
+    core.run();
+
+    SceneManager::getInstance()->deleteScene("myscene");
 
     delete scene;
 

@@ -15,9 +15,7 @@ Core::Core() {
     _seqManager = new SequenceManager();
 }
 
-void Core::run(Scene* _scene) {
-    this->_scene = _scene;
-
+void Core::run() {
     try {
         this->_run();
     }
@@ -40,7 +38,10 @@ void Core::loop() {
     while (!glfwWindowShouldClose(VulkanHandler::getInstance()->getWindow())) {
         Input::update();
         Time::update();
-        _seqManager->draw(_scene);
+
+        Scene* scene = SceneManager::getInstance()->getCurrentScene();
+        if(scene != nullptr)
+            _seqManager->draw(scene);
     }
 
     vkDeviceWaitIdle(DeviceHandler::getInstance()->getLogicalDevice());

@@ -8,7 +8,7 @@ Entity::Entity() : Hierarchy() {
 	
     _mesh = new Mesh();
 	_mesh->loadShape(MeshType::CUBE);
-	_colorBuffer = new StorageBuffer();
+	_colorBuffer = new StorageBuffer<StorageBufferData>();
     _uniformBuffer = new UniformBuffer();
 
     _texture = new Texture();
@@ -21,7 +21,7 @@ UniformBuffer* Entity::getUniformBuffer() {
 	return this->_uniformBuffer;
 }
 
-StorageBuffer* Entity::getColorBuffer() {
+StorageBuffer<StorageBufferData>* Entity::getColorBuffer() {
 	return this->_colorBuffer;
 }
 
