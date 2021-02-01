@@ -15,14 +15,13 @@ class Scene {
 		void update();
 		void recreate(int _index);
 
-		std::vector<Entity*> getChildren() {
-			return _children;
-		};
-
-		Camera* camera();
+		std::vector<Entity*> children() { return _children; }
+		Camera* camera() { return _camera; }
+		string name() { return _name; }
 
 	private:
 		std::vector<Entity*> _children;
 		Camera* _camera;
+		string _name;
 };
 #endif

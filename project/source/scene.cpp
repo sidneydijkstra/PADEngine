@@ -37,10 +37,6 @@ void Scene::recreate(int _index) {
 	}
 }
 
-Camera* Scene::camera() {
-	return _camera;
-}
-
 Scene::~Scene() {
 	for (Entity* e : _children) {
 		delete e;
