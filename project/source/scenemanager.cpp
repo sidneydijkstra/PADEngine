@@ -1,7 +1,7 @@
 #include "scenemanager.h"
 
 SceneManager::SceneManager() {
-
+	_currentScene = new Scene();
 }
 
 SceneManager* SceneManager::getInstance() {
@@ -25,12 +25,20 @@ Scene* SceneManager::createScene(string name) {
 	
 }
 
+void SceneManager::deleteScene(string name) {
+	getInstance()->_scenes->erase(name);
+}
+
 void SceneManager::addScene(Scene* scene) {
-	this->_scenes.insert(std::pair<string, Scene*>(scene->name(), scene));
+	getInstance()->_scenes.insert(std::pair<string, Scene*>(scene->name(), scene));
 }
 
 Scene* SceneManager::getScene(string name) {
-	return this->_scenes.find(name)->second;
+	return getInstance()->_scenes.find(name)->second;
+}
+
+void SceneManager::setCurrentScene(Scene* scene) {
+	_currentScene = scene;
 }
 
 void SceneManager::deleteInstance() {
@@ -46,4 +54,6 @@ SceneManager::~SceneManager() {
 		}
 	}
 	_scenes.clear();
+
+	delete _currentScene;
 }

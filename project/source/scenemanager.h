@@ -9,10 +9,12 @@ public:
 	SceneManager* getInstance();
 
 	Scene* createScene(string name);
+	void deleteScene(string name);
 	void addScene(Scene* scene);
 
 	Scene* getScene(string name);
 	Scene* getCurrentScene() { return _currentScene; }
+	void setCurrentScene(Scene* scene);
 	
 	void deleteInstance();
 	~SceneManager();
