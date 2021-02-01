@@ -1,7 +1,7 @@
 #include "texture.h"
 
 Texture::Texture() {
-	_buffer = ResourceManager::getInstance()->getTextureBuffer("assets/logo.png");
+	_buffer = ResourceManager::getInstance()->getTextureBuffer("assets/white.png");
 }
 
 void Texture::loadTexture(const char* _path) {

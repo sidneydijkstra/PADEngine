@@ -8,6 +8,10 @@ void Mesh::loadShape(MeshType _type) {
 	_meshBuffer = ResourceManager::getInstance()->getMeshBuffer(_type);
 }
 
+void Mesh::loadObject(const char* _path) {
+	_meshBuffer = ResourceManager::getInstance()->getObjectMeshBuffer(_path);
+}
+
 MeshBuffer* Mesh::getBuffer() {
 	return _meshBuffer;
 }

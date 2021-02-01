@@ -6,13 +6,12 @@
 
 class SceneManager {
 public:
-	SceneManager* getInstance();
+	static SceneManager* getInstance();
 
-	Scene* createScene(string name);
-	void deleteScene(string name);
+	void deleteScene(std::string name);
 	void addScene(Scene* scene);
 
-	Scene* getScene(string name);
+	Scene* getScene(std::string name);
 	Scene* getCurrentScene() { return _currentScene; }
 	void setCurrentScene(Scene* scene);
 	
@@ -22,7 +21,6 @@ public:
 private:
 	SceneManager();
 
-	static SceneManager* _instance;
 	Scene* _currentScene;
 
 	std::map <std::string, Scene*> _scenes;

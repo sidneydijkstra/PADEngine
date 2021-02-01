@@ -17,8 +17,8 @@
 #include "vulkanhandler.h"
 #include "devicehandler.h"
 #include "swapchainhandler.h"
-#include "shader.h"
 #include "sequencemanager.h"
+#include "scenemanager.h"
 #include "input.h"
 #include "time.h"
 
@@ -35,13 +35,14 @@ class Core {
         ~Core();
 
         void run();
+        void cleanup();
 
     private:
         SequenceManager* _seqManager;
         Scene* _scene;
 
         void loop();
-        void cleanup();
+        void _run();
 
         static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };

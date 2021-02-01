@@ -50,6 +50,7 @@ class DeviceHandler {
 		VkQueue getDevicePresentQueue();
 		VkQueue getDeviceGraphicsQueue();
 		VkCommandPool getCommandPool();
+		VkSampleCountFlagBits getMsaaSamples();
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice _device);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice _device);
@@ -65,6 +66,7 @@ class DeviceHandler {
 		VkQueue _graphicsQueue;
 
 		VkCommandPool _commandPool;
+		VkSampleCountFlagBits _msaaSamples;
 
 		void pickPhysicalDevice();
 		void createLogicalDevice();
@@ -74,6 +76,7 @@ class DeviceHandler {
 		void setupCommandPool();
 
 		VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+		VkSampleCountFlagBits getMaxUsableSampleCount();
 
 		// add device extensions
 		const std::vector<const char*> _deviceExtensions = {

@@ -1,45 +1,34 @@
 #include "scene.h"
 
-Scene::Scene() {
-	_children = std::vector<Entity*>();
-	_camera = new Camera();
+Scene::Scene(std::string _name) : Hierarchy(){
+	this->_camera = new Camera();
+	this->_name = _name;
 
-	for (size_t i = 0; i < 250; i++) {
-		_children.push_back(new Entity());
-
-		int x = (rand() % 100) - 50;
-		int y = (rand() % 100) - 50;
-		int z = (rand() % 100) - 50;
-
-		_children[i]->setPosition(Vector3(x, y, z));
-	}
-
-	for (size_t i = 250; i < 500; i++) {
-		_children.push_back(new Entity());
-
-		int x = (rand() % 100) - 50;
-		int y = (rand() % 100) - 50;
-		int z = (rand() % 100) - 50;
-
-		_children[i]->setPosition(Vector3(x, y, z));
-		_children[i]->texture()->loadTexture("assets/banaan.jpg");
-		_children[i]->mesh()->loadShape(MeshType::PLANE);
+	_bufferData = new StorageBuffer<StorageBufferData>();
+	for (size_t i = 0; i < SwapChainHandler::getInstance()->getSwapChainImagesSize(); i++) {
+		_bufferData->updateBuffer(i, StorageBufferData{ glm::vec3(3, 6, 2) });
 	}
 }
 
 void Scene::update() {
-	_camera->move3D(5.0f);
 }
 
 void Scene::recreate(int _index) {
-	for (Entity* e : _children) {
-		e->recreate(_index);
+	std::vector<Hierarchy*> list = this->getChildren();
+	for (size_t i = 0; i < list.size(); i++) {
+		Entity* ent = (Entity*)list[i];
+		ent->recreate(_index);
 	}
 }
 
+void Scene::updateDescriptors(int _index, VkDescriptorSet _descriptorSets) {
+	this->_bufferData->updateDescriptor(_index, _descriptorSets, 3);
+}
+
+Camera* Scene::getCamera() {
+	return _camera;
+}
+
 Scene::~Scene() {
-	for (Entity* e : _children) {
-		delete e;
-	}
-	_children.clear();
+	delete _bufferData;
 }

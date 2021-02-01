@@ -1,13 +1,13 @@
 #ifndef MODELLOADER_CLASS
 #define MODELLOADER_CLASS
 
-#include <tiny_obj_loader.h>
+#include <unordered_map>
+
+#include "vertex.h"
+#include "meshbuffer.h"
 
 class ModelLoader {
-public:
-	ModelLoader();
-	~ModelLoader();
-
-private:
+	public:
+		static MeshData loadObjectFile(std::string obj_file_path);
 };
 #endif

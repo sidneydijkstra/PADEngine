@@ -3,25 +3,26 @@
 #define SCENE_CLASS
 
 #include <stdlib.h>
+#include <iostream>
 
 #include "entity.h"
 #include "camera.h"
 
-class Scene {
+class Scene : public Hierarchy {
 	public:
-		Scene();
+		Scene(std::string _name);
 		~Scene();
 
-		void update();
+		virtual void update();
 		void recreate(int _index);
+		virtual void updateDescriptors(int _index, VkDescriptorSet _descriptorSets);
 
-		std::vector<Entity*> children() { return _children; }
-		Camera* camera() { return _camera; }
-		string name() { return _name; }
+		std::string getName() { return _name; }
+		Camera* getCamera();
 
+		StorageBuffer<StorageBufferData>* _bufferData;
 	private:
-		std::vector<Entity*> _children;
 		Camera* _camera;
-		string _name;
+		std::string _name;
 };
 #endif

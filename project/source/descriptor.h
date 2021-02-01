@@ -16,6 +16,8 @@
 
 #include "devicehandler.h"
 #include "swapchainhandler.h"
+#include "descriptorpool.h"
+#include "descriptorlayout.h"
 
 #include <iostream>
 #include <vector>
@@ -26,19 +28,12 @@ class Descriptor {
 		Descriptor();
 		~Descriptor();
 
+		DescriptorPool* getPool();
+		void freePool(DescriptorPool* _pool);
 		VkDescriptorSetLayout getLayout();
-		VkDescriptorPool getPool();
-		void freePool(VkDescriptorPool _pool);
-
+	protected:
+		std::vector<DescriptorPool*> _descriptorPools;
+		DescriptorLayout* _layout;
 	private:
-		VkDescriptorSetLayout _descriptorSetLayout;
-		std::vector<VkDescriptorPool> _descriptorPools;
-
-		//std::vector<VkDescriptorSet> _descriptorSets;
-
-	private:
-		void setupDescriptorLayout();
-		VkDescriptorPool setupDescriptorPool();
-		//void setupDescriptorSets();
 };
 #endif

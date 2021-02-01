@@ -13,10 +13,14 @@
 
 #include "resourcemanager.h"
 #include "mesh.h"
+#include "materialmanager.h"
+#include "material.h"
+#include "storagebuffer.h"
 #include "uniformbuffer.h"
 #include "texture.h"
 #include "hierarchy.h"
 #include "vector3.h"
+#include "color.h"
 
 #include <iostream>
 #include <vector>
@@ -24,54 +28,36 @@
 #ifndef ENTITY_CLASS
 #define ENTITY_CLASS
 
-struct DescriptionData {
-    VkDescriptorSetLayout descriptorSetLayout;
-    VkDescriptorPool descriptorPool;
-    std::vector<VkDescriptorSet> descriptorSets;
-};
-
-class Entity {
+class Entity : public Hierarchy {
     public:
         Entity();
         ~Entity();
 
-        UniformBuffer* uniform() {
-            return _uniformBuffer;
-        };
+        UniformBuffer* getUniformBuffer();
+        StorageBuffer<StorageBufferData>* getColorBuffer();
+        Mesh* getMesh();
+        Texture* getTexture();
+        Material* getMaterial();
+        void setMaterial(const char* _name);
 
-        Mesh* mesh() {
-            return _mesh;
-        };
-
-        Texture* texture() {
-            return _texture;
-        };
-
-        std::vector<VkDescriptorSet> description() {
-            return _descriptorSets;
-        };
+        VkDescriptorSet& getDescriptorSet(int _index);
 
         virtual void recreate(int _index);
+        void updateDescriptors(int _index);
 
-        Vector3 getPostion() { return _position; }
-        void setPosition(Vector3 position) { _position = position; }
-        Vector3 getRotation() { return _rotation; }
-        void setRotation(Vector3 rotation) { _rotation = rotation; }
-        Vector3 getScale() { return _scale; }
-        void setScale(Vector3 scale) { _scale = scale; }
+        Vector3 position;
+        Vector3 rotation;
+        Vector3 scale;
+        Color color;
     protected:
-        Vector3 _position = Vector3(0, 0, 0);
-        Vector3 _rotation = Vector3(0, 0, 0);
-        Vector3 _scale = Vector3(1, 1, 1);
-
         Mesh* _mesh;
         UniformBuffer* _uniformBuffer;
+        StorageBuffer<StorageBufferData>* _colorBuffer;
         Texture* _texture;
+        Material* _material;
 
-        // TODO: good?
-        VkDescriptorPool _pool;
+        DescriptorPool* _pool;
         std::vector<VkDescriptorSet> _descriptorSets;
-        virtual void setupDescriptorSets();
-        virtual void updateDescriptorSets(int _index);
+        void setupDescriptorSets();
 };
 #endif

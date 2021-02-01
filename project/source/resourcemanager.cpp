@@ -3,9 +3,9 @@
 static ResourceManager* _instance;
 
 ResourceManager::ResourceManager() {
-	_entityDescriptor = new Descriptor();
 	_textures = std::map<std::string, TextureBuffer*>();
 	_meshes = std::map<MeshType, MeshBuffer*>();
+	_objectMeshes = std::map<std::string, MeshBuffer*>();
 }
 
 ResourceManager* ResourceManager::getInstance() {
@@ -13,10 +13,6 @@ ResourceManager* ResourceManager::getInstance() {
 		_instance = new ResourceManager();
 	}
 	return _instance;
-}
-
-Descriptor* ResourceManager::getEntityDescriptor() {
-	return _entityDescriptor;
 }
 
 TextureBuffer* ResourceManager::getTextureBuffer(const char* path) {
@@ -43,14 +39,23 @@ MeshBuffer* ResourceManager::getMeshBuffer(MeshType _type) {
 	return _meshes[_type];
 }
 
+MeshBuffer* ResourceManager::getObjectMeshBuffer(const char* _path) {
+	if (_objectMeshes[_path] != NULL) {
+		return _objectMeshes[_path];
+	}
+
+	MeshBuffer* m = new MeshBuffer(MeshType::OBJECT, ModelLoader::loadObjectFile(_path));
+	_objectMeshes[_path] = m;
+
+	return _objectMeshes[_path];
+}
+
 void ResourceManager::deleteInstance() {
 	delete _instance;
 	_instance = nullptr;
 }
 
 ResourceManager::~ResourceManager() {
-	delete _entityDescriptor;
-
 	// delete loaded textures
 	std::map<std::string, TextureBuffer*>::iterator text_it;
 	for (text_it = _textures.begin(); text_it != _textures.end(); ++text_it) {
@@ -68,5 +73,14 @@ ResourceManager::~ResourceManager() {
 		}
 	}
 	_meshes.clear();
+
+	// delete loaded object meshes
+	std::map<std::string, MeshBuffer*>::iterator objmesh_it;
+	for (objmesh_it = _objectMeshes.begin(); objmesh_it != _objectMeshes.end(); ++objmesh_it) {
+		if (objmesh_it->second != NULL) {
+			delete objmesh_it->second;
+		}
+	}
+	_objectMeshes.clear();
 }
 
