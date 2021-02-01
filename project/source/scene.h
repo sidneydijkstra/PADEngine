@@ -18,7 +18,7 @@ class Scene : public Hierarchy {
 
 		Camera* getCamera();
 
-		StorageBuffer* _bufferData;
+		StorageBuffer<StorageBufferData>* _bufferData;
 	private:
 		Camera* _camera;
 

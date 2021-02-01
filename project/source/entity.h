@@ -34,7 +34,7 @@ class Entity : public Hierarchy {
         ~Entity();
 
         UniformBuffer* getUniformBuffer();
-        StorageBuffer* getColorBuffer();
+        StorageBuffer<StorageBufferData>* getColorBuffer();
         Mesh* getMesh();
         Texture* getTexture();
         Material* getMaterial();
@@ -52,7 +52,7 @@ class Entity : public Hierarchy {
     protected:
         Mesh* _mesh;
         UniformBuffer* _uniformBuffer;
-        StorageBuffer* _colorBuffer;
+        StorageBuffer<StorageBufferData>* _colorBuffer;
         Texture* _texture;
         Material* _material;
 

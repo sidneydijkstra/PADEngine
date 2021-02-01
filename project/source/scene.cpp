@@ -3,7 +3,7 @@
 Scene::Scene() : Hierarchy(){
 	_camera = new Camera();
 
-	_bufferData = new StorageBuffer();
+	_bufferData = new StorageBuffer<StorageBufferData>();
 	for (size_t i = 0; i < SwapChainHandler::getInstance()->getSwapChainImagesSize(); i++) {
 		_bufferData->updateBuffer(i, StorageBufferData{ glm::vec3(3, 6, 2) });
 	}
