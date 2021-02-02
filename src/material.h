@@ -4,32 +4,38 @@
 /// @version 1.0.0
 /// @date 02/01/2021
 
+
 #ifndef MATERIAL_CLASS
 #define MATERIAL_CLASS
 
-#include "renderpass.h"
-#include "shaderpass.h"
-#include "shadereffect.h"
+#include "materialmanager.h"
+#include "materialbuffer.h"
+#include "uniformbuffer.h"
+#include "color.h"
 
-struct MaterialData {
-	const char* name;
-	RenderPass* renderPass;
-	const char* vertexPath;
-	const char* fragmentPath;
-};
+#include <cstdint>
 
+/// @brief Class holding Material.
 class Material {
 	public:
-		Material(MaterialData _data);
+		Material();
+		Material(const char* _name);
 		~Material();
 
-		std::string getName();
-		Descriptor* getDescriptor();
-		ShaderPass* getShaderPass();
+		VkDescriptorPool& getPool();
+		MaterialBuffer* getMaterialBuffer();
+		UniformBuffer<MaterialBufferObject>* getMaterialUniformBuffer();
 
+		void setMaterial(const char* _name);
+
+		void updateDescriptors(int _index, VkDescriptorSet _descriptorSet);
+
+		Color color;
 	private:
-		std::string _name;
-		ShaderEffect* _shaderEffect;
-		ShaderPass* _shaderPass;
+		DescriptorPool* _pool; ///< @brief DescriptorPool object pointer of Entity.
+		MaterialBuffer* _buffer;
+		UniformBuffer<MaterialBufferObject>* _bufferObject;
+
+		void setup(const char* _name);
 };
 #endif

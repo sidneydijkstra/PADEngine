@@ -3,7 +3,7 @@
 static MaterialManager* _instance;
 
 MaterialManager::MaterialManager() {
-	_materials = std::map<std::string, Material*>();
+	_materials = std::map<std::string, MaterialBuffer*>();
 }
 
 MaterialManager* MaterialManager::getInstance() {
@@ -19,20 +19,20 @@ void MaterialManager::deleteInstance() {
 }
 
 void MaterialManager::load(MaterialData _data) {
-	Material* t = new Material(_data);
+	MaterialBuffer* t = new MaterialBuffer(_data);
 	std::cout << _data.name << " => " << " -> material loaded" << '\n';
 
 	_materials[_data.name] = t;
 }
 
-Material* MaterialManager::get(const char* _name) {
+MaterialBuffer* MaterialManager::get(const char* _name) {
 	if (_materials[_name] != NULL) {
 		return _materials[_name];
 	}
 }
 
 void MaterialManager::recreateAll() {
-	std::map<std::string, Material*>::iterator mat_it;
+	std::map<std::string, MaterialBuffer*>::iterator mat_it;
 	for (mat_it = _materials.begin(); mat_it != _materials.end(); ++mat_it) {
 		if (mat_it->second != NULL) {
 			mat_it->second->getShaderPass()->recreate();
@@ -41,7 +41,7 @@ void MaterialManager::recreateAll() {
 }
 
 MaterialManager::~MaterialManager() {
-	std::map<std::string, Material*>::iterator mat_it;
+	std::map<std::string, MaterialBuffer*>::iterator mat_it;
 	for (mat_it = _materials.begin(); mat_it != _materials.end(); ++mat_it) {
 		if (mat_it->second != NULL) {
 			delete mat_it->second;

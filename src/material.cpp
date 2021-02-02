@@ -1,24 +1,51 @@
+
 #include "material.h"
 
-Material::Material(MaterialData _data) {
-	this->_name = _data.name;
-	this->_shaderEffect = new ShaderEffect(_data.vertexPath, _data.fragmentPath);
-	this->_shaderPass = new ShaderPass(_data.renderPass->getRenderPass(), this->_shaderEffect);
+Material::Material() {
+	this->_bufferObject = new UniformBuffer<MaterialBufferObject>();
+	this->_pool = nullptr;
+	this->setup("mat_normal_PBR");
 }
 
-std::string Material::getName() {
-	return this->_name;
+Material::Material(const char* _name) {
+	this->_bufferObject = new UniformBuffer<MaterialBufferObject>();
+	this->_pool = nullptr;
+	this->setup(_name);
 }
 
-Descriptor* Material::getDescriptor() {
-	return this->_shaderPass->getDescriptor();
+VkDescriptorPool& Material::getPool() {
+	return this->_pool->getPool();
 }
 
-ShaderPass* Material::getShaderPass() {
-	return this->_shaderPass;
+MaterialBuffer* Material::getMaterialBuffer() {
+	return this->_buffer;
+}
+
+UniformBuffer<MaterialBufferObject>* Material::getMaterialUniformBuffer() {
+	return this->_bufferObject;
+}
+
+void Material::setMaterial(const char* _name){
+	this->setup(_name);
+}
+
+void Material::updateDescriptors(int _index, VkDescriptorSet _descriptorSet) {
+	this->_bufferObject->updateBuffer(_index, MaterialBufferObject{ color });
+	this->_bufferObject->updateDescriptor(_index, _descriptorSet, 2);
+}
+
+void Material::setup(const char* _name) {
+	if (this->_pool != nullptr)
+		this->_buffer->getDescriptor()->freePool(this->_pool);
+
+	this->_buffer = MaterialManager::getInstance()->get(_name);
+
+	this->_pool = _buffer->getDescriptor()->getPool();
 }
 
 Material::~Material() {
-	delete this->_shaderEffect;
-	delete this->_shaderPass;
+	if (this->_pool != nullptr)
+		this->_buffer->getDescriptor()->freePool(this->_pool);
+
+	delete this->_bufferObject;
 }

@@ -7,7 +7,7 @@
 #ifndef MATERIALMANAGER_CLASS
 #define MATERIALMANAGER_CLASS
 
-#include "material.h"
+#include "materialbuffer.h"
 
 #include <iostream>
 #include <map>
@@ -21,11 +21,11 @@ class MaterialManager {
 		static void deleteInstance();
 
 		void load(MaterialData _data);
-		Material* get(const char* _name);
+		MaterialBuffer* get(const char* _name);
 
 		void recreateAll();
 
 	private:
-		std::map<std::string, Material*> _materials;
+		std::map<std::string, MaterialBuffer*> _materials;
 };
 #endif

@@ -44,10 +44,6 @@ class Entity : public Hierarchy {
         /// @return Pointer to UniformBuffer.
         UniformBuffer<UBOBufferObject>* getUniformBuffer();
 
-        /// @brief Get StorageBuffer<StorageBufferData> of the Entity, this buffer contains the color.
-        /// @return Pointer to StorageBuffer<StorageBufferData>.
-        UniformBuffer<MaterialBufferObject>* getColorBuffer();
-
         /// @brief Get Mesh of the Entity.
         /// @return Pointer to Mesh.
         Mesh* getMesh();
@@ -59,10 +55,6 @@ class Entity : public Hierarchy {
         /// @brief Get Material of the Entity.
         /// @return Pointer to Material.
         Material* getMaterial();
-
-        /// @brief Set Material of the Entity.
-        /// @param _name Name of Material.
-        void setMaterial(const char* _name);
 
         /// @brief Get current VkDescriptorSet, final buffers for storing entity data.
         /// @param _index Current index.
@@ -84,11 +76,9 @@ class Entity : public Hierarchy {
     protected:
         Mesh* _mesh; ///< @brief Mesh object pointer of Entity.
         UniformBuffer<UBOBufferObject>* _uniformBuffer; ///< @brief UniformBuffer object pointer of Entity.
-        UniformBuffer<MaterialBufferObject>* _colorBuffer; ///< @brief StorageBuffer<StorageBufferData> object pointer of Entity.
         Texture* _texture; ///< @brief Texture object pointer of Entity.
         Material* _material; ///< @brief Material object pointer of Entity.
 
-        DescriptorPool* _pool; ///< @brief DescriptorPool object pointer of Entity.
         std::vector<VkDescriptorSet> _descriptorSets; ///< @brief A std::vector<VkDescriptorSet> list of Entity.
 
         /// @brief Setup descriptor sets so they can contain entity data.

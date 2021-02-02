@@ -93,7 +93,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
     std::map<std::string, std::map<MeshType, std::vector<Entity*>>>::iterator mat_children_it;
     for (mat_children_it = _ents.begin(); mat_children_it != _ents.end(); ++mat_children_it) {
-        Material* mat = MaterialManager::getInstance()->get(mat_children_it->first.c_str());
+        MaterialBuffer* mat = MaterialManager::getInstance()->get(mat_children_it->first.c_str());
 
         vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipeline());
 

@@ -35,7 +35,7 @@ class DescriptorPool {
 
 		/// @brief Function to get a reference to current VkDescriptorPool.
 		/// @return Reference to current VkDescriptorPool.
-		VkDescriptorPool getPool();
+		VkDescriptorPool& getPool();
 
 	protected:
 		/// @brief Logic to setup VkDescriptorPool, can be overwritten to change VkDescriptorPool intern.

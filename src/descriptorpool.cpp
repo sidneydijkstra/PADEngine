@@ -26,7 +26,7 @@ DescriptorPool::DescriptorPool(int _size, const VkDescriptorPoolSize* _poolSizeD
 	this->setup(_size, _poolSizeData);
 }
 
-VkDescriptorPool DescriptorPool::getPool() {
+VkDescriptorPool& DescriptorPool::getPool() {
 	return this->_pool;
 }
 

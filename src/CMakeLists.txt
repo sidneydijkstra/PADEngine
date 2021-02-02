@@ -60,6 +60,8 @@ add_library(PADEngine STATIC
   renderpass.h
 
   # PadEngine material files
+  materialbuffer.cpp
+  materialbuffer.h
   material.cpp
   material.h
   materialmanager.cpp
