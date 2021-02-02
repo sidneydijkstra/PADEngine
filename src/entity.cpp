@@ -8,8 +8,8 @@ Entity::Entity() : Hierarchy() {
 	
     _mesh = new Mesh();
 	_mesh->loadShape(MeshType::CUBE);
-	_colorBuffer = new StorageBuffer<StorageBufferData>();
-    _uniformBuffer = new UniformBuffer();
+	_colorBuffer = new UniformBuffer<MaterialBufferObject>();
+    _uniformBuffer = new UniformBuffer<UBOBufferObject>();
 
     _texture = new Texture();
 	_material = MaterialManager::getInstance()->get("mat_normal_PBR");
@@ -17,11 +17,11 @@ Entity::Entity() : Hierarchy() {
 	this->setupDescriptorSets();
 }
 
-UniformBuffer* Entity::getUniformBuffer() {
+UniformBuffer<UBOBufferObject>* Entity::getUniformBuffer() {
 	return this->_uniformBuffer;
 }
 
-StorageBuffer<StorageBufferData>* Entity::getColorBuffer() {
+UniformBuffer<MaterialBufferObject>* Entity::getColorBuffer() {
 	return this->_colorBuffer;
 }
 

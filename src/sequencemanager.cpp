@@ -36,7 +36,7 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
     for (Hierarchy* h : _scene->getChildren()) {
         Entity* e = (Entity*)h;
 
-        UniformBufferObject ubo{};
+        UBOBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.model = glm::translate(ubo.model, e->position.glm());
         ubo.model = glm::scale(ubo.model, e->scale.glm());
@@ -51,7 +51,7 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
         ubo.proj[1][1] *= -1;
 
         e->getUniformBuffer()->updateBuffer(_imageIndex, ubo);
-        e->getColorBuffer()->updateBuffer(_imageIndex, StorageBufferData { e->color } );
+        e->getColorBuffer()->updateBuffer(_imageIndex, MaterialBufferObject { e->color } );
         e->recreate(_imageIndex);
     }
 }

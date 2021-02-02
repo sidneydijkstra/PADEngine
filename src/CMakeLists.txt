@@ -31,10 +31,7 @@ add_library(PADEngine STATIC
   vertexbuffer.h
   indexbuffer.cpp
   indexbuffer.h
-  uniformbuffer.cpp
   uniformbuffer.h
-  storagebuffer.cpp
-  storagebuffer.h
   imagebuffer.cpp
   imagebuffer.h
   texturebuffer.cpp

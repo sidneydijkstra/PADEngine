@@ -4,9 +4,9 @@ Scene::Scene(std::string _name) : Hierarchy(){
 	this->_camera = new Camera();
 	this->_name = _name;
 
-	_bufferData = new StorageBuffer<StorageBufferData>();
+	_bufferData = new UniformBuffer<LightBufferObject>();
 	for (size_t i = 0; i < SwapChainHandler::getInstance()->getSwapChainImagesSize(); i++) {
-		_bufferData->updateBuffer(i, StorageBufferData{ glm::vec3(3, 6, 2) });
+		_bufferData->updateBuffer(i, LightBufferObject{ glm::vec3(3, 6, 2) });
 	}
 }
 

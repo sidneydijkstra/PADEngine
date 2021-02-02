@@ -26,14 +26,25 @@
 #include <vector>
 #include <string>
 
-/// @brief Struct describing a UniformBufferObject object, which stores uniform buffer data.
-struct UniformBufferObject {
+/// @brief Struct describing a UBOBufferObject object, which stores UBO buffer data.
+struct UBOBufferObject {
 	glm::mat4 model;
 	glm::mat4 view;
 	glm::mat4 proj;
 };
 
+/// @brief Struct describing a MaterialBufferObject object, which stores Material buffer data.
+struct MaterialBufferObject {
+    glm::vec3 color;
+};
+
+/// @brief Struct describing a MaterialBufferObject object, which stores Light buffer data.
+struct LightBufferObject {
+    glm::vec3 position;
+};
+
 /// @brief Class describing a UniformBuffer, which handles the buffer for a uniform.
+template <class T>
 class UniformBuffer : Buffer {
 public:
 	/// @brief The constructor for the UniformBuffer class.
@@ -46,8 +57,8 @@ public:
 
 	/// @brief Update the buffer.
 	/// @param _index Current index of SequenceManager.
-	/// @param _ubo The UniformBufferObject to update the buffer with.
-	void updateBuffer(int _index, UniformBufferObject _ubo);
+	/// @param _uniformBuffer The T data-type to update the buffer with.
+	void updateBuffer(int _index, T _uniformBuffer);
 
 	/// @brief Update descriptor set of buffer.
 	/// @param _index Current index of SequenceManager.
@@ -62,4 +73,69 @@ private:
 	std::vector<VkBuffer> _uniformBuffers; ///< @brief A std::vector of VkBuffer objects.
 	std::vector<VkDeviceMemory> _uniformBuffersMemory; ///< @brief A std::vector of VkDeviceMemory objects.
 };
+
+template <class T>
+UniformBuffer<T>::UniformBuffer() :
+    Buffer() {
+    this->setupBuffer();
+}
+
+template <class T>
+void UniformBuffer<T>::setupBuffer() {
+    VkDeviceSize bufferSize = sizeof(T);
+
+    _uniformBuffers.resize(SwapChainHandler::getInstance()->getSwapChainImagesSize());
+    _uniformBuffersMemory.resize(SwapChainHandler::getInstance()->getSwapChainImagesSize());
+
+    for (size_t i = 0; i < SwapChainHandler::getInstance()->getSwapChainImagesSize(); i++) {
+        createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, _uniformBuffers[i], _uniformBuffersMemory[i]);
+    }
+}
+
+template <class T>
+void UniformBuffer<T>::updateBuffer(int _index, T _uniformBuffer) {
+    void* data;
+    vkMapMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[_index], 0, sizeof(_uniformBuffer), 0, &data);
+    memcpy(data, &_uniformBuffer, sizeof(_uniformBuffer));
+    vkUnmapMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[_index]);
+}
+
+template <class T>
+void UniformBuffer<T>::updateDescriptor(int _index, VkDescriptorSet _descriptor, int _dstBinding) {
+    VkDescriptorBufferInfo colorInfo{};
+    colorInfo.buffer = this->_uniformBuffers[_index];
+    colorInfo.offset = 0;
+    colorInfo.range = sizeof(T);
+
+    VkWriteDescriptorSet descriptorWrites{};
+
+    descriptorWrites.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrites.dstSet = _descriptor;
+    descriptorWrites.dstBinding = _dstBinding;
+    descriptorWrites.dstArrayElement = 0;
+    descriptorWrites.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrites.descriptorCount = 1;
+    descriptorWrites.pBufferInfo = &colorInfo;
+
+    vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(1), &descriptorWrites, 0, nullptr);
+}
+
+template <class T>
+void UniformBuffer<T>::recreate() {
+    for (size_t i = 0; i < _uniformBuffersMemory.size(); i++) {
+        vkDestroyBuffer(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffers[i], nullptr);
+        vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[i], nullptr);
+    }
+
+    this->setupBuffer();
+}
+
+template <class T>
+UniformBuffer<T>::~UniformBuffer() {
+    for (size_t i = 0; i < _uniformBuffersMemory.size(); i++) {
+        vkDestroyBuffer(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffers[i], nullptr);
+        vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[i], nullptr);
+    }
+}
+
 #endif

@@ -23,7 +23,6 @@
 #include "mesh.h"
 #include "materialmanager.h"
 #include "material.h"
-#include "storagebuffer.h"
 #include "uniformbuffer.h"
 #include "texture.h"
 #include "hierarchy.h"
@@ -43,11 +42,11 @@ class Entity : public Hierarchy {
 
         /// @brief Get UniformBuffer of the Entity, this buffer contains the model/view/projection.
         /// @return Pointer to UniformBuffer.
-        UniformBuffer* getUniformBuffer();
+        UniformBuffer<UBOBufferObject>* getUniformBuffer();
 
         /// @brief Get StorageBuffer<StorageBufferData> of the Entity, this buffer contains the color.
         /// @return Pointer to StorageBuffer<StorageBufferData>.
-        StorageBuffer<StorageBufferData>* getColorBuffer();
+        UniformBuffer<MaterialBufferObject>* getColorBuffer();
 
         /// @brief Get Mesh of the Entity.
         /// @return Pointer to Mesh.
@@ -84,8 +83,8 @@ class Entity : public Hierarchy {
         Color color; ///< @brief Color of Entity.
     protected:
         Mesh* _mesh; ///< @brief Mesh object pointer of Entity.
-        UniformBuffer* _uniformBuffer; ///< @brief UniformBuffer object pointer of Entity.
-        StorageBuffer<StorageBufferData>* _colorBuffer; ///< @brief StorageBuffer<StorageBufferData> object pointer of Entity.
+        UniformBuffer<UBOBufferObject>* _uniformBuffer; ///< @brief UniformBuffer object pointer of Entity.
+        UniformBuffer<MaterialBufferObject>* _colorBuffer; ///< @brief StorageBuffer<StorageBufferData> object pointer of Entity.
         Texture* _texture; ///< @brief Texture object pointer of Entity.
         Material* _material; ///< @brief Material object pointer of Entity.
 

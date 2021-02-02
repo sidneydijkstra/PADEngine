@@ -42,7 +42,7 @@ class Scene : public Hierarchy {
 		/// @return Pointer to Camera of the Scene.
 		Camera* getCamera();
 
-		StorageBuffer<StorageBufferData>* _bufferData;
+		UniformBuffer<LightBufferObject>* _bufferData;
 	private:
 		Camera* _camera; ///< @brief Camera object pointer of Scene.
 		std::string _name; ///< @brief Name of Scene.
