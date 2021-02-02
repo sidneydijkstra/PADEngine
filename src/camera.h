@@ -1,3 +1,8 @@
+/// @file camera.h
+/// @brief Standalone header providing camera functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef CAMERA_CLASS
 #define CAMERA_CLASS
@@ -18,26 +23,36 @@
 #include "input.h"
 #include "time.h"
 
+//namespace pad {
+
 class Camera {
 	public:
+		/// @brief The constructor for the Camera class.
 		Camera();
+		/// @brief The deconstructor for the Camera class.
 		~Camera();
 
+		/// @brief The update function for the Camera class.
 		void update();
+
+		/// @brief The function to move the Camera using mouse and keyboard.
+		/// @param _speed The move speed of the Camera.
 		void move3D(float _speed);
 
-		glm::vec3 position; ///< @brief the position of the camera
-		glm::vec3 front; ///< @brief the front of the camera
-		glm::vec3 up; ///< @brief the up of the camera
-		glm::vec3 right; ///< @brief the right of the camera
+		glm::vec3 position; ///< @brief the position of the Camera
+		glm::vec3 front; ///< @brief the front of the Camera
+		glm::vec3 up; ///< @brief the up of the Camera
+		glm::vec3 right; ///< @brief the right of the Camera
 
-		float yaw; ///< @brief the yaw of the camera
-		float pitch; ///< @brief the pitch of the camera
-		float fov; ///< @brief the fov of the camera
+		float yaw; ///< @brief the yaw of the Camera
+		float pitch; ///< @brief the pitch of the Camera
+		float fov; ///< @brief the fov of the Camera
 
 	private:
 		bool _firstClick;
-		float lastX; ///< @brief the lastX of the camera
-		float lastY; ///< @brief the lastY of the camera
+		float lastX; ///< @brief the lastX of the Camera
+		float lastY; ///< @brief the lastY of the Camera
 };
+
+//}
 #endif

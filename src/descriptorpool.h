@@ -1,3 +1,8 @@
+/// @file descriptorpool.h
+/// @brief Standalone header providing DescriptorPool functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef DESCRIPTORPOOL_CLASS
 #define DESCRIPTORPOOL_CLASS
@@ -10,19 +15,36 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 
+/// @brief Class describing a DescriptorPool object, which is used to store a VkDescriptorPool.
 class DescriptorPool {
 	public:
+		/// @brief The constructor for the Buffer class.
 		DescriptorPool();
+
+		/// @brief The constructor for the Buffer class.
+		/// @param _poolSize VkDescriptorPoolSize to use for this pool.
 		DescriptorPool(VkDescriptorPoolSize _poolSize);
+
+		/// @brief The constructor for the Buffer class.
+		/// @param _size Size of VkDescriptorPoolSize.
+		/// @param _layoutBinding Pointer VkDescriptorPoolSize to use for this pool.
 		DescriptorPool(int _size, const VkDescriptorPoolSize* _poolSizeData);
+
+		/// @brief The deconstructor for the Buffer class.
 		~DescriptorPool();
 
+		/// @brief Function to get a reference to current VkDescriptorPool.
+		/// @return Reference to current VkDescriptorPool.
 		VkDescriptorPool getPool();
+
 	protected:
+		/// @brief Logic to setup VkDescriptorPool, can be overwritten to change VkDescriptorPool intern.
+		/// @param _size Size of VkDescriptorPoolSize.
+		/// @param _layoutBinding Pointer VkDescriptorPoolSize to use for this pool.
 		virtual void setup(int _size, const VkDescriptorPoolSize* _poolSizeData);
 
 	private:
-		VkDescriptorPool _pool;
+		VkDescriptorPool _pool; ///< @brief VkDescriptorPool object containing pool.
 
 };
 #endif

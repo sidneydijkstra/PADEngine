@@ -27,7 +27,7 @@ void UniformBuffer::updateDescriptor(int _index, VkDescriptorSet _descriptor, in
     VkDescriptorBufferInfo colorInfo{};
     colorInfo.buffer = this->_uniformBuffers[_index];
     colorInfo.offset = 0;
-    colorInfo.range = sizeof(UniformBufferData);
+    colorInfo.range = sizeof(UniformBufferObject);
 
     VkWriteDescriptorSet descriptorWrites{};
 
@@ -40,10 +40,6 @@ void UniformBuffer::updateDescriptor(int _index, VkDescriptorSet _descriptor, in
     descriptorWrites.pBufferInfo = &colorInfo;
 
     vkUpdateDescriptorSets(DeviceHandler::getInstance()->getLogicalDevice(), static_cast<uint32_t>(1), &descriptorWrites, 0, nullptr);
-}
-
-UniformBufferData UniformBuffer::getBuffer() {
-    return UniformBufferData{this->_uniformBuffers, this->_uniformBuffersMemory};
 }
 
 void UniformBuffer::recreate() {

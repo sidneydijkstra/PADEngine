@@ -26,8 +26,12 @@ void IndexBuffer::setupBuffer(std::vector<uint32_t> _indices) {
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
-BufferData IndexBuffer::getBuffer() {
-    return BufferData{ this->_indexBuffer, this->_indexSize };
+VkBuffer IndexBuffer::getBuffer() {
+    return this->_indexBuffer;
+}
+
+uint32_t IndexBuffer::getBufferSize() {
+    return this->_indexSize;
 }
 
 IndexBuffer::~IndexBuffer() {

@@ -1,3 +1,8 @@
+/// @file material.h
+/// @brief Standalone header providing Material functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef MATERIAL_CLASS
 #define MATERIAL_CLASS

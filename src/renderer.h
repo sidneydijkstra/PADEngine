@@ -1,4 +1,11 @@
-#include <cstdint>
+/// @file renderer.h
+/// @brief Standalone header providing Renderer functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
+
+#ifndef RENDERER_CLASS
+#define RENDERER_CLASS
 
 #define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
@@ -31,36 +38,52 @@
 #include "renderpass.h"
 #include "shaderpass.h"
 
+#include <cstdint>
 #include <chrono>
 
 #include <iostream>
 #include <array>
 #include <vector>
 
-#ifndef RENDERER_CLASS
-#define RENDERER_CLASS
-
+/// @brief Class describing a Renderer object, which handles all rendering tasks.
 class Renderer {
 	public:
+		/// @brief The constructor for the Renderer class.
 		Renderer();
+		/// @brief The deconstructor for the Renderer class.
 		~Renderer();
 
-		void recreate();
+		/// @brief Function to render a Scene.
+		/// @param _scene Pointer to Scene that needs to be renderd.
+		/// @param _index Current index of SequenceManager.
+		/// @return VkCommandBuffer in use.
 		VkCommandBuffer renderScene(Scene* _scene, int _index);
 
+		/// @brief Function to recreate the renderer.
+		void recreate();
+
 	private:
-		RenderPass* _renderPass;
+		RenderPass* _renderPass; ///< @brief RenderPass object pointer of Renderer.
+		DepthBuffer* _depthBuffer; ///< @brief DepthBuffer object pointer of Renderer.
+		SamplingBuffer* _samplingBuffer; ///< @brief SamplingBuffer object pointer of Renderer.
+		FrameBuffers* _framebuffers; ///< @brief FrameBuffers object pointer of Renderer.
+		std::vector<VkCommandBuffer> _commandBuffers; ///< @brief A std::vector of VkCommandBuffer.
 
-		DepthBuffer* _depthBuffer;
-		SamplingBuffer* _samplingBuffer;
-		FrameBuffers* _framebuffers;
-
-		std::vector<VkCommandBuffer> _commandBuffers;
-
+		/// @brief Begin a command buffer.
+		/// @param _index Current index of SequenceManager.
 		void beginCommandBuffer(int _index);
+
+		/// @brief End a command buffer.
+		/// @param _index Current index of SequenceManager.
 		void endCommandBuffer(int _index);
 
+		/// @brief Setup command buffers.
 		void setupCommandBuffers();
+
+		/// @brief Update command buffers.
+		/// @param _scene Pointer to Scene that needs to be renderd.
+		/// @param _index Current index of SequenceManager.
+		/// @return VkCommandBuffer in use.
 		VkCommandBuffer updateCommandBuffers(Scene* _scene, int _index);
 };
 #endif

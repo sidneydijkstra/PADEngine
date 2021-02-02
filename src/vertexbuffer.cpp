@@ -25,8 +25,12 @@ void VertexBuffer::setupBuffer(const std::vector<Vertex> _vertices) {
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
-BufferData VertexBuffer::getBuffer() {
-    return BufferData{ this->_vertexBuffer, this->_vertexSize };
+VkBuffer VertexBuffer::getBuffer() {
+    return this->_vertexBuffer;
+}
+
+uint32_t VertexBuffer::getBufferSize() {
+    return this->_vertexSize;
 }
 
 VertexBuffer::~VertexBuffer() {

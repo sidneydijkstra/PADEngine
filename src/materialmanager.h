@@ -1,3 +1,8 @@
+/// @file materialmanager.h
+/// @brief Standalone header providing MaterialManager functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef MATERIALMANAGER_CLASS
 #define MATERIALMANAGER_CLASS

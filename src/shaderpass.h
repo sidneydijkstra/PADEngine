@@ -1,3 +1,8 @@
+/// @file shaderpass.h
+/// @brief Standalone header providing ShaderPass functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef SHADERPASS_CLASS
 #define SHADERPASS_CLASS
@@ -5,26 +10,47 @@
 #include "descriptor.h"
 #include "shadereffect.h"
 
+/// @brief Class describing a ShaderPass object, which stores all the information for vulkan shader.
 class ShaderPass {
 	public:
+		/// @brief The constructor for the ShaderPass class.
+		/// @param _renderPass The VkRenderPass to use.
+		/// @param _shaderEffect The ShaderEffect pointer to use.
 		ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect);
+		/// @brief The deconstructor for the ShaderPass class.
 		~ShaderPass();
 
+		/// @brief Get the Descriptor pointer.
+		/// @return Pointer to Descriptor.
 		Descriptor* getDescriptor();
+
+		/// @brief Get the ShaderEffect pointer.
+		/// @return Pointer to ShaderEffect.
 		ShaderEffect* getShaderEffect();
+
+		/// @brief Get the VkRenderPass.
+		/// @return The VkRenderPass.
 		VkRenderPass getRenderPass();
+
+		/// @brief Get the VkPipeline.
+		/// @return The VkPipeline.
 		VkPipeline getPipeline();
+
+		/// @brief Get the VkPipelineLayout.
+		/// @return The VkPipelineLayout.
 		VkPipelineLayout getPipelineLayout();
-		
+
+		/// @brief Function to recreate ShaderPass.
 		void recreate();
 
 	private:
-		ShaderEffect* _shaderEffect;
-		VkRenderPass _renderPass;
-		VkPipeline _pipeline;
-		VkPipelineLayout _pipelineLayout;
-		Descriptor* _descriptor;
+		ShaderEffect* _shaderEffect; ///< @brief ShaderEffect pointer of ShaderPass.
+		VkRenderPass _renderPass; ///< @brief VkRenderPass of ShaderPass.
+		VkPipeline _pipeline; ///< @brief VkPipeline of ShaderPass.
+		VkPipelineLayout _pipelineLayout; ///< @brief VkPipelineLayout of ShaderPass.
+		Descriptor* _descriptor; ///< @brief Descriptor pointer of ShaderPass.
 
+		/// @brief Function to setup ShaderPass.
 		void setup();
 };
 

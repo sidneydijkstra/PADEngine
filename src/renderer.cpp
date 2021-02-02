@@ -110,13 +110,11 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
             if (children_it->first != MeshType::OBJECT) {
 
                 // get and bind vertex/index buffer
-                BufferData vertexData = childVector[0]->getMesh()->getBuffer()->vertex()->getBuffer();
-                BufferData indexData = childVector[0]->getMesh()->getBuffer()->index()->getBuffer();
 
-                VkBuffer vertexBuffers[] = { vertexData.buffer };
+                VkBuffer vertexBuffers[] = { childVector[0]->getMesh()->getBuffer()->vertex()->getBuffer() };
                 VkDeviceSize offsets[] = { 0 };
                 vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
-                vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT32);
+                vkCmdBindIndexBuffer(this->_commandBuffers[_index], childVector[0]->getMesh()->getBuffer()->index()->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
                 for (Entity* entity : childVector) {
                     // update descriptors
@@ -127,19 +125,17 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
                     vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &entity->getDescriptorSet(_index), 0, nullptr);
 
                     // draw mesh
-                    vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+                    vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(entity->getMesh()->getBuffer()->index()->getBufferSize()), 1, 0, 0, 0);
                 }
             }
             else if (children_it->first == MeshType::OBJECT) {
                 for (Entity* entity : childVector) {
                     // get and bind vertex/index buffer
-                    BufferData vertexData = entity->getMesh()->getBuffer()->vertex()->getBuffer();
-                    BufferData indexData = entity->getMesh()->getBuffer()->index()->getBuffer();
 
-                    VkBuffer vertexBuffers[] = { vertexData.buffer };
+                    VkBuffer vertexBuffers[] = { entity->getMesh()->getBuffer()->vertex()->getBuffer() };
                     VkDeviceSize offsets[] = { 0 };
                     vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
-                    vkCmdBindIndexBuffer(this->_commandBuffers[_index], indexData.buffer, 0, VK_INDEX_TYPE_UINT32);
+                    vkCmdBindIndexBuffer(this->_commandBuffers[_index], entity->getMesh()->getBuffer()->index()->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
                     // update descriptors
                     entity->updateDescriptors(_index);
@@ -148,7 +144,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
                     // set descriptors
                     vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &entity->getDescriptorSet(_index), 0, nullptr);
                     // draw mesh
-                    vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(indexData.size), 1, 0, 0, 0);
+                    vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(entity->getMesh()->getBuffer()->index()->getBufferSize()), 1, 0, 0, 0);
 
                     
                 }

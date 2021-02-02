@@ -1,3 +1,8 @@
+/// @file meshbuffer.h
+/// @brief Standalone header providing Buffer functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef MESHBUFFER_CLASS
 #define MESHBUFFER_CLASS
@@ -6,30 +11,48 @@
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
 
+/// @brief Enum describing a MeshType, which stores all the diffrent mesh types.
 enum MeshType {
 	TRIANGLE, PLANE, CUBE, OBJECT
 };
 
+/// @brief Struct describing a MeshData object, which stores all the vertices and indices.
 struct MeshData {
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
 };
 
+/// @brief Class describing a MeshBuffer object, which stores all the buffers for a Mesh.
 class MeshBuffer {
 	public:
+		/// @brief The constructor for the MeshBuffer class.
 		MeshBuffer();
-		MeshBuffer(MeshType _type, MeshData _data);
+		/// @brief The constructor for the MeshBuffer class.
+		/// @param _type The MeshType of this buffer.
 		MeshBuffer(MeshType _type);
+		/// @brief The constructor for the MeshBuffer class.
+		/// @param _type The MeshType of this buffer.
+		/// @param _data The MeshData of this buffer.
+		MeshBuffer(MeshType _type, MeshData _data);
+		/// @brief The deconstructor for the MeshBuffer class.
 		~MeshBuffer();
 
+		/// @brief Get the MeshType.
+		/// @return Current MeshType.
 		MeshType getType();
+
+		/// @brief Get the IndexBuffer pointer.
+		/// @return Pointer to IndexBuffer.
 		IndexBuffer* index();
+
+		/// @brief Get the VertexBuffer pointer.
+		/// @return Pointer to VertexBuffer.
 		VertexBuffer* vertex();
 
 	private:
-		MeshType _type;
-		IndexBuffer* _indexBuffer;
-		VertexBuffer* _vertexBuffer;
+		MeshType _type; ///< @brief Variable storaing MeshType.
+		IndexBuffer* _indexBuffer; ///< @brief IndexBuffer object pointer of MeshBuffer.
+		VertexBuffer* _vertexBuffer; ///< @brief VertexBuffer object pointer of MeshBuffer.
 
 		const std::vector<uint32_t> plane_indices = {
 			0, 1, 2, 2, 3, 0

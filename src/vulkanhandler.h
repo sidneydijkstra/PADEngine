@@ -1,3 +1,8 @@
+/// @file vulkanhandler.h
+/// @brief Standalone header providing VulkanHandler functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef VULKANHANDLER_CLASS
 #define VULKANHANDLER_CLASS
@@ -17,23 +22,40 @@
 #include <iostream>
 #include <vector>
 
+/// @brief Class describing a VulkanHandler, which handles window, surface and vulkan creation.
 class VulkanHandler {
 	public:
+        /// @brief The constructor for the VulkanHandler class.
 		VulkanHandler();
+        /// @brief The deconstructor for the VulkanHandler class.
 		~VulkanHandler();
+
+        /// @brief Static get instance function, VulkanHandler is a singelton because we only need one instance.
+        /// @return A pointer to VulkanHandler.
         static VulkanHandler* getInstance();
-        void init();
+
+        /// @brief Static function to delete and cleanup the VulkanHandler.
         static void deleteInstance();
 
+        /// @brief Initialisation function for VulkanHandler.
+        void init();
+
+        /// @brief Get the vulkan instance.
+        /// @return The VkInstance.
         VkInstance getVkInstance();
+        /// @brief Get the glfw window pointer.
+        /// @return The GLFWwindow pointer.
         GLFWwindow* getWindow();
+        /// @brief Get the vulkan surface.
+        /// @return The VkSurfaceKHR.
         VkSurfaceKHR getSurface();
 
 	private:
-        VkInstance _vkInstance;
-        GLFWwindow* _window;
-        VkSurfaceKHR _surface;
+        VkInstance _vkInstance; ///< @brief VkInstance of VulkanHandler.
+        GLFWwindow* _window; ///< @brief GLFWwindow pointer of VulkanHandler.
+        VkSurfaceKHR _surface; ///< @brief VkSurfaceKHR of VulkanHandler.
 
+        /// @brief Check valodation layer support for vulkan validation.
         bool checkValidationLayerSupport();
 
         const std::vector<const char*> _validationLayers = {

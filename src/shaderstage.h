@@ -1,3 +1,8 @@
+/// @file shaderstage.h
+/// @brief Standalone header providing ShaderStage functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef SHADERSTAGE_CLASS
 #define SHADERSTAGE_CLASS
@@ -15,19 +20,33 @@
 #include <vector>
 #include <string>
 
+/// @brief Class describing a ShaderStage object, which stores all the information for a shader stage.
 class ShaderStage {
 	public:
+		/// @brief The constructor for the Entity class.
+		/// @param _path Path to shader file.
+		/// @param _stage Shader stage flag bits.
 		ShaderStage(const char* _path, VkShaderStageFlagBits _stage);
+		/// @brief The constructor for the Entity class.
 		~ShaderStage();
 
+		/// @brief Get the shader stage create info.
+		/// @return The VkPipelineShaderStageCreateInfo.
 		VkPipelineShaderStageCreateInfo getStateInfo();
 
 	private:
-		std::vector<char> _shaderCode;
-		VkShaderModule _shaderModule;
-		VkPipelineShaderStageCreateInfo _stageInfo;
+		std::vector<char> _shaderCode; ///< @brief A std::vector with shader code.
+		VkShaderModule _shaderModule; ///< @brief VkShaderModule of ShaderStage.
+		VkPipelineShaderStageCreateInfo _stageInfo; ///< @brief VkPipelineShaderStageCreateInfo of ShaderStage.
 
+		/// @brief Read a shader file.
+		/// @param _filename Name of shader file.
+		/// @return A std::vector with shader code.
 		std::vector<char> readFile(const std::string& _filename);
+
+		/// @brief Create a VkShaderModule from shader code.
+		/// @param _code Shader code.
+		/// @return The VkShaderModule.
 		VkShaderModule createShaderModule(const std::vector<char>& _code);
 };
 

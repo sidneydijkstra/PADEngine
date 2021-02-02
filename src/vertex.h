@@ -1,3 +1,8 @@
+/// @file vertex.h
+/// @brief Standalone header providing Vertex functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef VERTEX_CLASS
 #define VERTEX_CLASS
@@ -17,11 +22,14 @@
 
 #include <array>
 
+/// @brief Struct describing a Vertex object, which contains Vertex data.
 struct Vertex {
-	glm::vec3 pos;
-	glm::vec3 normal;
-	glm::vec2 texCoord;
+	glm::vec3 pos; ///< @brief Position of Vertex.
+	glm::vec3 normal; ///< @brief Normal of Vertex.
+	glm::vec2 texCoord; ///< @brief Texture cordinates of Vertex.
 
+	/// @brief Function to get descriptor bindings.
+	/// @return The VkVertexInputBindingDescription.
 	static VkVertexInputBindingDescription getBindingDescription() {
 		VkVertexInputBindingDescription bindingDescription{};
 		bindingDescription.binding = 0;
@@ -31,6 +39,8 @@ struct Vertex {
 		return bindingDescription;
 	}
 
+	/// @brief Function to get descriptor attribures.
+	/// @return A std::array of VkVertexInputAttributeDescription.
 	static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions() {
 		std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
 
@@ -53,6 +63,9 @@ struct Vertex {
 		return attributeDescriptions;
 	}
 
+	/// @brief Operator overloader for eaqals operation.
+	/// @param other Other Vertex.
+	/// @return Boolean of operation check.
 	bool operator==(const Vertex& other) const {
 		return pos == other.pos && normal == other.normal && texCoord == other.texCoord;
 	}

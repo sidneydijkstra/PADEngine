@@ -1,3 +1,8 @@
+/// @file buffer.h
+/// @brief Standalone header providing Buffer functionality.
+/// @author Sidney Dijkstra
+/// @version 1.0.0
+/// @date 02/01/2021
 
 #ifndef BUFFER_CLASS
 #define BUFFER_CLASS
@@ -19,23 +24,53 @@
 #include <vector>
 #include <string>
 
+//namespace pad {
+
+/// @brief Struct describing a Buffer data object, which stores VkBuffer and buffer size.
 struct BufferData {
 	VkBuffer buffer;
 	uint32_t size;
 };
 
+/// @brief Class describing a Buffer object, which is used to store variables in vulkan buffer objects.
 class Buffer {
 public:
+	/// @brief The constructor for the Buffer class.
 	Buffer();
+	/// @brief The deconstructor for the Buffer class.
 	~Buffer();
 
 protected:
 
+	/// @brief Begin a single time Buffer command.
+    /// @return A reference to the command buffer.
 	VkCommandBuffer beginSingleTimeCommands();
+
+	/// @brief End a single time Buffer command.
+	/// @param commandBuffer A reference to the command buffer.
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
+	/// @brief Create a new Buffer to store data.
+	/// @param size The size for the Buffer.
+	/// @param usage The usage for the Buffer.
+	/// @param properties The memory property's for the Buffer.
+	/// @param Buffer The buffer reference fo VkBuffer.
+	/// @param bufferMemory The buffer memory reference fo VkDeviceMemory.
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
+	/// @brief Copy a buffer's data to an diffrent buffer.
+	/// @param srcBuffer The buffer to copy from.
+	/// @param dstBuffer The buffer to copy to.
+	/// @param size The size for the Buffer.
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
+	/// @brief Find the right memory type with the correct properties
+	/// @param typeFilter The memory type filter.
+	/// @param properties The memory properties.
+	/// @return The memory type.
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
 };
+
+//}
 #endif
