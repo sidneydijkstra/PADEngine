@@ -19,4 +19,12 @@ add_executable(PADEngine_startup
     startup/myscene.h
 )
 
+add_executable(PADEngine_demo
+    demo/main.cpp
+    demo/lightdemo.cpp
+    demo/lightdemo.h
+    demo/shaderdemo.cpp
+    demo/shaderdemo.h
+)
+
 set_property(DIRECTORY ${PADEngine_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PADEngine_startup)

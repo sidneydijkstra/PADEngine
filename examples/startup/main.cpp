@@ -5,7 +5,7 @@ int main() {
 
 	Core core;
 
-    MyScene* scene = new MyScene("myscene");
+    LightDemo* scene = new LightDemo("myscene");
     SceneManager::getInstance()->addScene(scene);
     SceneManager::getInstance()->setCurrentScene(scene);
 

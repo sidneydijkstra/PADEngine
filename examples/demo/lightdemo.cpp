@@ -1,10 +1,8 @@
-#include "myscene.h"
+#include "lightdemo.h"
 
-int amountX = 2;
-int amountY = 2;
-int amountZ = 2;
 LightDemo::LightDemo(std::string _name) : Scene(_name) {
 	list = std::vector<Entity*>();
+	this->addChild(_light);
 	
 	for (size_t i = 0; i < 10; i++) {
 		Entity* e = new Entity();
@@ -24,6 +22,11 @@ void LightDemo::update() {
 	amountX = this->_light->position.x > 5 || this->_light->position.x < -5 ? -amountX : amountX;
 	amountY = this->_light->position.y > 5 || this->_light->position.y < -5 ? -amountY : amountY;
 	amountZ = this->_light->position.z > 5 || this->_light->position.z < -5 ? -amountZ : amountZ;
+
+	if (Input::getKeyDown(KeyCode::Q))
+		SceneManager::getInstance()->setCurrentScene("shader_demo");
+	if (Input::getKeyDown(KeyCode::E))
+		SceneManager::getInstance()->setCurrentScene("shader_demo");
 }
 
 LightDemo::~LightDemo() {

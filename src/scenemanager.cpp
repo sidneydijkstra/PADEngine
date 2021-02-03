@@ -31,6 +31,10 @@ void SceneManager::deleteInstance() {
 	//_instance = nullptr;
 }
 
+void SceneManager::setCurrentScene(const char* name) {
+	_currentScene = this->getScene(name);
+}
+
 SceneManager::~SceneManager() {
 	_scenes.clear();
 }

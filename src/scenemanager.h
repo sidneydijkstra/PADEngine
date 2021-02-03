@@ -40,6 +40,10 @@ public:
 	/// @param scene Pointer to Scene.
 	void setCurrentScene(Scene* scene);
 
+	/// @brief Set current Scene.
+	/// @param name Name of scene.
+	void setCurrentScene(const char* name);
+
 	/// @brief The deconstructor for the SceneManager class.
 	~SceneManager();
 private:

@@ -5,7 +5,6 @@ Scene::Scene(std::string _name) : Hierarchy(){
 	this->_name = _name;
 
 	_light = new Light();
-	this->addChild(_light);
 }
 
 void Scene::update() {
