@@ -107,10 +107,9 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
         for (children_it = children.begin(); children_it != children.end(); ++children_it) {
             // get children vector
             std::vector<Entity*> childVector = children_it->second;
-            if (children_it->first != MeshType::OBJECT) {
+            if (children_it->first != MeshType::OBJECT) { // render mesh shape
 
                 // get and bind vertex/index buffer
-
                 VkBuffer vertexBuffers[] = { childVector[0]->getMesh()->getBuffer()->vertex()->getBuffer() };
                 VkDeviceSize offsets[] = { 0 };
                 vkCmdBindVertexBuffers(this->_commandBuffers[_index], 0, 1, vertexBuffers, offsets);
@@ -128,7 +127,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
                     vkCmdDrawIndexed(_commandBuffers[_index], static_cast<uint32_t>(entity->getMesh()->getBuffer()->index()->getBufferSize()), 1, 0, 0, 0);
                 }
             }
-            else if (children_it->first == MeshType::OBJECT) {
+            else if (children_it->first == MeshType::OBJECT) { // render object
                 for (Entity* entity : childVector) {
                     // get and bind vertex/index buffer
 

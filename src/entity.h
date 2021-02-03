@@ -32,6 +32,12 @@
 #include <iostream>
 #include <vector>
 
+/// @brief Enum describing the type of an Entity, this way we know how to render a Entity.
+enum EntityType {
+    ENTITY,
+    LIGHT
+};
+
 /// @brief Class describing a Entity object, which stores all the information for a Entity.
 class Entity : public Hierarchy {
     public:
@@ -43,6 +49,10 @@ class Entity : public Hierarchy {
         /// @brief Get UniformBuffer of the Entity, this buffer contains the model/view/projection.
         /// @return Pointer to UniformBuffer.
         UniformBuffer<UBOBufferObject>* getUniformBuffer();
+
+        /// @brief Get EntityType of the Entity.
+        /// @return Reference of EntityType.
+        EntityType getType();
 
         /// @brief Get Mesh of the Entity.
         /// @return Pointer to Mesh.
@@ -67,13 +77,15 @@ class Entity : public Hierarchy {
 
         /// @brief Update descriptors function to update the buffer data in VkDescriptorSet.
         /// @param _index Current index.
-        void updateDescriptors(int _index);
+        virtual void updateDescriptors(int _index);
 
         Vector3 position; ///< @brief Position of Entity.
         Vector3 rotation; ///< @brief Rotation of Entity.
         Vector3 scale; ///< @brief Scale of Entity.
         Color color; ///< @brief Color of Entity.
     protected:
+        EntityType _type; ///< @brief Mesh object EntityType
+
         Mesh* _mesh; ///< @brief Mesh object pointer of Entity.
         UniformBuffer<UBOBufferObject>* _uniformBuffer; ///< @brief UniformBuffer object pointer of Entity.
         Texture* _texture; ///< @brief Texture object pointer of Entity.

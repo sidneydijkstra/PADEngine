@@ -46,6 +46,7 @@ add_library(PADEngine STATIC
   meshbuffer.h
   modelloader.cpp
   modelloader.h
+  vertex.h
 
   # PADEngine shader files
   shadermanager.cpp
@@ -62,8 +63,6 @@ add_library(PADEngine STATIC
   # PadEngine material files
   materialbuffer.cpp
   materialbuffer.h
-  material.cpp
-  material.h
   materialmanager.cpp
   materialmanager.h
 
@@ -77,12 +76,15 @@ add_library(PADEngine STATIC
   entity.cpp
   entity.h
   vector3.h
-  vertex.h
   color.h
   hierarchy.cpp
   hierarchy.h
   entity.cpp
   entity.h
+  light.cpp
+  light.h
+  material.cpp
+  material.h
   input.h
   input.cpp
   time.h

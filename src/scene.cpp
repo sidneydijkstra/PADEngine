@@ -4,7 +4,8 @@ Scene::Scene(std::string _name) : Hierarchy(){
 	this->_camera = new Camera();
 	this->_name = _name;
 
-	_bufferData = new UniformBuffer<LightBufferObject>();
+	_light = new Light();
+	this->addChild(_light);
 }
 
 void Scene::update() {
@@ -19,8 +20,8 @@ void Scene::recreate(int _index) {
 }
 
 void Scene::updateDescriptors(int _index, VkDescriptorSet _descriptorSets) {
-	_bufferData->updateBuffer(_index, LightBufferObject{ glm::vec3(0,0,0), _camera->position, WHITE });
-	this->_bufferData->updateDescriptor(_index, _descriptorSets, 3);
+	_light->getLightBuffer()->updateBuffer(_index, LightBufferObject{ _light->position, _camera->position, _light->color });
+	_light->getLightBuffer()->updateDescriptor(_index, _descriptorSets, 3);
 }
 
 Camera* Scene::getCamera() {
@@ -28,5 +29,6 @@ Camera* Scene::getCamera() {
 }
 
 Scene::~Scene() {
-	delete _bufferData;
+	delete _camera;
+	delete _light;
 }

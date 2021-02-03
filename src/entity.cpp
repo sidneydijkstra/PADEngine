@@ -5,6 +5,8 @@ Entity::Entity() : Hierarchy() {
 	position = Vector3(0, 0, 0);
 	scale = Vector3(1, 1, 1);
 	
+	_type = EntityType::ENTITY;
+
     _mesh = new Mesh();
 	_mesh->loadShape(MeshType::CUBE);
     _uniformBuffer = new UniformBuffer<UBOBufferObject>();
@@ -17,6 +19,10 @@ Entity::Entity() : Hierarchy() {
 
 UniformBuffer<UBOBufferObject>* Entity::getUniformBuffer() {
 	return this->_uniformBuffer;
+}
+
+EntityType Entity::getType() {
+	return this->_type;
 }
 
 Mesh* Entity::getMesh() {

@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "entity.h"
+#include "light.h"
 #include "camera.h"
 
 /// @brief Class describing a Scene object, which stores all the information for a Scene.
@@ -42,7 +43,9 @@ class Scene : public Hierarchy {
 		/// @return Pointer to Camera of the Scene.
 		Camera* getCamera();
 
-		UniformBuffer<LightBufferObject>* _bufferData;
+	protected:
+		Light* _light;
+
 	private:
 		Camera* _camera; ///< @brief Camera object pointer of Scene.
 		std::string _name; ///< @brief Name of Scene.
