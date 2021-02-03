@@ -7,6 +7,8 @@
 #ifndef DEPTHBUFFER_CLASS
 #define DEPTHBUFFER_CLASS
 
+#define GLM_DEPTH_ZERO_TO_ONE
+
 #include "imagebuffer.h"
 #include "swapchainhandler.h"
 

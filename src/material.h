@@ -12,14 +12,15 @@
 #include "materialbuffer.h"
 #include "uniformbuffer.h"
 #include "color.h"
+#include "vector3.h"
 
 #include <cstdint>
+#include <iostream>
 
 /// @brief Class holding Material.
 class Material {
 	public:
-		Material();
-		Material(const char* _name);
+		Material(const char* = "mat_normal_PBR");
 		~Material();
 
 		VkDescriptorPool& getPool();
@@ -31,6 +32,10 @@ class Material {
 		void updateDescriptors(int _index, VkDescriptorSet _descriptorSet);
 
 		Color color;
+		Vector3 ambient;
+		Vector3 diffuse;
+		Vector3 specular;
+		float shininess;
 	private:
 		DescriptorPool* _pool; ///< @brief DescriptorPool object pointer of Entity.
 		MaterialBuffer* _buffer;

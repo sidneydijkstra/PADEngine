@@ -52,6 +52,7 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
         e->getUniformBuffer()->updateBuffer(_imageIndex, ubo);
         // e->getColorBuffer()->updateBuffer(_imageIndex, MaterialBufferObject { e->color } );
+        // e->getMaterial()->getMaterialUniformBuffer()->updateBuffer(_imageIndex, MaterialBufferObject{ e->getMaterial()->color, e->getMaterial()->ambient, e->getMaterial()->diffuse, e->getMaterial()->specular, e->getMaterial()->shininess });
         e->recreate(_imageIndex);
     }
 }

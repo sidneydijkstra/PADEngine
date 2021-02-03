@@ -11,7 +11,6 @@ Entity::Entity() : Hierarchy() {
 
     _texture = new Texture();
 	_material = new Material();
-	_material->color = PINK;
 
 	this->setupDescriptorSets();
 }

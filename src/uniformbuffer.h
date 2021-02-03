@@ -15,6 +15,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+#include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
@@ -35,12 +36,18 @@ struct UBOBufferObject {
 
 /// @brief Struct describing a MaterialBufferObject object, which stores Material buffer data.
 struct MaterialBufferObject {
-    glm::vec3 color;
+    __declspec(align(16)) glm::vec3 color;
+    __declspec(align(16)) glm::vec3 ambient;
+    __declspec(align(16)) glm::vec3 diffuse;
+    __declspec(align(16)) glm::vec3 specular;
+    float shininess;
 };
 
 /// @brief Struct describing a MaterialBufferObject object, which stores Light buffer data.
 struct LightBufferObject {
-    glm::vec3 position;
+    __declspec(align(16)) glm::vec3 position;
+    __declspec(align(16)) glm::vec3 cameraPosition;
+    __declspec(align(16)) glm::vec3 color;
 };
 
 /// @brief Class describing a UniformBuffer, which handles the buffer for a uniform.

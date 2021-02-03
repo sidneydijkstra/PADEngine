@@ -9,14 +9,14 @@ Renderer::Renderer() {
     mat_normal_PBR.fragmentPath = "shaders/frag.spv";
     mat_normal_PBR.renderPass = _renderPass;
 
-    MaterialData mat_red_PBR{};
+    /*MaterialData mat_red_PBR{};
     mat_red_PBR.name = "mat_red_PBR";
     mat_red_PBR.vertexPath = "shaders/vert.spv";
     mat_red_PBR.fragmentPath = "shaders/frag_red.spv";
-    mat_red_PBR.renderPass = _renderPass;
+    mat_red_PBR.renderPass = _renderPass;*/
 
     MaterialManager::getInstance()->load(mat_normal_PBR);
-    MaterialManager::getInstance()->load(mat_red_PBR);
+    //MaterialManager::getInstance()->load(mat_red_PBR);
 
     _depthBuffer = new DepthBuffer();
     _samplingBuffer = new SamplingBuffer();

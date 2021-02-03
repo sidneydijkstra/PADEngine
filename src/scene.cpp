@@ -5,9 +5,6 @@ Scene::Scene(std::string _name) : Hierarchy(){
 	this->_name = _name;
 
 	_bufferData = new UniformBuffer<LightBufferObject>();
-	for (size_t i = 0; i < SwapChainHandler::getInstance()->getSwapChainImagesSize(); i++) {
-		_bufferData->updateBuffer(i, LightBufferObject{ glm::vec3(3, 6, 2) });
-	}
 }
 
 void Scene::update() {
@@ -22,6 +19,7 @@ void Scene::recreate(int _index) {
 }
 
 void Scene::updateDescriptors(int _index, VkDescriptorSet _descriptorSets) {
+	_bufferData->updateBuffer(_index, LightBufferObject{ glm::vec3(0,0,0), _camera->position, WHITE });
 	this->_bufferData->updateDescriptor(_index, _descriptorSets, 3);
 }
 

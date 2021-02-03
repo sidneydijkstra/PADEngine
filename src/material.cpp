@@ -1,15 +1,16 @@
 
 #include "material.h"
 
-Material::Material() {
-	this->_bufferObject = new UniformBuffer<MaterialBufferObject>();
-	this->_pool = nullptr;
-	this->setup("mat_normal_PBR");
-}
-
 Material::Material(const char* _name) {
 	this->_bufferObject = new UniformBuffer<MaterialBufferObject>();
 	this->_pool = nullptr;
+
+	this->color = WHITE;
+	this->ambient = Vector3(1.0f, 0.5f, 0.31f);
+	this->diffuse = Vector3(1.0f, 0.5f, 0.31f);
+	this->specular = Vector3(0.5f, 0.5f, 0.5f);
+	this->shininess = 32.0f;
+
 	this->setup(_name);
 }
 
@@ -30,7 +31,7 @@ void Material::setMaterial(const char* _name){
 }
 
 void Material::updateDescriptors(int _index, VkDescriptorSet _descriptorSet) {
-	this->_bufferObject->updateBuffer(_index, MaterialBufferObject{ color });
+	this->_bufferObject->updateBuffer(_index, MaterialBufferObject{ color, ambient, diffuse, specular, shininess });
 	this->_bufferObject->updateDescriptor(_index, _descriptorSet, 2);
 }
 
