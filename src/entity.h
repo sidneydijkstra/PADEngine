@@ -1,8 +1,8 @@
 /// @file entity.h
-/// @brief Standalone header providing Buffer functionality.
-/// @author Sidney Dijkstra
+/// @brief Standalone header providing Entity functionality. An Entity object is designed to serve as renderable objects in the scene. This can serve as the different objects needed for your game, like the main character or enemies. 
+/// @author Sidney Dijkstra, Naomi Poort
 /// @version 1.0.0
-/// @date 02/01/2021
+/// @date 09/02/2021
 
 #ifndef ENTITY_CLASS
 #define ENTITY_CLASS
@@ -38,12 +38,12 @@ enum EntityType {
     LIGHT
 };
 
-/// @brief Class describing a Entity object, which stores all the information for a Entity.
+/// @brief Class describing a Entity object, which stores all the information for a Entity. Entity inherrits from the Hierarchy class to add the parent-child functionality.
 class Entity : public Hierarchy {
     public:
-        /// @brief The constructor for the Entity class.
+        /// @brief The constructor for the Entity class. Here all variables are initialized and set to their default values.
         Entity();
-        /// @brief The deconstructor for the Entity class.
+        /// @brief The deconstructor for the Entity class. In the destructor all objects created in the Entity class are deleted from memory.
         ~Entity();
 
         /// @brief Get UniformBuffer of the Entity, this buffer contains the model/view/projection.
@@ -79,12 +79,12 @@ class Entity : public Hierarchy {
         /// @param _index Current index.
         virtual void updateDescriptors(int _index);
 
-        Vector3 position; ///< @brief Position of Entity.
-        Vector3 rotation; ///< @brief Rotation of Entity.
+        Vector3 position; ///< @brief Position of Entity in the Scene.
+        Vector3 rotation; ///< @brief Rotation of Entity in the Scene.
         Vector3 scale; ///< @brief Scale of Entity.
         Color color; ///< @brief Color of Entity.
     protected:
-        EntityType _type; ///< @brief Mesh object EntityType
+        EntityType _type; ///< @brief Mesh object EntityType.
 
         Mesh* _mesh; ///< @brief Mesh object pointer of Entity.
         UniformBuffer<UBOBufferObject>* _uniformBuffer; ///< @brief UniformBuffer object pointer of Entity.
