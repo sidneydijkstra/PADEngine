@@ -2,11 +2,18 @@
 
 Descriptor::Descriptor() {
 	_layout = new DescriptorLayout();
-	// this->setup();
+	this->_descriptorPool = nullptr;
+	this->_descriptorPoolSize = 0;
+}
+
+Descriptor::Descriptor(VkDescriptorSetLayoutBinding* _descriptorLayout, int _descriptorLayoutSize, VkDescriptorPoolSize* _descriptorPool, int _descriptorPoolSize) {
+	_layout = new DescriptorLayout(_descriptorLayoutSize, _descriptorLayout);
+	this->_descriptorPool = _descriptorPool;
+	this->_descriptorPoolSize = _descriptorPoolSize;
 }
 
 DescriptorPool* Descriptor::getPool() {
-	DescriptorPool* pool = new DescriptorPool();
+	DescriptorPool* pool = _descriptorPool == nullptr ? new DescriptorPool() : new DescriptorPool(_descriptorPoolSize, _descriptorPool);
 	_descriptorPools.push_back(pool);
 	return pool;
 }

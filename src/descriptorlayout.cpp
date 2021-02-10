@@ -34,6 +34,10 @@ DescriptorLayout::DescriptorLayout() {
 	this->setup(bindings.size(), bindings.data());
 }
 
+DescriptorLayout::DescriptorLayout(int _size, VkDescriptorSetLayoutBinding* _layoutBinding) {
+	this->setup(_size, _layoutBinding);
+}
+
 DescriptorLayout::DescriptorLayout(VkDescriptorSetLayoutBinding _layoutBinding){
 	this->setup(1, &_layoutBinding);
 }

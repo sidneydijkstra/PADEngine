@@ -16,6 +16,11 @@ struct MaterialData {
 	RenderPass* renderPass;
 	const char* vertexPath;
 	const char* fragmentPath;
+	bool customShader = false;
+	VkDescriptorSetLayoutBinding* descriptorLayout;
+	int descriptorLayoutSize;
+	VkDescriptorPoolSize* descriptorPool;
+	int descriptorPoolSize;
 };
 
 class MaterialBuffer {

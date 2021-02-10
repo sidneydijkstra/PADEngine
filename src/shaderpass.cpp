@@ -9,6 +9,15 @@ ShaderPass::ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect) {
 	this->setup();
 }
 
+ShaderPass::ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect, VkDescriptorSetLayoutBinding* _descriptorLayout, int _descriptorLayoutSize, VkDescriptorPoolSize* _descriptorPool, int _descriptorPoolSize) {
+	this->_descriptor = new Descriptor(_descriptorLayout, _descriptorLayoutSize, _descriptorPool, _descriptorPoolSize);
+
+	this->_shaderEffect = _shaderEffect;
+	this->_renderPass = _renderPass;
+
+	this->setup();
+}
+
 Descriptor* ShaderPass::getDescriptor() {
 	return this->_descriptor;
 }

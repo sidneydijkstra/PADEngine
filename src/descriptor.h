@@ -33,6 +33,7 @@ class Descriptor {
 	public:
 		/// @brief The constructor for the Buffer class.
 		Descriptor();
+		Descriptor(VkDescriptorSetLayoutBinding* _descriptorLayout, int _descriptorLayoutSize, VkDescriptorPoolSize* _descriptorPool, int _descriptorPoolSize);
 		/// @brief The deconstructor for the Buffer class.
 		~Descriptor();
 
@@ -51,5 +52,7 @@ class Descriptor {
 		std::vector<DescriptorPool*> _descriptorPools; ///< @brief Vector containing DescriptorPool's.
 		DescriptorLayout* _layout; ///< @brief Pointer to DescriptorLayout.
 	private:
+		VkDescriptorPoolSize* _descriptorPool;
+		int _descriptorPoolSize;
 };
 #endif

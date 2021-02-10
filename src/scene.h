@@ -32,8 +32,8 @@ class Scene : public Hierarchy {
 
 		/// @brief Update Scene descriptors.
 		/// @param _index Current index of SequenceManager.
-		/// @param _descriptorSets VkDescriptorSet to use.
-		virtual void updateDescriptors(int _index, VkDescriptorSet _descriptorSets);
+		/// @param _entity Entity to update descrptors from.
+		virtual void updateDescriptors(int _index, Entity* _entity);
 
 		/// @brief Get name of the Scene.
 		/// @return Name of the Scene.
