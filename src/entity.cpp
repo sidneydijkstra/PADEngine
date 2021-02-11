@@ -41,14 +41,18 @@ VkDescriptorSet& Entity::getDescriptorSet(int _index) {
 	return this->_descriptorSets[_index];
 }
 
+void Entity::update() {
+}
+
 void Entity::recreate(int _index) {
 }
 
 void Entity::updateDescriptors(int _index) {
-	this->_uniformBuffer->updateDescriptor(_index, _descriptorSets[_index], 0);
-	this->_texture->getBuffer()->updateDescriptor(_index, _descriptorSets[_index], 1);
-
-	this->_material->updateDescriptors(_index, _descriptorSets[_index]);
+	if(this->getType() != EntityType::CUSTOM){
+		this->_uniformBuffer->updateDescriptor(_index, _descriptorSets[_index], 0);
+		this->_texture->getBuffer()->updateDescriptor(_index, _descriptorSets[_index], 1);
+		this->_material->updateDescriptors(_index, _descriptorSets[_index]);
+	}
 }
 
 void Entity::setupDescriptorSets() {

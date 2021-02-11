@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(PADEngine VERSION 1.0.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 option(PADEngine_BUILD_EXAMPLES "Build PADEngine example programs." ON)
 option(PADEngine_BUILD_DOCS "Build PADEngine documentation." ON)

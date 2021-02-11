@@ -33,9 +33,10 @@
 #include <vector>
 
 /// @brief Enum describing the type of an Entity, this way we know how to render a Entity.
-enum EntityType {
+enum class EntityType {
     ENTITY,
-    LIGHT
+    LIGHT,
+    CUSTOM
 };
 
 /// @brief Class describing a Entity object, which stores all the information for a Entity. Entity inherrits from the Hierarchy class to add the parent-child functionality.
@@ -70,6 +71,9 @@ class Entity : public Hierarchy {
         /// @param _index Current index.
         /// @return Reference of VkDescriptorSet.
         VkDescriptorSet& getDescriptorSet(int _index);
+
+        /// @brief Main update function of the Entity.
+        virtual void update();
 
         /// @brief Recreate function of the Entity.
         /// @param _index Current index.

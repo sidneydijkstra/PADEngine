@@ -18,9 +18,11 @@ void Scene::recreate(int _index) {
 	}
 }
 
-void Scene::updateDescriptors(int _index, VkDescriptorSet _descriptorSets) {
-	_light->getLightBuffer()->updateBuffer(_index, LightBufferObject{ _light->position, _camera->position, _light->color });
-	_light->getLightBuffer()->updateDescriptor(_index, _descriptorSets, 3);
+void Scene::updateDescriptors(int _index, Entity* _entity) {
+	if(_entity->getType() != EntityType::CUSTOM){
+		_light->getLightBuffer()->updateBuffer(_index, LightBufferObject{ _light->position, _camera->position, _light->color });
+		_light->getLightBuffer()->updateDescriptor(_index, _entity->getDescriptorSet(_index), 3);
+	}
 }
 
 Camera* Scene::getCamera() {

@@ -97,8 +97,6 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
         vkCmdBindPipeline(this->_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipeline());
 
-
-
         // get children sorted by mesh type
         std::map<MeshType, std::vector<Entity*>> children = mat_children_it->second;
 
@@ -118,7 +116,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
                 for (Entity* entity : childVector) {
                     // update descriptors
                     entity->updateDescriptors(_index);
-                    _scene->updateDescriptors(_index, entity->getDescriptorSet(_index));
+                    _scene->updateDescriptors(_index, entity);
 
                     // set descriptors
                     vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &entity->getDescriptorSet(_index), 0, nullptr);
@@ -138,7 +136,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
 
                     // update descriptors
                     entity->updateDescriptors(_index);
-                    _scene->updateDescriptors(_index, entity->getDescriptorSet(_index));
+                    _scene->updateDescriptors(_index, entity);
 
                     // set descriptors
                     vkCmdBindDescriptorSets(_commandBuffers[_index], VK_PIPELINE_BIND_POINT_GRAPHICS, mat->getShaderPass()->getPipelineLayout(), 0, 1, &entity->getDescriptorSet(_index), 0, nullptr);

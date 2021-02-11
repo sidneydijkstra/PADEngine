@@ -25,6 +25,11 @@ class DescriptorLayout {
 		/// @param _layoutBinding The descriptor set layout binding to use for this layout.
 		DescriptorLayout(VkDescriptorSetLayoutBinding _layoutBinding);
 
+		/// @brief The constructor for the DescriptorLayout class.
+		/// @param _size The size of the set layout.
+		/// @param _layoutBinding The descriptor set layout binding to use for this layout.
+		DescriptorLayout(int _size, VkDescriptorSetLayoutBinding* _layoutBinding);
+
 		/// @brief The deconstructor for the DescriptorLayout class.
 		~DescriptorLayout();
 
