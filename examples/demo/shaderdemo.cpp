@@ -19,17 +19,25 @@ ShaderDemo::ShaderDemo(std::string _name) : Scene(_name) {
     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     uboLayoutBinding.pImmutableSamplers = nullptr;
     uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    std::array<VkDescriptorSetLayoutBinding, 1> bindings = { uboLayoutBinding };
+    VkDescriptorSetLayoutBinding zoomLayoutBinding{};
+    zoomLayoutBinding.binding = 1;
+    zoomLayoutBinding.descriptorCount = 1;
+    zoomLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    zoomLayoutBinding.pImmutableSamplers = nullptr;
+    zoomLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, zoomLayoutBinding };
 
     mat_custom.descriptorLayout = bindings.data();
-    mat_custom.descriptorLayoutSize = 1;
+    mat_custom.descriptorLayoutSize = 2;
 
-    std::array<VkDescriptorPoolSize, 1> poolSizes{};
+    std::array<VkDescriptorPoolSize, 2> poolSizes{};
     poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     poolSizes[0].descriptorCount = static_cast<uint32_t>(SwapChainHandler::getInstance()->getSwapChainImagesSize());
+    poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSizes[1].descriptorCount = static_cast<uint32_t>(SwapChainHandler::getInstance()->getSwapChainImagesSize());
 
     mat_custom.descriptorPool = poolSizes.data();
-    mat_custom.descriptorPoolSize = 1;
+    mat_custom.descriptorPoolSize = 2;
 
     MaterialManager::getInstance()->load(mat_custom);
 
@@ -39,6 +47,8 @@ ShaderDemo::ShaderDemo(std::string _name) : Scene(_name) {
 
 void ShaderDemo::update() {
 	this->getCamera()->move3D(5.0f);
+
+    _plane->update();
 
 	if (Input::getKeyDown(KeyCode::Q))
 		SceneManager::getInstance()->setCurrentScene("light_demo");

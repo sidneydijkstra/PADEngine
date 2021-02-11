@@ -33,7 +33,7 @@
 #include <vector>
 
 /// @brief Enum describing the type of an Entity, this way we know how to render a Entity.
-enum EntityType {
+enum class EntityType {
     ENTITY,
     LIGHT,
     CUSTOM
