@@ -68,8 +68,6 @@ class Canvas : public Entity {
 			}
 
 			maxIts = Input::getKeyDown(KeyCode::A) ? maxIts - 1000 : Input::getKeyDown(KeyCode::D) ? maxIts + 1000 : maxIts;
-
-			std::cout << "zoom: " << zoom << std::endl;
 		};
 
 		void updateDescriptors(int _index) override {
