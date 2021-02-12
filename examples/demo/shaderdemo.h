@@ -34,6 +34,8 @@ class Canvas : public Entity {
 			_buffer = new UniformBuffer<DataBuffer>();
 			zoom.x = 1.0f;
 			zoom.y = 1.0f;
+			lastMouse.x = 1.0f;
+			lastMouse.y = 1.0f;
 			center.x = 0.5f;
 			center.y = 0.5f;
 			maxIts = 1000;
@@ -56,7 +58,21 @@ class Canvas : public Entity {
 				zoom.y *= 0.5f;
 			}
 
+			if (Input::getMouseButtonDown(0)) {
+				lastMouse.x = Input::getMousePosition().first;
+				lastMouse.y = Input::getMousePosition().second;
+			}
+
+			if (Input::getMouseButton(0)){
+				center.y -= ((Input::getMousePosition().first - lastMouse.x) / zoom.x) / 100;
+				center.x -= ((Input::getMousePosition().second - lastMouse.y) / zoom.y) / 100;
+				lastMouse.x = Input::getMousePosition().first;
+				lastMouse.y = Input::getMousePosition().second;
+			}
+
 			maxIts = Input::getKeyDown(KeyCode::A) ? maxIts - 1000 : Input::getKeyDown(KeyCode::D) ? maxIts + 1000 : maxIts;
+
+			std::cout << "zoom: " << zoom.x << std::endl;
 		};
 
 		void updateDescriptors(int _index) override {
@@ -75,6 +91,7 @@ class Canvas : public Entity {
 		UniformBuffer<DataBuffer>* _buffer;
 		glm::vec2 center;
 		glm::vec2 zoom;
+		glm::vec2 lastMouse;
 		int maxIts;
 };
 

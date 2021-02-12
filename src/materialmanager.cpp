@@ -26,9 +26,10 @@ void MaterialManager::load(MaterialData _data) {
 }
 
 MaterialBuffer* MaterialManager::get(const char* _name) {
-	if (_materials[_name] != NULL) {
-		return _materials[_name];
+	if (auto it = _materials.find(_name); it != _materials.end()) {
+		return it->second;
 	}
+	return nullptr;
 }
 
 void MaterialManager::recreateAll() {
