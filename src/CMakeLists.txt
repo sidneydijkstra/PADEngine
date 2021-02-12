@@ -65,6 +65,7 @@ add_library(PADEngine STATIC
   materialbuffer.h
   materialmanager.cpp
   materialmanager.h
+  materialdata.h
 
   # PADEgine engine logic files
   scene.cpp

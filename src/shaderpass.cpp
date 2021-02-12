@@ -9,11 +9,14 @@ ShaderPass::ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect) {
 	this->setup();
 }
 
-ShaderPass::ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect, VkDescriptorSetLayoutBinding* _descriptorLayout, int _descriptorLayoutSize, VkDescriptorPoolSize* _descriptorPool, int _descriptorPoolSize) {
-	this->_descriptor = new Descriptor(_descriptorLayout, _descriptorLayoutSize, _descriptorPool, _descriptorPoolSize);
+ShaderPass::ShaderPass(MaterialData _data) {
+	if(_data.customShader)
+		this->_descriptor = new Descriptor(_data.descriptorLayout, _data.descriptorLayoutSize, _data.descriptorPool, _data.descriptorPoolSize);
+	else
+		this->_descriptor = new Descriptor();
 
-	this->_shaderEffect = _shaderEffect;
-	this->_renderPass = _renderPass;
+	this->_shaderEffect = new ShaderEffect(_data.vertexPath, _data.fragmentPath);
+	this->_renderPass = _data.renderPass->getRenderPass();
 
 	this->setup();
 }
@@ -126,6 +129,7 @@ void ShaderPass::setup() {
 }
 
 ShaderPass::~ShaderPass() {
+	delete _shaderEffect;
 	delete _descriptor;
 
 	vkDestroyPipeline(DeviceHandler::getInstance()->getLogicalDevice(), this->_pipeline, nullptr);
