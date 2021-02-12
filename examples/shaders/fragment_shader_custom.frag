@@ -1,9 +1,10 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
+#extension GL_ARB_gpu_shader_fp64 : enable
 
 layout(binding = 1) uniform DataBuffer{
-  vec2 center;
-  vec2 zoom;
+  dvec2 center;
+  double zoom;
   int maxIts;
 } fragBuffer;
 
@@ -26,22 +27,22 @@ vec4 gradient(vec4 spectrum[color_steps], float step) {
 
 void main() {
 
-  float x0 = fragBuffer.center.x + (fragPosition.x / fragBuffer.zoom.x);
-  float y0 = fragBuffer.center.y + (fragPosition.y / fragBuffer.zoom.y);
+  double x0 = fragBuffer.center.x + (fragPosition.x / fragBuffer.zoom);
+  double y0 = fragBuffer.center.y + (fragPosition.y / fragBuffer.zoom);
 
-  float x = 0;
-  float y = 0;
+  double x = 0;
+  double y = 0;
 
   int iteration = 0;
   int max_iteration = fragBuffer.maxIts;
   while((x*x + y*y) < (2*2) && iteration < max_iteration){
-    float xtemp = x*x - y*y + x0;
+    double xtemp = x*x - y*y + x0;
     y = 2 * x * y + y0;
     x = xtemp;
     iteration++;
   }
 
-  float c = ((iteration * 16) % 1000) / 1000.0f;
+  double c = ((iteration * 16) % 1000) / 1000.0f;
 
   if(iteration == max_iteration){
     c = 0;
@@ -56,5 +57,5 @@ void main() {
 
   vec4 colors[color_steps] = {vec4(0.0, 0.0, 0, 0), vec4(0, 1.0, 0.0, 0), vec4(0.0, 1.0, 0, 0), vec4(0, 0, 1.0, 0)};
 
-  outColor = gradient(colors, c);
+  outColor = gradient(colors, float(c));
 }
