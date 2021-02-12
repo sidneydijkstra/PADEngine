@@ -17,6 +17,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(external/glfw-3.3.2)
 add_subdirectory(external/glm-0.9.9.8)
+add_subdirectory(external/freetype-2.10.4)
 
 #--------------------------------------------------------------------
 # Build PAD Engine

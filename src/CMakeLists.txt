@@ -103,12 +103,14 @@ target_include_directories(PADEngine PUBLIC
     ${PADEngine_SOURCE_DIR}/external/glm-0.9.9.8/glm
     ${PADEngine_SOURCE_DIR}/external/tiny_obj_loader
     ${PADEngine_SOURCE_DIR}/external/stb-images-2.26
+    ${PADEngine_SOURCE_DIR}/external/freetype-2.10.4/include
 )
 
 target_link_libraries(PADEngine
     Vulkan::Vulkan
     glfw
     glm
+    freetype
 )
 
 set_property(DIRECTORY ${PADEngine_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PADEngine)
