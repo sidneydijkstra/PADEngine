@@ -39,6 +39,7 @@ class Canvas : public Entity {
 			center.y = 0.5f;
 			maxIts = 1000;
 		};
+
 		~Canvas() {
 			delete _buffer;
 		};
