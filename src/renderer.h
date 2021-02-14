@@ -69,6 +69,20 @@ class Renderer {
 		FrameBuffers* _framebuffers; ///< @brief FrameBuffers object pointer of Renderer.
 		std::vector<VkCommandBuffer> _commandBuffers; ///< @brief A std::vector of VkCommandBuffer.
 
+		/// @brief Function to render a Entity.
+		/// @param _index Current index of SequenceManager.
+		/// @param _scene Pointer to Scene that needs to be used while rendering.
+		/// @param _entity Pointer to Entity that needs to be renderd.
+		/// @param _material Pointer to Material that needs to be used while rendering.
+		void renderEntity(int _index, Scene* _scene, Entity* _entity, MaterialBuffer* _material);
+
+		/// @brief Function to render Entity in bulk, this means entities with the same mesh shape (vertisie/indecie buffers can be bound once for all objects).
+		/// @param _index Current index of SequenceManager.
+		/// @param _scene Pointer to Scene that needs to be used while rendering.
+		/// @param _entities List of Entity pointers that need to be renderd.
+		/// @param _material Pointer to Material that needs to be used while rendering.
+		void renderEntityBulk(int _index, Scene* _scene, std::vector<Entity*> _entities, MaterialBuffer* _material);
+
 		/// @brief Begin a command buffer.
 		/// @param _index Current index of SequenceManager.
 		void beginCommandBuffer(int _index);
@@ -76,6 +90,12 @@ class Renderer {
 		/// @brief End a command buffer.
 		/// @param _index Current index of SequenceManager.
 		void endCommandBuffer(int _index);
+
+		/// @brief Function to setup VkRenderPassBeginInfo.
+		/// @param _clearColors The colors to clear the screen with.
+		/// @param _material The MaterialBuffer with the renderpass to use.
+		/// @param _framebuffer VkFramebuffer to render on.
+		VkRenderPassBeginInfo& setupRenderPassInfo(std::vector<VkClearValue>& _clearColors, MaterialBuffer* _material, VkFramebuffer _framebuffer);
 
 		/// @brief Setup command buffers.
 		void setupCommandBuffers();
