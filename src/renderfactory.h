@@ -16,30 +16,15 @@ class RenderFactory {
 		/// @brief Function to sort a list of Entity pointers by MeshType.
 		/// @param _entities A std::vector of Entity pointers.
 		/// @return A std::map of Entity pointers arranged by MeshType.
-		static std::map<MeshType, std::vector<Entity*>> sortEntitiesByMeshType(std::vector<Entity*> _entities) {
-			std::map<MeshType, std::vector<Entity*>> entities = std::map<MeshType, std::vector<Entity*>>();
-			
-			for (Entity* entity : _entities) {
-				MeshType type = entity->getMesh()->getType();
-				entities[type].push_back(entity);
-			}
-			
-			return entities;
-		};
+		static std::vector<Hierarchy*> getAllEntityWithChildren(std::vector<Hierarchy*> _entities);
 
 		/// @brief Function to sort a list of Entity pointers by MeshType and Material.
 		/// @param _entities A std::vector of Entity pointers.
 		/// @return A std::map of Entity pointers arranged by MeshType in a std::map arranged by Material.
-		static std::map<std::string, std::map<MeshType, std::vector<Entity*>>> sortEnitiesByMaterialAndMeshType(std::vector<Hierarchy*> _entities) {
-			std::map<std::string, std::map<MeshType, std::vector<Entity*>>> entities = std::map<std::string, std::map<MeshType, std::vector<Entity*>>>();
-			for (Hierarchy* hierarchy : _entities) {
-				Entity* entity = (Entity*)hierarchy;
-				std::string name = entity->getMaterial()->getMaterialBuffer()->getName();
-				MeshType type = entity->getMesh()->getType();
-				entities[name][type].push_back(entity);
-			}
+		static std::map<std::string, std::map<MeshType, std::vector<Entity*>>> sortEnitiesByMaterialAndMeshType(std::vector<Hierarchy*> _entities);
 
-			return entities;
-		}
+	private:
+		static std::vector<Hierarchy*> _getAllEntityWithChildren(std::vector<Hierarchy*> _entities, std::vector<Hierarchy*> _entitiesSorted);
+		static std::map<std::string, std::map<MeshType, std::vector<Entity*>>> _sortEnitiesByMaterialAndMeshType(std::vector<Hierarchy*> _entities, std::map<std::string, std::map<MeshType, std::vector<Entity*>>> _entitiesSorted);
 };
 #endif

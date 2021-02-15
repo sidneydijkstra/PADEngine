@@ -18,6 +18,7 @@ add_library(PADEngine STATIC
   scenemanager.h
   renderer.cpp
   renderer.h
+  renderfactory.cpp
   renderfactory.h
   descriptor.cpp
   descriptor.h

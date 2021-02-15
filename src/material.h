@@ -20,24 +20,39 @@
 /// @brief Class holding Material.
 class Material {
 	public:
+		/// @brief The constructor for the Material class.
 		Material(const char* = "mat_normal_PBR");
+		/// @brief The deconstructor for the Material class.
 		~Material();
 
+		/// @brief Function to get the current VkDescriptorPool in use.
+		/// @return Reference to VkDescriptorPool in use.
 		VkDescriptorPool& getPool();
+
+		/// @brief Function to get the current MaterialBuffer pointer in use.
+		/// @return Pointer to MaterialBuffer in use.
 		MaterialBuffer* getMaterialBuffer();
+
+		/// @brief Function to get the current UniformBuffer<MaterialBufferObject> pointer in use.
+		/// @return Pointer to UniformBuffer<MaterialBufferObject> in use.
 		UniformBuffer<MaterialBufferObject>* getMaterialUniformBuffer();
 
+		/// @brief Function to set Material to use.
+		/// @param _name Name of Material.
 		void setMaterial(const char* _name);
 
+		/// @brief Get current VkDescriptorSet, final buffers for storing entity data.
+		/// @param _index Current index.
+		/// @return Reference of VkDescriptorSet.
 		void updateDescriptors(int _index, VkDescriptorSet _descriptorSet);
 
-		Color color;
-		Vector3 ambient;
-		Vector3 diffuse;
-		Vector3 specular;
-		float shininess;
+		Color color; ///< @brief Color of Material.
+		Vector3 ambient; ///< @brief Ambient of Material.
+		Vector3 diffuse; ///< @brief Diffuse of Material.
+		Vector3 specular; ///< @brief Specular of Material.
+		float shininess; ///< @brief Shininess of Material.
 	private:
-		DescriptorPool* _pool; ///< @brief DescriptorPool object pointer of Entity.
+		DescriptorPool* _pool;
 		MaterialBuffer* _buffer;
 		UniformBuffer<MaterialBufferObject>* _bufferObject;
 

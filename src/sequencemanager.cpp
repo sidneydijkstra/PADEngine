@@ -36,12 +36,13 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
     _scene->update();
 
     // loop througe scene entities and update there buffers
-    for (Hierarchy* h : _scene->getChildren()) {
-        Entity* e = (Entity*)h;
+    std::vector<Hierarchy*> allEntities = RenderFactory::getAllEntityWithChildren(_scene->getChildren());
+    for (Hierarchy* hierachy : allEntities) {
+        Entity* entity = (Entity*)hierachy;
 
         // set parent child positions
-        Vector3 position = e->position;
-        Entity* parent = dynamic_cast<Entity*>(e->getParent());
+        Vector3 position = entity->position;
+        Entity* parent = dynamic_cast<Entity*>(entity->getParent());
         while (parent != nullptr) {
             Entity* parentEntity = (Entity*)parent;
             position += parentEntity->position;
@@ -50,29 +51,30 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
         // create ubo buffor for entity
         UBOBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.model = glm::translate(ubo.model, position.glm());
-        ubo.model = glm::scale(ubo.model, e->scale.glm());
-        ubo.model = glm::rotate(ubo.model, e->rotation.x, glm::vec3(1, 0, 0));
-        ubo.model = glm::rotate(ubo.model, e->rotation.y, glm::vec3(0, 1, 0));
-        ubo.model = glm::rotate(ubo.model, e->rotation.z, glm::vec3(0, 0, 1));
+        ubo.model = glm::scale(ubo.model, entity->scale.glm());
+        ubo.model = glm::rotate(ubo.model, entity->rotation.x, glm::vec3(1, 0, 0));
+        ubo.model = glm::rotate(ubo.model, entity->rotation.y, glm::vec3(0, 1, 0));
+        ubo.model = glm::rotate(ubo.model, entity->rotation.z, glm::vec3(0, 0, 1));
 
-        ubo.view = glm::lookAt(_scene->getCamera()->position, _scene->getCamera()->position + _scene->getCamera()->front, _scene->getCamera()->up);
 
         // check camera perspective fot ortoh or perspective rendering
         if(_scene->getCamera()->getType() == PerspectiveType::PERSPECTIVE){
+            ubo.view = glm::lookAt(_scene->getCamera()->position, _scene->getCamera()->position + _scene->getCamera()->front, _scene->getCamera()->up);
             ubo.proj = glm::perspective(glm::radians(_scene->getCamera()->fov), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 100.0f);
             ubo.proj[1][1] *= -1;
         }
         else if (_scene->getCamera()->getType() == PerspectiveType::ORTHOGRAPHIC) {
-            ubo.proj = glm::ortho(1.0f, (float)10, (float)10, 0.0f, 0.1f, 1000.0f);
+            ubo.view = glm::lookAt(_scene->getCamera()->position, _scene->getCamera()->position + glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
+            ubo.proj = glm::ortho(0.0f, (float)Config::WIDTH, 0.0f, (float)Config::HEIGHT, 0.01f, 1000.0f);
         }
 
         // update ubo buffer of entity
-        e->getUniformBuffer()->updateBuffer(_imageIndex, ubo);
+        entity->getUniformBuffer()->updateBuffer(_imageIndex, ubo);
 
         // recreate entity
-        e->recreate(_imageIndex);
+        entity->recreate(_imageIndex);
     }
 }
 

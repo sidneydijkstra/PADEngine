@@ -18,14 +18,14 @@ void MaterialManager::deleteInstance() {
 	_instance = nullptr;
 }
 
-void MaterialManager::load(MaterialData _data) {
+void MaterialManager::loadMaterial(MaterialData _data) {
 	MaterialBuffer* t = new MaterialBuffer(_data);
 	std::cout << _data.name << " => " << " -> material loaded" << '\n';
 
 	_materials[_data.name] = t;
 }
 
-MaterialBuffer* MaterialManager::get(const char* _name) {
+MaterialBuffer* MaterialManager::getMaterial(const char* _name) {
 	if (auto it = _materials.find(_name); it != _materials.end()) {
 		return it->second;
 	}

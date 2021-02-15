@@ -39,7 +39,7 @@ void Material::setup(const char* _name) {
 	if (this->_pool != nullptr)
 		this->_buffer->getDescriptor()->freePool(this->_pool);
 
-	this->_buffer = MaterialManager::getInstance()->get(_name);
+	this->_buffer = MaterialManager::getInstance()->getMaterial(_name);
 
 	this->_pool = _buffer->getDescriptor()->getPool();
 }

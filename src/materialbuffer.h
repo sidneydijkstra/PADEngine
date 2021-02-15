@@ -17,11 +17,22 @@
 
 class MaterialBuffer {
 	public:
+		/// @brief The constructor for the MaterialBuffer class.
+		/// @param _data MaterialData struct to create material from
 		MaterialBuffer(MaterialData _data);
+		/// @brief The constructor for the MaterialBuffer class.
 		~MaterialBuffer();
 
+		/// @brief Get name of Material.
+		/// @return Material name.
 		std::string getName();
+
+		/// @brief Get Descriptor pointer of Material.
+		/// @return Descriptor pointer.
 		Descriptor* getDescriptor();
+
+		/// @brief Get ShaderPass pointer of Material.
+		/// @return ShaderPass pointer.
 		ShaderPass* getShaderPass();
 
 	private:

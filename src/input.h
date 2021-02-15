@@ -12,13 +12,6 @@
 
 #include <GLFW/glfw3.h>
 
-/* * * * * * * * * * * * * * * * * * *\
-    TODO:
-    1. Complete documentation.
-    2. Add JoyStick support.
-    3. Add support for key mapping.
-\* * * * * * * * * * * * * * * * * * */
-
 class Core;
 
 namespace pad {
@@ -106,12 +99,6 @@ public:
     Input(Input&&) = delete;
 
     ~Input(void) = delete;
-
-    /* TODO: Implement giving buttons a custom name/key mapping.
-    static bool getButton() noexcept;
-    static bool getButtonDown() noexcept;
-    static bool getButtonUp() noexcept;
-    */
 
     /// @brief Gets whether the given key is being pressed.
     /// @param key The key to check.

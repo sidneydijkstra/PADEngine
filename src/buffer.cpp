@@ -36,7 +36,7 @@ void Buffer::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
     vkFreeCommandBuffers(DeviceHandler::getInstance()->getLogicalDevice(), DeviceHandler::getInstance()->getCommandPool(), 1, &commandBuffer);
 }
 
-void Buffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) { // TODO: new
+void Buffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = size;
@@ -62,7 +62,7 @@ void Buffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryP
     vkBindBufferMemory(DeviceHandler::getInstance()->getLogicalDevice(), buffer, bufferMemory, 0);
 }
 
-uint32_t Buffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) { // TODO: new
+uint32_t Buffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
     VkPhysicalDeviceMemoryProperties memProperties;
     vkGetPhysicalDeviceMemoryProperties(DeviceHandler::getInstance()->getPhysicalDevice(), &memProperties);
 
@@ -75,7 +75,7 @@ uint32_t Buffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags prope
     throw std::runtime_error("failed to find suitable memory type!");
 }
 
-void Buffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size){ // TODO: new
+void Buffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size){
     VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
     VkBufferCopy copyRegion{};

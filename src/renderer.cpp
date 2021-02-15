@@ -9,14 +9,14 @@ Renderer::Renderer() {
     mat_normal_PBR.fragmentPath = "shaders/frag.spv";
     mat_normal_PBR.renderPass = _renderPass;
 
-    /*MaterialData mat_red_PBR{};
-    mat_red_PBR.name = "mat_red_PBR";
-    mat_red_PBR.vertexPath = "shaders/vert.spv";
-    mat_red_PBR.fragmentPath = "shaders/frag_red.spv";
-    mat_red_PBR.renderPass = _renderPass;*/
+    MaterialData mat_normal2D_PBR{};
+    mat_normal2D_PBR.name = "mat_normal2D_PBR";
+    mat_normal2D_PBR.vertexPath = "shaders/vert.spv";
+    mat_normal2D_PBR.fragmentPath = "shaders/frag_2D.spv";
+    mat_normal2D_PBR.renderPass = _renderPass;
 
-    MaterialManager::getInstance()->load(mat_normal_PBR);
-    //MaterialManager::getInstance()->load(mat_red_PBR);
+    MaterialManager::getInstance()->loadMaterial(mat_normal_PBR);
+    MaterialManager::getInstance()->loadMaterial(mat_normal2D_PBR);
 
     _depthBuffer = new DepthBuffer();
     _samplingBuffer = new SamplingBuffer();
@@ -132,7 +132,7 @@ VkCommandBuffer Renderer::updateCommandBuffers(Scene* _scene, int _index) {
     std::map<std::string, std::map<MeshType, std::vector<Entity*>>>::iterator mat_children_it;
     for (mat_children_it = _ents.begin(); mat_children_it != _ents.end(); ++mat_children_it) {
         // get material of entity batch
-        MaterialBuffer* mat = MaterialManager::getInstance()->get(mat_children_it->first.c_str());
+        MaterialBuffer* mat = MaterialManager::getInstance()->getMaterial(mat_children_it->first.c_str());
 
         // set clear values and setup renderpassinfo
         std::vector<VkClearValue> clearValues = std::vector<VkClearValue>();

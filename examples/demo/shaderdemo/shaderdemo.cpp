@@ -39,7 +39,7 @@ ShaderDemo::ShaderDemo(std::string _name) : Scene(_name) {
     mat_custom.descriptorPool = poolSizes.data();
     mat_custom.descriptorPoolSize = 2;
 
-    MaterialManager::getInstance()->load(mat_custom);
+    MaterialManager::getInstance()->loadMaterial(mat_custom);
 
     _plane = new Canvas();
     this->addChild(_plane);
@@ -53,7 +53,7 @@ void ShaderDemo::update() {
 	if (Input::getKeyDown(KeyCode::Q))
 		SceneManager::getInstance()->setCurrentScene("light_demo");
 	if (Input::getKeyDown(KeyCode::E))
-		SceneManager::getInstance()->setCurrentScene("light_demo");
+		SceneManager::getInstance()->setCurrentScene("collision_demo");
 }
 
 ShaderDemo::~ShaderDemo() {
