@@ -27,6 +27,15 @@
 #define DEVICEHANDLER_CLASS
 
 /// @brief Struct describing QueueFamilyIndices data object, which contains information about the graphics card.
+///
+/// The DeviceHandler class is for handling a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPhysicalDevice.html">VkPhysicalDevice</a>. 
+/// This device is a Graphics card or for short GPU, inside the user’s system.  
+/// Besides the use of this physical device, the class also creates a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDevice.html">VkDevice</a>, which is the logical device. 
+/// This device is used for the communication between the engine and the GPU. 
+/// During the initialization process of these devices the DeviceHandler checks if the extensions used in the engine are compatible with the GPU inside the user’s system. 
+/// Secondly the DeviceHandler uses a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkQueue.html">VkQueue</a> that contain the commands for the GPU. 
+/// Finally, the DeviceHandler contains a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkCommandPool.html">VkCommandPool</a> that can be used by the Renderer as a pool.
+
 struct QueueFamilyIndices {
 	std::optional<uint32_t> graphicsFamily;
 	std::optional<uint32_t> presentFamily;
@@ -44,6 +53,15 @@ struct SwapChainSupportDetails {
 };
 
 /// @brief Class describing a DeviceHandler object, which is used to setup the device (graphics card) and handle the configuration/support.
+///
+/// The DeviceHandler class is for handling a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPhysicalDevice.html">VkPhysicalDevice</a>. 
+/// This device is a Graphics card or for short GPU, inside the user`s system.
+/// Besides the use of this physical device, the class also creates a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDevice.html">VkDevice</a>, which is the logical device.
+/// This device is used for the communication between the engine and the GPU.
+/// During the initialization process of these devices the DeviceHandler checks if the extensions used in the engine are compatible with the GPU inside the user`s system.
+/// Secondly the DeviceHandler uses a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkQueue.html">VkQueue</a> that contain the commands for the GPU.
+/// Finally, the DeviceHandler contains a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkCommandPool.html">VkCommandPool</a> that can be used by the Renderer as a pool.
+
 class DeviceHandler {
 	public:
 		/// @brief The constructor for the DeviceHandler class.

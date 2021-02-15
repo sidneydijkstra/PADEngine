@@ -25,6 +25,11 @@ struct TextureBufferData {
 };
 
 /// @brief Class describing a TextureBuffer object, which stores all the buffers for an texture.
+///
+/// The TextureBuffer class is an extension from the ImageBuffer. The class uses the functionality from both the Buffer and ImageBuffer classes to create and store a texture buffer image. 
+/// By using the functions within the ImageBuffer the TextureBuffer easily creates the needed type of image.
+/// A Texture Buffer image is an image converted to a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageView.html">VkImageView</a> to be compatible with Vulkan.
+
 class TextureBuffer : ImageBuffer {
 public:
 	/// @brief The constructor for the TextureBuffer class.

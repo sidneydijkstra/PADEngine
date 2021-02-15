@@ -10,6 +10,11 @@
 #include "buffer.h"
 
 /// @brief Class describing a ImageBuffer object, which stores all image data in a buffer.
+///
+/// The ImageBuffer class is an extension of the Buffer class. This object contains the functionality to create both a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImage.html">VkImage</a> and a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageView.html">VkImageView</a>. 
+/// The class can also change the <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImage.html">VkImage</a> and <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageLayout.html">VkImageLayout</a> objects. 
+/// Lastly since the ImageBuffer extends from Buffer the <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImage.html">VkImage</a> can also be stored in memory.
+
 class ImageBuffer : public Buffer {
 	public:
 		/// @brief The constructor for the ImageBuffer class.

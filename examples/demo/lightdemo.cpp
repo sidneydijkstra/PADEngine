@@ -1,6 +1,6 @@
 #include "lightdemo.h"
 
-LightDemo::LightDemo(std::string _name) : Scene(_name) {
+LightDemo::LightDemo(std::string _name) : Scene(_name, Type::ORTHOGRAPHIC) {
 	list = std::vector<Entity*>();
 	this->addChild(_light);
 	

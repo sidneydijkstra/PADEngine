@@ -11,6 +11,9 @@
 #include <map>
 
 /// @brief Class describing a SceneManager, which controls all Scenes added to the instance of itself.
+///
+
+
 class SceneManager {
 public:
 	/// @brief Static get instance function, SceneManager is a singelton because it is important to only have one instance of the SceneManager. This is importand because each instance of the SceneManager controls it's own scene's. So if you add Scene A to for example SceneManager A, SceneManager B does not own Scene A and can not acces it through the map: _scenes.  

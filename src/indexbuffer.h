@@ -14,6 +14,10 @@
 #include <string>
 
 /// @brief Class describing a IndexBuffer object, which stores all index/indices information of a Vertex.
+///
+/// The IndexBuffer is an extension of the Buffer class. This object is for storing the indices in memory. 
+/// Indices determine the order in which the vertexes are drawn, for more information on the Vertex object see the Vertex class.
+
 class IndexBuffer : Buffer {
 public:
 	/// @brief The constructor for the IndexBuffer class.

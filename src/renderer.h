@@ -46,6 +46,10 @@
 #include <vector>
 
 /// @brief Class describing a Renderer object, which handles all rendering tasks.
+///
+/// The Renderer class has the same structure as most OpenGL engines their renderers, containing separate functions to render different objects. 
+/// A big difference between the OpenGL standard of a Renderer and this Vulkan implementation is that here for all operations it needs to be clear which frame is currently rendering, this information is fetched from the SequenceManager. 
+
 class Renderer {
 	public:
 		/// @brief The constructor for the Renderer class.

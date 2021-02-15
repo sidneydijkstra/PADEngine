@@ -16,6 +16,11 @@
 #include "swapchainhandler.h"
 
 /// @brief Class describing a DescriptorPool object, which is used to store a VkDescriptorPool.
+///
+/// The DiscriptorPool class contains a pool that can be used to store data inside a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDescriptorSet.html">VkDescriptorSet</a> object. 
+/// In order to initialize this pool it will need to be specified which data will be stored inside. 
+/// This needs to be equated to the <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDescriptorSetLayout.html">VkDescriptorSetLayout</a> and the DescriptorLayout.
+
 class DescriptorPool {
 	public:
 		/// @brief The constructor for the Buffer class.

@@ -51,6 +51,13 @@ struct LightBufferObject {
 };
 
 /// @brief Class describing a UniformBuffer, which handles the buffer for a uniform.
+///
+/// The UniformBuffer is a template class that takes a struct with data as a template T, which in turn is placed in memory using the Buffer functionality by extending from the Buffer. 
+/// This is used to place the data like colorand position in memory in a specific way, so it can be sent to the Shader.
+/// The buffers created for this data are kept up in a list that has the length of the SwapChainHandler its image size.
+/// This is necessary because Vulkan supports calculating the next frame, while the current frame is still being rendered on the GPU.
+/// If this data is changed during the rendering process, there will be errorsand this is why it is both requiredand preferred.
+
 template <class T>
 class UniformBuffer : Buffer {
 public:

@@ -23,6 +23,12 @@ struct MeshData {
 };
 
 /// @brief Class describing a MeshBuffer object, which stores all the buffers for a Mesh.
+/// 
+/// The MeshBuffer contains the necessary buffers for its task. 
+/// For example, the MeshBuffer exists of a VertexBuffer and a IndexBuffer to create a mesh ready for rendering. 
+/// Creating the mesh is executed in the ResourceManager so the same Mesh will only be loaded once and reused for every Entity containing the same Mesh data.
+/// This is done to save a lot of memory space in bigger projects.
+
 class MeshBuffer {
 	public:
 		/// @brief The constructor for the MeshBuffer class.

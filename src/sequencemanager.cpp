@@ -50,10 +50,9 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
             ubo.proj = glm::perspective(glm::radians(_scene->getCamera()->fov), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 100.0f);
             ubo.proj[1][1] *= -1;
         }
-        else if(_scene->getCamera()->getType() == Type::ORTHOGRAPHIC) ubo.proj = glm::ortho(0.0f, (float)1920, (float)1080, 0.0f, 0.1f, 1000.0f);
-        //ubo.proj = glm::ortho(1.0f, (float)10, (float)10, 0.0f, 0.1f, 1000.0f);
-        ubo.proj = glm::perspective(glm::radians(_scene->getCamera()->fov), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 100.0f);
-        
+        else if (_scene->getCamera()->getType() == Type::ORTHOGRAPHIC) {
+            ubo.proj = glm::ortho(1.0f, (float)10, (float)10, 0.0f, 0.1f, 1000.0f);
+        }
 
         e->getUniformBuffer()->updateBuffer(_imageIndex, ubo);
         // e->getColorBuffer()->updateBuffer(_imageIndex, MaterialBufferObject { e->color } );

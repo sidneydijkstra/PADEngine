@@ -38,6 +38,11 @@
 //namespace pad {
 
 /// @brief Class describing a Core object, which handels the creation of necessary components and contains the main loop.
+///
+/// The Core class is for the initialization of the following classes: VulkanHandler, DeviceHandler, SwapChainHandler, the Input class and lastly the SequenceManager. 
+/// These classes are initialized here because these classes control the rest of the engine with the Core class at its core. This class also contains the main loop that is called every tick. 
+/// This loop updates the applications time, Input and through the SequenceManager class, the current Scene from the SceneManager as well.
+
 class Core {
     public:
         Core();

@@ -26,6 +26,13 @@
 #include <string>
 
 /// @brief Class describing a ShaderEffect object, which stores ShaderStage for a ShaderPass.
+///
+/// The ShaderEffect class consists of two ShaderStage objects. 
+/// These objects represent the vertex shader and the fragment shader. 
+/// These are not created inside the ShaderEffect class but fetched from the ShaderManager. 
+/// This way another ShaderEffect instance can make use of these earlier determined vertex or fragment shader, without having to load the file repeatedly. 
+/// This will save a lot of memory space in bigger projects.
+
 class ShaderEffect {
 	public:
 		/// @brief The constructor for the ShaderEffect class.

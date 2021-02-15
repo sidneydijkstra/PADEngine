@@ -29,6 +29,10 @@
 #include <array>
 
 /// @brief Class describing a Descriptor object, which is used to store a DescriptorPool and a DescriptorLayout.
+///
+/// The Descriptor class contains a DescriptorLayout the functionality to request, return and destroy a DescriptorPool. 
+/// This class descripes the layout of the data that needs to be sent towards the shader and contains a pool for the objects that prepare the data.
+
 class Descriptor {
 	public:
 		/// @brief The constructor for the Buffer class.

@@ -23,6 +23,10 @@
 #include <vector>
 
 /// @brief Class describing a VulkanHandler, which handles window, surface and vulkan creation.
+///
+/// The VulkanHandler class is for initializing a <a href="https://www.glfw.org/docs/3.3/window_guide.html">GLFWwindow</a> object and a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkInstance.html">VkInstance</a> which implements an instance of the Vulkan API. 
+/// After the initialization of Vulkan and GLFW it`s window, the <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkSurfaceKHR.html">VkSurfaceKHR</a> object is created to use for rendering.
+
 class VulkanHandler {
 	public:
         /// @brief The constructor for the VulkanHandler class.

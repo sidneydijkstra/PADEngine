@@ -12,6 +12,11 @@
 #include "samplingbuffer.h"
 
 /// @brief Class describing FrameBuffers object, which stores buffers for multiple VkFramebuffer objects.
+///
+/// The FrameBuffers class contains a list of the VkFrameBuffer objects that are used during the rendering. 
+/// These FrameBuffers contain a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageView.html">VkImageView</a> of the SwapChain and those of Buffers like the DepthBuffer and the SamplingBuffer.
+/// These images can then be used during the rendering in the Shader.
+
 class FrameBuffers {
 	public:
 		/// @brief The constructor for the FrameBuffers class.
