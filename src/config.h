@@ -11,6 +11,8 @@
 
 
 /// @brief Class holding config information.
+///
+/// In the Config file the information needed for configuration of the window are stored. For example the width and height are stored within this header.
 class Config {
 	public:
 		static const uint32_t WIDTH = 800; ///< @brief The standart width of the window

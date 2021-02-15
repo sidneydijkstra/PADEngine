@@ -13,6 +13,11 @@
 #include <map>
 
 /// @brief Class describing a ShaderManager, which stores all the ShaderStage pointers.
+///
+/// The ShaderManager manages the loading of different Shaders used in the game. 
+/// The manager ensures that these objects are not loaden continuously but only once and are reused when requested multiple times. 
+/// This saves a lot of memory space when working on bigger projects.
+
 class ShaderManager {
 	public:
 		/// @brief The constructor for the ShaderManager class.

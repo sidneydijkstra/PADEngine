@@ -23,6 +23,10 @@
 #include <array>
 
 /// @brief Struct describing a Vertex object, which contains Vertex data.
+///
+/// The Vertex class is used to store the data from each individual vertex within a VertexBuffer. 
+/// Here the information like position, normal and the texture coordinates are stored for later use when for example building the mesh of the model or attaching the texture correctly on the model.
+
 struct Vertex {
 	glm::vec3 pos; ///< @brief Position of Vertex.
 	glm::vec3 normal; ///< @brief Normal of Vertex.

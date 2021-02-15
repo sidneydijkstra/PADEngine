@@ -18,6 +18,10 @@
 #include <iostream>
 
 /// @brief Class holding Material.
+///
+/// The material class contains information about the material that can be attached to the Entity object. 
+/// Here the data needed for the material like its texture, color and shine are stored which can later be used to load the material on to an Entity object within a Scene.
+
 class Material {
 	public:
 		Material(const char* = "mat_normal_PBR");

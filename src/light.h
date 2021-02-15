@@ -10,6 +10,10 @@
 #include "entity.h"
 
 /// @brief Class holding Light information.
+///
+/// The Light class creates a light for the scene to create a more realistic scene. 
+/// Shadows are created by the light which can give a scene more depth.
+
 class Light : public Entity {
 	public:
 		/// @brief The constructor for the Light class.

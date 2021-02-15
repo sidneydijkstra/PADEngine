@@ -14,7 +14,12 @@
 #include "light.h"
 #include "camera.h"
 
-/// @brief Class describing a Scene object, which stores all the information for a Scene. Contains all of the geometry of a particular scene. They are useful for representing translations, rotations and scales (along with other affine transformations) of objects relative to each other.
+/// @brief Class describing a Scene object, which stores all the information for a Scene. 
+/// 
+/// The Scene object Contains all of the geometry of a particular scene. 
+/// They are useful for representing translations, rotations and scales (along with other affine transformations) of objects relative to each other.
+/// The Scene also manages all the objects within it and helps keeping track of all these objects as well.
+
 class Scene : public Hierarchy {
 	public:
 		/// @brief The constructor for the Scene class. Here the Scene is initialized along with a new Camera and light object.
