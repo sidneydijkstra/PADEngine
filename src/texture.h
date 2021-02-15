@@ -11,6 +11,8 @@
 #include "texturebuffer.h"
 
 /// @brief Class describing a Texture object, which stores a pointer to the TextureBuffer.
+///
+/// This class holds the texture information which are used to render the texture on the Material, which in turn is rendered on a specific Entity object.
 class Texture {
 	public:
 		/// @brief The constructor for the Texture class.
