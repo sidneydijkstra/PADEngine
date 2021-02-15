@@ -30,7 +30,7 @@ public:
 	/// @brief The constructor for the Hierarchy class.
 	Hierarchy();
 	/// @brief The deconstructor for the Hierarchy class.
-	~Hierarchy();
+	virtual ~Hierarchy();
 
 	/// @brief Add child to Hierarchy.
 	/// @param child Pointer to Hierarchy object.

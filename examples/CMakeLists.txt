@@ -21,10 +21,14 @@ add_executable(PADEngine_startup
 
 add_executable(PADEngine_demo
     demo/main.cpp
-    demo/lightdemo.cpp
-    demo/lightdemo.h
-    demo/shaderdemo.cpp
-    demo/shaderdemo.h
+
+    demo/lightdemo/lightdemo.cpp
+    demo/lightdemo/lightdemo.h
+
+    demo/shaderdemo/shaderdemo.cpp
+    demo/shaderdemo/shaderdemo.h
+    demo/shaderdemo/canvas.cpp
+    demo/shaderdemo/canvas.h
 )
 
 set_property(DIRECTORY ${PADEngine_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PADEngine_startup)

@@ -32,13 +32,26 @@ Renderer* SequenceManager::getRenderer() {
 }
 
 void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
+    // update scene
     _scene->update();
+
+    // loop througe scene entities and update there buffers
     for (Hierarchy* h : _scene->getChildren()) {
         Entity* e = (Entity*)h;
 
+        // set parent child positions
+        Vector3 position = e->position;
+        Entity* parent = dynamic_cast<Entity*>(e->getParent());
+        while (parent != nullptr) {
+            Entity* parentEntity = (Entity*)parent;
+            position += parentEntity->position;
+            parent = dynamic_cast<Entity*>(parent->getParent());
+        }
+
+        // create ubo buffor for entity
         UBOBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.model = glm::translate(ubo.model, e->position.glm());
+        ubo.model = glm::translate(ubo.model, position.glm());
         ubo.model = glm::scale(ubo.model, e->scale.glm());
         ubo.model = glm::rotate(ubo.model, e->rotation.x, glm::vec3(1, 0, 0));
         ubo.model = glm::rotate(ubo.model, e->rotation.y, glm::vec3(0, 1, 0));
@@ -46,17 +59,19 @@ void SequenceManager::updateScene(Scene* _scene, int _imageIndex) {
 
         ubo.view = glm::lookAt(_scene->getCamera()->position, _scene->getCamera()->position + _scene->getCamera()->front, _scene->getCamera()->up);
 
-        if(_scene->getCamera()->getType() == Type::PERSPECTIVE){
+        // check camera perspective fot ortoh or perspective rendering
+        if(_scene->getCamera()->getType() == PerspectiveType::PERSPECTIVE){
             ubo.proj = glm::perspective(glm::radians(_scene->getCamera()->fov), SwapChainHandler::getInstance()->getSwapChainExtent().width / (float)SwapChainHandler::getInstance()->getSwapChainExtent().height, 0.1f, 100.0f);
             ubo.proj[1][1] *= -1;
         }
-        else if (_scene->getCamera()->getType() == Type::ORTHOGRAPHIC) {
+        else if (_scene->getCamera()->getType() == PerspectiveType::ORTHOGRAPHIC) {
             ubo.proj = glm::ortho(1.0f, (float)10, (float)10, 0.0f, 0.1f, 1000.0f);
         }
 
+        // update ubo buffer of entity
         e->getUniformBuffer()->updateBuffer(_imageIndex, ubo);
-        // e->getColorBuffer()->updateBuffer(_imageIndex, MaterialBufferObject { e->color } );
-        // e->getMaterial()->getMaterialUniformBuffer()->updateBuffer(_imageIndex, MaterialBufferObject{ e->getMaterial()->color, e->getMaterial()->ambient, e->getMaterial()->diffuse, e->getMaterial()->specular, e->getMaterial()->shininess });
+
+        // recreate entity
         e->recreate(_imageIndex);
     }
 }

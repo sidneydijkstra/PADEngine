@@ -1,6 +1,6 @@
 #include "core.h"
-#include "lightdemo.h"
-#include "shaderdemo.h"
+#include "lightdemo/lightdemo.h"
+#include "shaderdemo/shaderdemo.h"
 
 int main() {
 
