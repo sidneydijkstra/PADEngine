@@ -5,6 +5,8 @@
 #include "scene.h"
 #include "entity.h"
 
+using namespace pad;
+
 class LightDemo : public Scene {
 	public:
 		LightDemo(std::string _name);
