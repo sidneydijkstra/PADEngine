@@ -11,6 +11,8 @@
 #include "hierarchy.h"
 
 /// @brief Class describing a RenderFactory, which contains static function used by the Renderer.
+///
+/// This class contains functions to sort Entity objects, they can be sorted by the type of material and type of mesh.
 class RenderFactory {
 	public:
 		/// @brief Function to sort a list of Entity pointers by MeshType.

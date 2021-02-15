@@ -13,6 +13,10 @@
 #include "meshbuffer.h"
 
 /// @brief Class describing a ModelLoader object, this class is used to load .obj files.
+///
+/// The Modelloader is exclusively meant for loading .obj file, which are files that contain information about a specific model, for example their verticies and positions of those verticies, texture mapping and more.
+/// This loaded model is then saved in the ResourceManager.
+
 class ModelLoader {
 	public:
 		/// @brief Function to load a .obj file to Vertex's and indicies.

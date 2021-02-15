@@ -12,7 +12,10 @@
 
 /// @brief Class describing a SceneManager, which controls all Scenes added to the instance of itself.
 ///
-
+/// The Scenemanager manages the scenes that are created in a single project or game. 
+/// In order to load the scenes after one another and keep track of them. 
+/// The Scenemanager holds this information, which scene is currently rendering and which are on the stack to load later. Scene objects can be added, deleted and loaded here. 
+/// The manager is also responsible for deleting the Scene objects which in turn Delete their Entities and other object from memory.
 
 class SceneManager {
 public:

@@ -15,6 +15,15 @@
 #include <algorithm>
 
 /// @brief Class describing a Hierarchy object, which stores all child -> parent logic.
+///
+/// The Hierarchy class is designed after the Unity engine <a href=” https://riptutorial.com/unity3d/example/7478/parenting-and-children”>parenting and children</a> structure. 
+/// It creates a link between the parent object and the child objects within the scene they are created in. When the parents position changes the child`s position is updated relative to its parent. 
+/// For example, if the parent its global position, which means the position within the scene, is 1 on the x-axis and 1 on the y-axis and the child its position relative from its parent is 1 on the x-axis and 1 on the y-axis. 
+/// The child`s global position is 2 on the x-axis and 2 on the y-axis. If we now change the parent its position to 2 on the x-axis and 2 on the y-axis. 
+/// The child`s position updates automatically to 3 on the x-axis and 3 on the y-axis. 
+/// This can come in handy when you want objects within your game linked, for example a player and his weapon. 
+/// Since multiple object besides Entity needs this functionality like a the Camera and Scene.
+
 class Hierarchy
 {
 public:

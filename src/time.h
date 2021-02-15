@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 
-/// @brief Class describing a Time object, which handles frame/deltatime calculations and standart time functions using glfw.
+/// @brief Class describing a Time object, which handles frame/deltatime calculations and standart time functions using glfw and also calculates the frames per second.
 class Time {
 	public:
 		Time(void) = delete;

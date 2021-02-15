@@ -11,6 +11,10 @@
 #include "renderpass.h"
 
 /// @brief Class holding config information.
+///
+/// MaterialData is a struct containing information to create a MaterialBuffer. 
+/// You have standard information about the Material like the name of the shader and the paths to the vertex/fragment shader. 
+/// You also have the option to create a custom shader using the flag customShader, then you can set the <a href=”https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDescriptorSetLayoutBinding.html”> VkDescriptorSetLayoutBinding </a> and <a href=”https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDescriptorPoolSize.html”> VkDescriptorPoolSize </a> to tell the shader the type of data you want to send to it.
 struct MaterialData {
 	const char* name;
 	RenderPass* renderPass;

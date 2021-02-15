@@ -30,6 +30,12 @@ enum class PerspectiveType {
 	ORTHOGRAPHIC, PERSPECTIVE
 };
 
+/// @brief Class describing a Buffer object, which is used to store variables in vulkan buffer objects.
+///
+/// The camera class is the object through which the player views the world. 
+/// The Camera object can be set when initializing a Scene since the camera is created with the scene. 
+/// Here the Camera can be set to orthographic which means a 2D view or perspective which creates a 3D scene.
+
 class Camera {
 	public:
 		/// @brief The constructor for the Camera class.

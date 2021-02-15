@@ -12,9 +12,11 @@
 #include <iostream>
 #include <map>
 
-/// @brief The MaterialManager class is the resourcemanager for the MaterialBuffer objects. 
+/// @brief Class describing a MaterialManager, which stores all the pointers to frequently used Materials.
 ///
-/// this class creates these objects and hold there pointers. This way when we create an Entity its Material class gets a MaterialBuffer pointer from this class.
+/// The ResourceManager manages the loading of different Materials used in the game. 
+/// The manager ensures that these objects are not loaden continuously but only once and are reused when requested multiple times. 
+/// This saves a lot of memory space when working on bigger projects.
 class MaterialManager {
 	public:
 		/// @brief The constructor for the MaterialManager class.

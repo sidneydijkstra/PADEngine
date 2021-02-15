@@ -13,7 +13,11 @@
 
 //namespace pad {
 
-	/// @brief Struct describing a Color object, for using rgba colors.
+/// @brief Struct describing a Color object, for using rgba colors.
+///
+/// In the Color struct the value`s for each separate color red, green, blue and the alpha value are stored. 
+/// The color its value range from 0 to 255, just like normal RGBA color pickers.
+
 	struct Color {
 
 		uint8_t r; ///< @brief the red value of the Color

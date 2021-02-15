@@ -17,7 +17,11 @@
 #include "meshbuffer.h"
 #include "modelloader.h"
 
-/// @brief Class describing a ResourceManager, which stores all the pointers to frequently objects.
+/// @brief Class describing a ResourceManager, which stores all the pointers to frequently used objects.
+///
+/// The ResourceManager manages the loading of different objects like textures, meshes and other resources used in the game. 
+/// The manager ensures that these objects are not loaden continuously but only once and are reused when requested multiple times. 
+/// This saves a lot of memory space when working on bigger projects.
 class ResourceManager {
 	public:
 		/// @brief The constructor for the ResourceManager class.

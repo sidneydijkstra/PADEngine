@@ -11,6 +11,11 @@
 #include "meshbuffer.h"
 
 /// @brief Class describing a Mesh object, which stores all the information for a 2D/3D Mesh.
+///
+/// In 3D computer graphics and solid modeling, a polygon mesh is a collection of vertices, edges and faces that defines the shape of a polyhedral object. 
+/// The faces usually consist of triangles, quadrilaterals, or other simple convex polygons, since this simplifies rendering, but may also be more generally composed of concave polygons, or even polygons with holes.
+/// In short the Mesh creates a model that can be renderd on screen through a list of vertecies and their coordinates.
+
 class Mesh {
 	public:
 		/// @brief The constructor for the Mesh class.

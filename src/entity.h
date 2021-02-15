@@ -40,6 +40,11 @@ enum class EntityType {
 };
 
 /// @brief Class describing a Entity object, which stores all the information for a Entity. Entity inherrits from the Hierarchy class to add the parent-child functionality.
+///
+/// The entity class contains all the information and functionality needed to easily create game objects within the Scene.
+/// These entities can contain meshes to add models, textures, shaders and more. The Entity also stores data like the position, rotation and scale of the object within the scene. 
+/// From this class object like a Player, a weapon and more can be created in the games Scene.
+
 class Entity : public Hierarchy {
     public:
         /// @brief The constructor for the Entity class. Here all variables are initialized and set to their default values.
