@@ -88,7 +88,7 @@ void Renderer::endCommandBuffer(int _index) {
     }
 }
 
-VkRenderPassBeginInfo& Renderer::setupRenderPassInfo(std::vector<VkClearValue>& _clearColors, MaterialBuffer* _material, VkFramebuffer _framebuffer) {
+VkRenderPassBeginInfo Renderer::setupRenderPassInfo(std::vector<VkClearValue>& _clearColors, MaterialBuffer* _material, VkFramebuffer _framebuffer) {
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = _material == nullptr ? _renderPass->getRenderPass() :_material->getShaderPass()->getRenderPass();

@@ -101,7 +101,7 @@ class Renderer {
 		/// @param _clearColors The colors to clear the screen with.
 		/// @param _material The MaterialBuffer with the renderpass to use.
 		/// @param _framebuffer VkFramebuffer to render on.
-		VkRenderPassBeginInfo& setupRenderPassInfo(std::vector<VkClearValue>& _clearColors, MaterialBuffer* _material, VkFramebuffer _framebuffer);
+		VkRenderPassBeginInfo setupRenderPassInfo(std::vector<VkClearValue>& _clearColors, MaterialBuffer* _material, VkFramebuffer _framebuffer);
 
 		/// @brief Setup command buffers.
 		void setupCommandBuffers();
