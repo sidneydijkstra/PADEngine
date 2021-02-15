@@ -18,6 +18,11 @@
 #include <array>
 
 /// @brief Class describing a RenderPass object, which stores the VkRenderPass.
+///
+/// For the creation and initialization of the Shader within Vulkan a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkRenderPass.html">VkRenderPass</a> is needed. 
+/// In this <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkRenderPass.html">VkRenderPass</a> the different attachments that will be used inside the Shader can be found. 
+/// Examples of the attachments are a DepthBuffer and SampleBuffer. Before these attachments can be used, they will need to be indicated to the RenderPass.
+
 class RenderPass {
 	public:
 		/// @brief The constructor for the RenderPass class.

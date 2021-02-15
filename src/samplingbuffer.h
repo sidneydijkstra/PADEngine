@@ -11,6 +11,11 @@
 #include "imagebuffer.h"
 
 /// @brief Class describing a SamplingBuffer object, which stores all the information msaa image sampling.
+///
+/// The SamplingBuffer class is an extension of the ImageBuffer. 
+/// The class uses the functionality from both the Buffer and ImageBuffer classes to create and store a sample buffer image. 
+/// By using the functions within the ImageBuffer the TextureBuffer easily creates the needed type of image. A sample buffer image is used to smooth out the hard pixel lines of objects.
+
 class SamplingBuffer : ImageBuffer {
 	public:
 		/// @brief The constructor for the SamplingBuffer class.

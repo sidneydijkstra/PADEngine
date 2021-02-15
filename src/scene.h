@@ -14,12 +14,13 @@
 #include "light.h"
 #include "camera.h"
 
-/// @brief Class describing a Scene object, which stores all the information for a Scene.
+/// @brief Class describing a Scene object, which stores all the information for a Scene. Contains all of the geometry of a particular scene. They are useful for representing translations, rotations and scales (along with other affine transformations) of objects relative to each other.
 class Scene : public Hierarchy {
 	public:
-		/// @brief The constructor for the Scene class.
+		/// @brief The constructor for the Scene class. Here the Scene is initialized along with a new Camera and light object.
 		/// @param _name Name of the Scene.
-		Scene(std::string _name);
+		/// @param type The Type of camera, can be set to either Orthographic or Perspective.
+		Scene(std::string _name, Type type = Type::PERSPECTIVE);
 		/// @brief The deconstructor for the Scene class.
 		~Scene();
 

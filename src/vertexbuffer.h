@@ -15,6 +15,10 @@
 #include <string>
 
 /// @brief Class describing a VertexBuffer object, which stores all the Vertex data.
+///
+/// The VertexBuffer is an extension of the Buffer class. This Buffer is meant for storing the Vertexes in memory. 
+/// A Vertex contains data like position, a normal and Texture coordinates.
+
 class VertexBuffer : Buffer {
 public:
 	/// @brief The constructor for the VertexBuffer class.

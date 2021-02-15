@@ -34,6 +34,12 @@ struct BufferData {
 };
 
 /// @brief Class describing a Buffer object, which is used to store variables in vulkan buffer objects.
+///
+/// The Buffer class is an abstract class that contains the functionality to create a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkBuffer.html">VkBuffer</a> object. 
+/// This object contains data that is sent to the Shader which is rendered by the GPU. 
+/// The Buffer class can also start and close a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkCommandBuffer.html">VkCommandBuffer</a> to copy buffers. 
+/// The <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkCommandBuffer.html">VkCommandBuffer</a> is used to place data or buffers on the right place in memory.
+
 class Buffer {
 public:
 	/// @brief The deconstructor of the Buffer class.

@@ -31,6 +31,12 @@
 #include <set>
 
 /// @brief Class describing a SwapChainHandler object, which handles all the swapchain logic.
+///
+/// The SwapChainHandler class is in its essence a class that contains a list of images on which can be renderd. 
+/// In Vulkan there is the option to render the next frame in advance. Which means that when the currentframe is rendering the engine calculates the next frame, there for there are multiple frames needed in advance. 
+/// For this purpose, the class contains a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkSwapchainKHR.html">VkSwapchainKHR</a> which is a list of <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImage.html">VkImages</a> which are the images on which is drawn. 
+/// Lastly the information needed for the SwapChain are stored in a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkFormat.html">VkFormat</a> and a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkExtent2D.html">VkExtent2D</a> objects.
+
 class SwapChainHandler {
 public:
 	/// @brief The constructor for the SwapChainHandler class.

@@ -17,6 +17,12 @@
 #include <string>
 
 /// @brief Class describing a DepthBuffer object, which stores depth buffer image data.
+///
+/// The DepthBuffer class is an extension of the ImageBuffer. 
+/// The class uses the functionality from both the Buffer and ImageBuffer classes to create and store a depth buffer image. 
+/// By using the functions within the ImageBuffer the TextureBuffer easily creates the needed type of image. 
+/// A depth buffer image is a grayscale render of the Scene on which the depth can clearly be seen. This image is then used to determine in which order of rendering for all objects.
+
 class DepthBuffer : ImageBuffer {
 public:
 	/// @brief The constructor for the DepthBuffer class.

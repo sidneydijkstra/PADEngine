@@ -25,10 +25,16 @@
 
 //namespace pad {
 
+/// @brief Enumeration specifying the type of the camera, either 2D or 3D.
+enum class Type {
+	ORTHOGRAPHIC, PERSPECTIVE
+};
+
 class Camera {
 	public:
 		/// @brief The constructor for the Camera class.
-		Camera();
+		/// @param The given type of camera to initialize.
+		Camera(Type type = Type::PERSPECTIVE);
 		/// @brief The deconstructor for the Camera class.
 		~Camera();
 
@@ -38,6 +44,8 @@ class Camera {
 		/// @brief The function to move the Camera using mouse and keyboard.
 		/// @param _speed The move speed of the Camera.
 		void move3D(float _speed);
+		
+		Type getType();
 
 		glm::vec3 position; ///< @brief the position of the Camera
 		glm::vec3 front; ///< @brief the front of the Camera
@@ -49,6 +57,7 @@ class Camera {
 		float fov; ///< @brief the fov of the Camera
 
 	private:
+		Type _type;
 		bool _firstClick;
 		float lastX; ///< @brief the lastX of the Camera
 		float lastY; ///< @brief the lastY of the Camera

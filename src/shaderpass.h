@@ -12,6 +12,11 @@
 #include "materialdata.h"
 
 /// @brief Class describing a ShaderPass object, which stores all the information for vulkan shader.
+///
+/// The ShaderPass class eventually contains all that is needed to use a Shader. 
+/// A Descriptor for the layout the Shader will adopt, a pool the objects can use, the ShaderEffect objects that contain the ShaderStages and a RenderPass with the necessary attachments. 
+/// With these components both the <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipelineLayout.html">VkPipelineLayout</a> and the <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPipeline.html">VkPipeline</a> are created, which can be used during the rendering of the Shader.
+
 class ShaderPass {
 	public:
 		/// @brief The constructor for the ShaderPass class.

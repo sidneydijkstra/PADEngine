@@ -1,6 +1,6 @@
 #include "camera.h"
 
-Camera::Camera() {
+Camera::Camera(Type type) {
 	this->_firstClick = true;
 	this->lastX = Config::WIDTH / 2.0;
 	this->lastY = Config::HEIGHT / 2.0;
@@ -13,6 +13,8 @@ Camera::Camera() {
 	this->yaw = 0.0f;
 	this->pitch = 0.0f;
 	this->fov = 70.0f;
+
+	this->_type = type;
 }
 
 void Camera::update() {
@@ -81,6 +83,11 @@ void Camera::move3D(float _speed) {
 	}else {
 		_firstClick = true;
 	}
+}
+
+Type Camera::getType()
+{
+	return _type;
 }
 
 Camera::~Camera() {
