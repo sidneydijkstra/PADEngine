@@ -7,21 +7,8 @@
 #ifndef MATERIALBUFFER_CLASS
 #define MATERIALBUFFER_CLASS
 
-#include "renderpass.h"
+#include "materialdata.h"
 #include "shaderpass.h"
-#include "shadereffect.h"
-
-struct MaterialData {
-	const char* name;
-	RenderPass* renderPass;
-	const char* vertexPath;
-	const char* fragmentPath;
-	bool customShader = false;
-	VkDescriptorSetLayoutBinding* descriptorLayout;
-	int descriptorLayoutSize;
-	VkDescriptorPoolSize* descriptorPool;
-	int descriptorPoolSize;
-};
 
 class MaterialBuffer {
 	public:
@@ -34,7 +21,6 @@ class MaterialBuffer {
 
 	private:
 		std::string _name;
-		ShaderEffect* _shaderEffect;
 		ShaderPass* _shaderPass;
 };
 #endif

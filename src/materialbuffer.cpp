@@ -2,12 +2,7 @@
 
 MaterialBuffer::MaterialBuffer(MaterialData _data) {
 	this->_name = _data.name;
-	this->_shaderEffect = new ShaderEffect(_data.vertexPath, _data.fragmentPath);
-
-	if(_data.customShader)
-		this->_shaderPass = new ShaderPass(_data.renderPass->getRenderPass(), this->_shaderEffect, _data.descriptorLayout, _data.descriptorLayoutSize, _data.descriptorPool, _data.descriptorPoolSize);
-	else
-		this->_shaderPass = new ShaderPass(_data.renderPass->getRenderPass(), this->_shaderEffect);
+	this->_shaderPass = new ShaderPass(_data);
 }
 
 std::string MaterialBuffer::getName() {
@@ -23,6 +18,5 @@ ShaderPass* MaterialBuffer::getShaderPass() {
 }
 
 MaterialBuffer::~MaterialBuffer() {
-	delete this->_shaderEffect;
 	delete this->_shaderPass;
 }

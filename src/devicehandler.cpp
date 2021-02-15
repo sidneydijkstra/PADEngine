@@ -103,6 +103,7 @@ void DeviceHandler::createLogicalDevice() {
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.sampleRateShading = VK_TRUE; // enable sample shading feature for the device
+	deviceFeatures.shaderFloat64 = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -136,7 +137,7 @@ bool DeviceHandler::isDeviceSuitable(VkPhysicalDevice _device) {
 	VkPhysicalDeviceFeatures supportedFeatures;
 	vkGetPhysicalDeviceFeatures(_device, &supportedFeatures);
 
-	return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
+	return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy && supportedFeatures.shaderFloat64;
 }
 
 bool DeviceHandler::checkDeviceExtensionSupport(VkPhysicalDevice _device) {

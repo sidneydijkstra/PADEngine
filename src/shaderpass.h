@@ -9,6 +9,7 @@
 
 #include "descriptor.h"
 #include "shadereffect.h"
+#include "materialdata.h"
 
 /// @brief Class describing a ShaderPass object, which stores all the information for vulkan shader.
 class ShaderPass {
@@ -17,7 +18,7 @@ class ShaderPass {
 		/// @param _renderPass The VkRenderPass to use.
 		/// @param _shaderEffect The ShaderEffect pointer to use.
 		ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect);
-		ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect, VkDescriptorSetLayoutBinding* _descriptorLayout, int _descriptorLayoutSize, VkDescriptorPoolSize* _descriptorPool, int _descriptorPoolSize);
+		ShaderPass(MaterialData _data);
 		/// @brief The deconstructor for the ShaderPass class.
 		~ShaderPass();
 

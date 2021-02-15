@@ -45,7 +45,7 @@ class Entity : public Hierarchy {
         /// @brief The constructor for the Entity class. Here all variables are initialized and set to their default values.
         Entity();
         /// @brief The deconstructor for the Entity class. In the destructor all objects created in the Entity class are deleted from memory.
-        ~Entity();
+        virtual ~Entity();
 
         /// @brief Get UniformBuffer of the Entity, this buffer contains the model/view/projection.
         /// @return Pointer to UniformBuffer.

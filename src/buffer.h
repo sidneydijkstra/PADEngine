@@ -36,12 +36,16 @@ struct BufferData {
 /// @brief Class describing a Buffer object, which is used to store variables in vulkan buffer objects.
 class Buffer {
 public:
-	/// @brief The constructor for the Buffer class.
-	Buffer();
-	/// @brief The deconstructor for the Buffer class.
-	~Buffer();
+	/// @brief The deconstructor of the Buffer class.
+	virtual ~Buffer();
 
 protected:
+	/// @brief The constructor of the Buffer class.
+	Buffer();
+	/// @brief The copy constructor of the Buffer class.
+	Buffer(const Buffer& _other) = default;
+	/// @brief The move constructor of the Buffer class.
+	Buffer(Buffer&& _other) = default;
 
 	/// @brief Begin a single time Buffer command.
     /// @return A reference to the command buffer.
