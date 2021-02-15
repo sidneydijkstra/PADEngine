@@ -5,11 +5,11 @@ Hierarchy::Hierarchy() {
 	guid = _nextGuid;
 	_nextGuid++;
 
-	_parent = NULL;
+	_parent = nullptr;
 }
 
 void Hierarchy::addChild(Hierarchy* _child) {
-	if (_child->_parent != NULL) {
+	if (_child->_parent != nullptr) {
 		_child->_parent->removeChild(_child);
 	}
 	_child->_parent = this;
@@ -27,7 +27,7 @@ void Hierarchy::removeChild(Hierarchy* child)
 			++it;
 		}
 	}
-	child->_parent = NULL;
+	child->_parent = nullptr;
 }
 
 Hierarchy::~Hierarchy() {

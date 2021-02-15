@@ -1,6 +1,6 @@
 #include "scene.h"
 
-Scene::Scene(std::string _name, Type type) : Hierarchy(){
+Scene::Scene(std::string _name, PerspectiveType type) : Hierarchy(){
 	this->_camera = new Camera(type);
 	this->_name = _name;
 

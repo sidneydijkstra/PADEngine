@@ -20,7 +20,7 @@ class Scene : public Hierarchy {
 		/// @brief The constructor for the Scene class. Here the Scene is initialized along with a new Camera and light object.
 		/// @param _name Name of the Scene.
 		/// @param type The Type of camera, can be set to either Orthographic or Perspective.
-		Scene(std::string _name, Type type = Type::PERSPECTIVE);
+		Scene(std::string _name, PerspectiveType type = PerspectiveType::PERSPECTIVE);
 		/// @brief The deconstructor for the Scene class.
 		~Scene();
 
