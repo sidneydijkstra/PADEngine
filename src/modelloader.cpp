@@ -3,6 +3,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
+namespace pad {
+
 MeshData ModelLoader::loadObjectFile(std::string obj_file_path) {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -53,4 +55,6 @@ MeshData ModelLoader::loadObjectFile(std::string obj_file_path) {
     data.vertices = vertices;
 
     return data;
+}
+
 }

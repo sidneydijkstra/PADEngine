@@ -1,6 +1,8 @@
 
 #include "material.h"
 
+namespace pad {
+
 Material::Material(const char* _name) {
 	this->_bufferObject = new UniformBuffer<MaterialBufferObject>();
 	this->_pool = nullptr;
@@ -49,4 +51,6 @@ Material::~Material() {
 		this->_buffer->getDescriptor()->freePool(this->_pool);
 
 	delete this->_bufferObject;
+}
+
 }

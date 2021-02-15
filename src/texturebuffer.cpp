@@ -1,5 +1,6 @@
 #include "texturebuffer.h"
 
+namespace pad {
 
 TextureBuffer::TextureBuffer(const char* _path) : ImageBuffer() {
     this->createTextureImage(_path);
@@ -108,4 +109,6 @@ TextureBuffer::~TextureBuffer() {
     vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageView, nullptr);
     vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _textureImage, nullptr);
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _textureImageMemory, nullptr);
+}
+
 }

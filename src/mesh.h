@@ -10,6 +10,8 @@
 #include "resourcemanager.h"
 #include "meshbuffer.h"
 
+namespace pad {
+
 /// @brief Class describing a Mesh object, which stores all the information for a 2D/3D Mesh.
 ///
 /// In 3D computer graphics and solid modeling, a polygon mesh is a collection of vertices, edges and faces that defines the shape of a polyhedral object. 
@@ -42,4 +44,7 @@ class Mesh {
 	private:
 		MeshBuffer* _meshBuffer; ///< @brief MeshBuffer object pointer of Mesh.
 };
+
+}
+
 #endif

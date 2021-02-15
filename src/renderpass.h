@@ -17,6 +17,8 @@
 
 #include <array>
 
+namespace pad {
+
 /// @brief Class describing a RenderPass object, which stores the VkRenderPass.
 ///
 /// For the creation and initialization of the Shader within Vulkan a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkRenderPass.html">VkRenderPass</a> is needed. 
@@ -40,5 +42,7 @@ class RenderPass {
 		/// @bried Setup the VkRenderPass.
 		void setup();
 };
+
+}
 
 #endif

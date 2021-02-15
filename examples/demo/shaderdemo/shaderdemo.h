@@ -6,6 +6,8 @@
 #include "canvas.h"
 #include "scenemanager.h"
 
+using namespace pad;
+
 class ShaderDemo : public Scene {
 	public:
 		ShaderDemo(std::string _name);

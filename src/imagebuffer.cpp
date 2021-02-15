@@ -1,5 +1,7 @@
 #include "imagebuffer.h"
 
+namespace pad {
+
 ImageBuffer::ImageBuffer() : Buffer() {
 }
 
@@ -166,4 +168,6 @@ VkImageView ImageBuffer::createImageView(VkImage _image, VkFormat _format, VkIma
     }
 
     return imageView;
+}
+
 }

@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+namespace pad {
+
 Renderer::Renderer() {
     this->_renderPass = new RenderPass();
 
@@ -209,3 +211,4 @@ Renderer::~Renderer() {
     delete _renderPass;
 }
 
+}

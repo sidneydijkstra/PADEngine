@@ -1,5 +1,7 @@
 #include "descriptor.h"
 
+namespace pad {
+
 Descriptor::Descriptor() {
 	_layout = new DescriptorLayout();
 	this->_descriptorPool = nullptr;
@@ -44,4 +46,6 @@ Descriptor::~Descriptor() {
 			it = _descriptorPools.erase(it);
 		}
 	}
+}
+
 }

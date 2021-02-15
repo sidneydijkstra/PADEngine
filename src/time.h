@@ -15,6 +15,8 @@
 #include <iostream>
 #include <string>
 
+namespace pad {
+
 /// @brief Class describing a Time object, which handles frame/deltatime calculations and standart time functions using glfw and also calculates the frames per second.
 class Time {
 	public:
@@ -52,4 +54,7 @@ class Time {
 		/// @brief Calculate current fps.
 		static void calculateFps();
 };
+
+}
+
 #endif

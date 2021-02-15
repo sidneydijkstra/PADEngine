@@ -1,5 +1,7 @@
 #include "entity.h"
 
+namespace pad {
+
 Entity::Entity() : Hierarchy() {
 	rotation = Vector3(0, 0, 0);
 	position = Vector3(0, 0, 0);
@@ -77,4 +79,6 @@ Entity::~Entity() {
 	delete _uniformBuffer;
 	delete _texture;
 	delete _material;
+}
+
 }

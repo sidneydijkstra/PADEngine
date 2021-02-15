@@ -1,5 +1,7 @@
 #include "indexbuffer.h"
 
+namespace pad {
+
 IndexBuffer::IndexBuffer(std::vector<uint32_t> _indices) : Buffer() {
     this->_indexSize = (uint32_t)_indices.size();
     this->setupBuffer(_indices);
@@ -37,4 +39,6 @@ uint32_t IndexBuffer::getBufferSize() {
 IndexBuffer::~IndexBuffer() {
     vkDestroyBuffer(DeviceHandler::getInstance()->getLogicalDevice(), _indexBuffer, nullptr);
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _indexBufferMemory, nullptr);
+}
+
 }

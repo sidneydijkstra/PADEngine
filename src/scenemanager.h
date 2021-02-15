@@ -10,6 +10,8 @@
 #include "scene.h"
 #include <map>
 
+namespace pad {
+
 /// @brief Class describing a SceneManager, which controls all Scenes added to the instance of itself.
 ///
 /// The Scenemanager manages the scenes that are created in a single project or game. 
@@ -61,4 +63,7 @@ private:
 
 	std::map <std::string, Scene*> _scenes; ///< @brief A std::map of Scene pointers arranged by name.
 };
+
+}
+
 #endif

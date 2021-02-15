@@ -1,5 +1,7 @@
 #include "framebuffers.h"
 
+namespace pad {
+
 FrameBuffers::FrameBuffers() {
 }
 
@@ -51,4 +53,6 @@ FrameBuffers::~FrameBuffers() {
     for (size_t i = 0; i < _framebuffers.size(); i++) {
         vkDestroyFramebuffer(DeviceHandler::getInstance()->getLogicalDevice(), _framebuffers[i], nullptr);
     }
+}
+
 }

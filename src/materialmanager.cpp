@@ -1,5 +1,7 @@
 #include "materialmanager.h"
 
+namespace pad {
+
 static MaterialManager* _instance;
 
 MaterialManager::MaterialManager() {
@@ -49,4 +51,6 @@ MaterialManager::~MaterialManager() {
 		}
 	}
 	_materials.clear();
+}
+
 }

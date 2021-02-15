@@ -1,5 +1,7 @@
 #include "texture.h"
 
+namespace pad {
+
 Texture::Texture() {
 	_buffer = ResourceManager::getInstance()->getTextureBuffer("assets/white.png");
 }
@@ -13,4 +15,6 @@ TextureBuffer* Texture::getBuffer() {
 }
 
 Texture::~Texture() {
+}
+
 }

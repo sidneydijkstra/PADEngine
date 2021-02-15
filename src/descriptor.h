@@ -28,6 +28,8 @@
 #include <vector>
 #include <array>
 
+namespace pad {
+
 /// @brief Class describing a Descriptor object, which is used to store a DescriptorPool and a DescriptorLayout.
 ///
 /// The Descriptor class contains a DescriptorLayout the functionality to request, return and destroy a DescriptorPool. 
@@ -59,4 +61,7 @@ class Descriptor {
 		VkDescriptorPoolSize* _descriptorPool;
 		int _descriptorPoolSize;
 };
+
+}
+
 #endif

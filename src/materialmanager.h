@@ -12,6 +12,8 @@
 #include <iostream>
 #include <map>
 
+namespace pad {
+
 /// @brief Class describing a MaterialManager, which stores all the pointers to frequently used Materials.
 ///
 /// The ResourceManager manages the loading of different Materials used in the game. 
@@ -45,4 +47,7 @@ class MaterialManager {
 	private:
 		std::map<std::string, MaterialBuffer*> _materials;
 };
+
+}
+
 #endif

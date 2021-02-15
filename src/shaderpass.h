@@ -11,6 +11,8 @@
 #include "shadereffect.h"
 #include "materialdata.h"
 
+namespace pad {
+
 /// @brief Class describing a ShaderPass object, which stores all the information for vulkan shader.
 ///
 /// The ShaderPass class eventually contains all that is needed to use a Shader. 
@@ -179,5 +181,7 @@ class PipelineFactory {
 			return pipelineLayoutInfo;
 		};
 };
+
+}
 
 #endif

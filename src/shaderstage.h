@@ -20,6 +20,8 @@
 #include <vector>
 #include <string>
 
+namespace pad {
+
 /// @brief Class describing a ShaderStage object, which stores all the information for a shader stage.
 ///
 /// The ShaderStage class contains a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkShaderModule.html">VkShaderModule</a> that’s created with the shader code created from a shader file.
@@ -54,5 +56,7 @@ class ShaderStage {
 		/// @return The VkShaderModule.
 		VkShaderModule createShaderModule(const std::vector<char>& _code);
 };
+
+}
 
 #endif

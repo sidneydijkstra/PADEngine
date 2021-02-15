@@ -1,5 +1,7 @@
 #include "sequencemanager.h"
 
+namespace pad {
+
 SequenceManager::SequenceManager() {
     this->_renderer = new Renderer();
 
@@ -185,4 +187,6 @@ SequenceManager::~SequenceManager() {
     }
 
     delete _renderer;
+}
+
 }

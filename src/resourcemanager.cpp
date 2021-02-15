@@ -1,5 +1,7 @@
 #include "resourcemanager.h"
 
+namespace pad {
+
 static ResourceManager* _instance;
 
 ResourceManager::ResourceManager() {
@@ -84,3 +86,4 @@ ResourceManager::~ResourceManager() {
 	_objectMeshes.clear();
 }
 
+}

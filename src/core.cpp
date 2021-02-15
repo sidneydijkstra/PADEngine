@@ -1,5 +1,7 @@
 #include "core.h"
 
+namespace pad {
+
 Core::Core() {
     // init vulkan / window / surface
     VulkanHandler::getInstance()->init();
@@ -61,5 +63,7 @@ void Core::cleanup() {
 }
 
 Core::~Core() {
+
+}
 
 }

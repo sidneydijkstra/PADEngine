@@ -1,5 +1,7 @@
 #include "light.h"
 
+namespace pad {
+
 Light::Light() : Entity() {
 	this->_type = EntityType::LIGHT;
 	this->_lightBuffer = new UniformBuffer<LightBufferObject>();
@@ -12,4 +14,6 @@ Light::~Light() {
 
 UniformBuffer<LightBufferObject>* Light::getLightBuffer() {
 	return this->_lightBuffer;
+}
+
 }

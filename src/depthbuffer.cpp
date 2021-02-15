@@ -1,5 +1,7 @@
 #include "depthbuffer.h"
 
+namespace pad {
+
 DepthBuffer::DepthBuffer() : ImageBuffer(){
     setupDepthResources();
 }
@@ -28,4 +30,6 @@ DepthBuffer::~DepthBuffer() {
     vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _depthImageView, nullptr);
     vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _depthImage, nullptr);
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _depthImageMemory, nullptr);
+}
+
 }

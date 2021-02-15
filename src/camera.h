@@ -23,14 +23,14 @@
 #include "input.h"
 #include "time.h"
 
-//namespace pad {
+namespace pad {
 
 /// @brief Enumeration specifying the type of the camera, either 2D or 3D.
 enum class PerspectiveType {
 	ORTHOGRAPHIC, PERSPECTIVE
 };
 
-/// @brief Class describing a Buffer object, which is used to store variables in vulkan buffer objects.
+/// @brief Class describing a Camera object, which is used to store variables in vulkan buffer objects.
 ///
 /// The camera class is the object through which the player views the world. 
 /// The Camera object can be set when initializing a Scene since the camera is created with the scene. 
@@ -69,5 +69,5 @@ class Camera {
 		float lastY; ///< @brief the lastY of the Camera
 };
 
-//}
+}
 #endif

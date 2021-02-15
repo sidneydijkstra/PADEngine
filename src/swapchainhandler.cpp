@@ -1,10 +1,11 @@
 #include "swapchainhandler.h"
 
+namespace pad {
+
 static SwapChainHandler* _instance;
 
 SwapChainHandler::SwapChainHandler() {
 }
-
 
 SwapChainHandler* SwapChainHandler::getInstance() {
     if (!_instance) {
@@ -201,3 +202,4 @@ SwapChainHandler::~SwapChainHandler() {
     this->cleanup();
 }
 
+}

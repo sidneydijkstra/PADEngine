@@ -1,5 +1,7 @@
 #include "renderfactory.h"
 
+namespace pad {
+
 std::vector<Hierarchy*> RenderFactory::getAllEntityWithChildren(std::vector<Hierarchy*> _entities) {
 	std::vector<Hierarchy*> entities = std::vector<Hierarchy*>();
 	entities = RenderFactory::_getAllEntityWithChildren(_entities, entities);
@@ -31,4 +33,6 @@ std::map<std::string, std::map<MeshType, std::vector<Entity*>>> RenderFactory::_
 		_entitiesSorted = RenderFactory::_sortEnitiesByMaterialAndMeshType(entity->getChildren(), _entitiesSorted);
 	}
 	return _entitiesSorted;
+}
+
 }

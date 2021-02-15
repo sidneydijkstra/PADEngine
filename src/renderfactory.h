@@ -10,6 +10,8 @@
 #include "scene.h"
 #include "hierarchy.h"
 
+namespace pad {
+
 /// @brief Class describing a RenderFactory, which contains static function used by the Renderer.
 ///
 /// This class contains functions to sort Entity objects, they can be sorted by the type of material and type of mesh.
@@ -29,4 +31,7 @@ class RenderFactory {
 		static std::vector<Hierarchy*> _getAllEntityWithChildren(std::vector<Hierarchy*> _entities, std::vector<Hierarchy*> _entitiesSorted);
 		static std::map<std::string, std::map<MeshType, std::vector<Entity*>>> _sortEnitiesByMaterialAndMeshType(std::vector<Hierarchy*> _entities, std::map<std::string, std::map<MeshType, std::vector<Entity*>>> _entitiesSorted);
 };
+
+}
+
 #endif

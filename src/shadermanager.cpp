@@ -1,5 +1,7 @@
 #include "shadermanager.h"
 
+namespace pad {
+
 static ShaderManager* _instance;
 
 ShaderManager::ShaderManager() {
@@ -37,4 +39,6 @@ ShaderManager::~ShaderManager() {
 		}
 	}
 	_shaderStages.clear();
+}
+
 }

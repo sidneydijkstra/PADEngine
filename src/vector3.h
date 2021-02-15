@@ -484,7 +484,4 @@ inline Vector3 cross(const Vector3& left_vector, const Vector3& right_vector) no
 
 }
 
-/* Temporary using-directive. Remove when the whole engine uses the same namespace. */
-using namespace pad;
-
 #endif

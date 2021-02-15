@@ -1,5 +1,7 @@
 #include "renderpass.h"
 
+namespace pad {
+
 RenderPass::RenderPass() {
 	this->setup();
 }
@@ -92,4 +94,6 @@ void RenderPass::setup() {
 
 RenderPass::~RenderPass() {
 	vkDestroyRenderPass(DeviceHandler::getInstance()->getLogicalDevice(), this->_renderPass, nullptr);
+}
+
 }

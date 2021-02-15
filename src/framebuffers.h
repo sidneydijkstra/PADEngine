@@ -11,6 +11,8 @@
 #include "depthbuffer.h"
 #include "samplingbuffer.h"
 
+namespace pad {
+
 /// @brief Class describing FrameBuffers object, which stores buffers for multiple VkFramebuffer objects.
 ///
 /// The FrameBuffers class contains a list of the VkFrameBuffer objects that are used during the rendering. 
@@ -38,4 +40,7 @@ class FrameBuffers {
 
 		std::vector<VkFramebuffer> _framebuffers; ///< @brief std::vector of VkFramebuffer objects.
 };
+
+}
+
 #endif

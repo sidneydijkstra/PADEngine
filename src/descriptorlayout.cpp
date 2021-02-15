@@ -1,5 +1,7 @@
 #include "descriptorlayout.h"
 
+namespace pad {
+
 DescriptorLayout::DescriptorLayout() {
 	VkDescriptorSetLayoutBinding uboLayoutBinding{};
 	uboLayoutBinding.binding = 0;
@@ -59,4 +61,6 @@ void DescriptorLayout::setup(int _size, VkDescriptorSetLayoutBinding* _layoutBin
 
 DescriptorLayout::~DescriptorLayout() {
 	vkDestroyDescriptorSetLayout(DeviceHandler::getInstance()->getLogicalDevice(), _layout, nullptr);
+}
+
 }

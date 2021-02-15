@@ -1,5 +1,7 @@
 #include "shaderstage.h"
 
+namespace pad {
+
 ShaderStage::ShaderStage(const char* _path, VkShaderStageFlagBits _stage) {
 	this->_shaderCode = readFile(_path);
 	this->_shaderModule = createShaderModule(_shaderCode);
@@ -52,4 +54,6 @@ VkShaderModule ShaderStage::createShaderModule(const std::vector<char>& _code) {
 ShaderStage::~ShaderStage() {
 	this->_shaderCode.clear();
 	vkDestroyShaderModule(DeviceHandler::getInstance()->getLogicalDevice(), this->_shaderModule, nullptr);
+}
+
 }

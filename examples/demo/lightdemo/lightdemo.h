@@ -6,6 +6,8 @@
 #include "entity.h"
 #include "scenemanager.h"
 
+using namespace pad;
+
 class LightDemo : public Scene {
 	public:
 		LightDemo(std::string _name);
@@ -19,5 +21,4 @@ class LightDemo : public Scene {
 		int amountY = 2;
 		int amountZ = 2;
 };
-
 #endif

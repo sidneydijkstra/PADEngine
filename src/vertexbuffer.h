@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 
+namespace pad {
+
 /// @brief Class describing a VertexBuffer object, which stores all the Vertex data.
 ///
 /// The VertexBuffer is an extension of the Buffer class. This Buffer is meant for storing the Vertexes in memory. 
@@ -45,4 +47,7 @@ private:
 	void setupBuffer(const std::vector<Vertex> _vertices);
 
 };
+
+}
+
 #endif

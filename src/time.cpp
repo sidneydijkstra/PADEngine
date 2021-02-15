@@ -1,5 +1,7 @@
 #include "time.h"
 
+namespace pad {
+
 void Time::update() {
 	Time::calculateDeltaTime();
 	Time::calculateFps();
@@ -31,4 +33,6 @@ void Time::calculateFps() {
 		Time::_lastTime = glfwGetTime();
 		Time::_fps = 0;
 	}
+}
+
 }

@@ -25,9 +25,9 @@
 #include <vector>
 #include <string>
 
-//namespace pad {
+namespace pad {
 
-/// @brief Struct describing a Buffer data object, which stores VkBuffer and buffer size.
+/// @brief Struct describing a BufferData object, which stores VkBuffer and buffer size.
 struct BufferData {
 	VkBuffer buffer;
 	uint32_t size;
@@ -83,5 +83,5 @@ protected:
 
 };
 
-//}
+}
 #endif

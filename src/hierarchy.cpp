@@ -1,5 +1,7 @@
 #include "hierarchy.h"
 
+namespace pad {
+
 Hierarchy::Hierarchy() {
 	_nextGuid = 0;
 	guid = _nextGuid;
@@ -32,4 +34,6 @@ void Hierarchy::removeChild(Hierarchy* child)
 
 Hierarchy::~Hierarchy() {
 	_children.clear();
+}
+
 }

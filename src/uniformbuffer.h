@@ -27,6 +27,8 @@
 #include <vector>
 #include <string>
 
+namespace pad {
+
 /// @brief Struct describing a UBOBufferObject object, which stores UBO buffer data.
 struct UBOBufferObject {
 	glm::mat4 model;
@@ -150,6 +152,8 @@ UniformBuffer<T>::~UniformBuffer() {
         vkDestroyBuffer(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffers[i], nullptr);
         vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _uniformBuffersMemory[i], nullptr);
     }
+}
+
 }
 
 #endif

@@ -12,6 +12,8 @@
 #include <iostream>
 #include <map>
 
+namespace pad {
+
 /// @brief Class describing a ShaderManager, which stores all the ShaderStage pointers.
 ///
 /// The ShaderManager manages the loading of different Shaders used in the game. 
@@ -40,4 +42,7 @@ class ShaderManager {
 	private:
 		std::map<std::string, ShaderStage*> _shaderStages; ///< @brief A std::map with ShaderStage pointers arranged by path.
 };
+
+}
+
 #endif

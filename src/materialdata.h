@@ -10,6 +10,8 @@
 
 #include "renderpass.h"
 
+namespace pad {
+
 /// @brief Class holding config information.
 ///
 /// MaterialData is a struct containing information to create a MaterialBuffer. 
@@ -26,5 +28,7 @@ struct MaterialData {
 	VkDescriptorPoolSize* descriptorPool;
 	int descriptorPoolSize;
 };
+
+}
 
 #endif

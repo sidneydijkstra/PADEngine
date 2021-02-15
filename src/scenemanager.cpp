@@ -1,5 +1,6 @@
 #include "scenemanager.h"
 
+namespace pad {
 
 SceneManager::SceneManager() {
 	_currentScene = nullptr;
@@ -37,4 +38,6 @@ void SceneManager::setCurrentScene(const char* name) {
 
 SceneManager::~SceneManager() {
 	_scenes.clear();
+}
+
 }

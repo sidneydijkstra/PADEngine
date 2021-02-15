@@ -1,5 +1,7 @@
 #include "devicehandler.h"
 
+namespace pad {
+
 static DeviceHandler* _instance;
 
 DeviceHandler::DeviceHandler() {}
@@ -274,4 +276,6 @@ VkFormat DeviceHandler::findDepthFormat() {
 DeviceHandler::~DeviceHandler() {
 	vkDestroyCommandPool(this->_logicaldevice , this->_commandPool, nullptr);
 	vkDestroyDevice(this->_logicaldevice, nullptr);
+}
+
 }

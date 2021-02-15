@@ -11,6 +11,8 @@
 #include "vertexbuffer.h"
 #include "uniformbuffer.h"
 
+namespace pad {
+
 /// @brief Enum describing a MeshType, which stores all the diffrent mesh types.
 enum MeshType {
 	TRIANGLE, PLANE, CUBE, OBJECT
@@ -112,4 +114,7 @@ class MeshBuffer {
 			{{-0.5f,  0.5f,  0.5f},  {0.0f,  1.0f,  0.0f},  {0.0f, 0.0f}}
 		};
 };
+
+}
+
 #endif

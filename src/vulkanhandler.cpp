@@ -1,5 +1,7 @@
 #include "vulkanhandler.h"
 
+namespace pad {
+
 static VulkanHandler* _instance;
 
 VulkanHandler::VulkanHandler() {}
@@ -132,4 +134,6 @@ VulkanHandler::~VulkanHandler() {
     vkDestroySurfaceKHR(_vkInstance, this->_surface, nullptr);
     vkDestroyInstance(this->_vkInstance, nullptr);
     glfwDestroyWindow(this->_window);
+}
+
 }

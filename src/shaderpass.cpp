@@ -1,5 +1,7 @@
 #include "shaderpass.h"
 
+namespace pad {
+
 ShaderPass::ShaderPass(VkRenderPass _renderPass, ShaderEffect* _shaderEffect) {
 	this->_descriptor = new Descriptor();
 
@@ -134,4 +136,6 @@ ShaderPass::~ShaderPass() {
 
 	vkDestroyPipeline(DeviceHandler::getInstance()->getLogicalDevice(), this->_pipeline, nullptr);
 	vkDestroyPipelineLayout(DeviceHandler::getInstance()->getLogicalDevice(), this->_pipelineLayout, nullptr);
+}
+
 }

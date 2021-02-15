@@ -5,6 +5,8 @@
 #include "entity.h"
 #include "input.h"
 
+using namespace pad;
+
 struct DataBuffer {
 	glm::dvec2 center;
 	double zoom;

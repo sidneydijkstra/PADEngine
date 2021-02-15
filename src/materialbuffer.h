@@ -10,6 +10,8 @@
 #include "materialdata.h"
 #include "shaderpass.h"
 
+namespace pad {
+
 /// @brief Class describing a MaterialBuffer object, which stores all the buffers for a Material.
 ///
 /// The MaterialBuffer contains the necessary buffers for its task. For example, the MaterialBuffer exists of a Shaderpass to create a Shader ready for rendering. 
@@ -39,4 +41,7 @@ class MaterialBuffer {
 		std::string _name;
 		ShaderPass* _shaderPass;
 };
+
+}
+
 #endif

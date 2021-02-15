@@ -9,6 +9,7 @@
 #ifndef CONFIG_CLASS
 #define CONFIG_CLASS
 
+namespace pad {
 
 /// @brief Class holding config information.
 ///
@@ -18,4 +19,6 @@ class Config {
 		static const uint32_t WIDTH = 800; ///< @brief The standart width of the window
 		static const uint32_t HEIGHT = 600; ///< @brief The standart height of the window
 };
+
+}
 #endif

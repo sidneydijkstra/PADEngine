@@ -1,5 +1,7 @@
 #include "vertexbuffer.h"
 
+namespace pad {
+
 VertexBuffer::VertexBuffer(const std::vector<Vertex> _vertices) :
 Buffer(){
     _vertexSize = (uint32_t)_vertices.size();
@@ -36,4 +38,6 @@ uint32_t VertexBuffer::getBufferSize() {
 VertexBuffer::~VertexBuffer() {
     vkDestroyBuffer(DeviceHandler::getInstance()->getLogicalDevice(), _vertexBuffer, nullptr);
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _vertexBufferMemory, nullptr);
+}
+
 }

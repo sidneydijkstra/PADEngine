@@ -13,6 +13,8 @@
 #include <vector>
 #include <string>
 
+namespace pad {
+
 /// @brief Class describing a IndexBuffer object, which stores all index/indices information of a Vertex.
 ///
 /// The IndexBuffer is an extension of the Buffer class. This object is for storing the indices in memory. 
@@ -43,4 +45,6 @@ private:
 	/// @param _indices Indices to create the buffer with.
 	void setupBuffer(std::vector<uint32_t> _indices);
 };
+
+}
 #endif

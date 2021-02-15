@@ -1,5 +1,7 @@
 #include "shadereffect.h"
 
+namespace pad {
+
 ShaderEffect::ShaderEffect(const char* _vertexPath, const char* _fragmentPath) {
 	_stages = std::vector<ShaderStage*>();
 	_stages.push_back(ShaderManager::getInstance()->getShaderStage(_vertexPath, VK_SHADER_STAGE_VERTEX_BIT));
@@ -14,3 +16,4 @@ ShaderEffect::~ShaderEffect() {
 	_stages.clear();
 }
 
+}

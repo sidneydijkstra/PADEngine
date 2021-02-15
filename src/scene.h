@@ -14,6 +14,8 @@
 #include "light.h"
 #include "camera.h"
 
+namespace pad {
+
 /// @brief Class describing a Scene object, which stores all the information for a Scene. 
 /// 
 /// The Scene object Contains all of the geometry of a particular scene. 
@@ -56,4 +58,7 @@ class Scene : public Hierarchy {
 		Camera* _camera; ///< @brief Camera object pointer of Scene.
 		std::string _name; ///< @brief Name of Scene.
 };
+
+}
+
 #endif

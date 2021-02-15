@@ -15,6 +15,8 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 
+namespace pad {
+
 /// @brief Class describing a DescriptorLayout object, which is used to store a VkDescriptorSetLayout.
 ///
 /// In order to send information to the Shader the layout of the data send needs to be determined in advance.
@@ -51,4 +53,7 @@ class DescriptorLayout {
 	private:
 		VkDescriptorSetLayout _layout; ///< @brief VkDescriptorSetLayout object containing layout.
 };
+
+}
+
 #endif

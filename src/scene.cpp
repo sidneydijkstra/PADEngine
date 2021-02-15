@@ -1,5 +1,7 @@
 #include "scene.h"
 
+namespace pad {
+
 Scene::Scene(std::string _name, PerspectiveType type) : Hierarchy(){
 	this->_camera = new Camera(type);
 	this->_name = _name;
@@ -32,4 +34,6 @@ Camera* Scene::getCamera() {
 Scene::~Scene() {
 	delete _camera;
 	delete _light;
+}
+
 }

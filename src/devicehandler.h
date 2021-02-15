@@ -26,6 +26,8 @@
 #ifndef DEVICEHANDLER_CLASS
 #define DEVICEHANDLER_CLASS
 
+namespace pad {
+
 /// @brief Struct describing QueueFamilyIndices data object, which contains information about the graphics card.
 ///
 /// The DeviceHandler class is for handling a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkPhysicalDevice.html">VkPhysicalDevice</a>. 
@@ -166,5 +168,7 @@ class DeviceHandler {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 		};
 };
+
+}
 
 #endif

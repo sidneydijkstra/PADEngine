@@ -15,6 +15,8 @@
 #include "devicehandler.h"
 #include "swapchainhandler.h"
 
+namespace pad {
+
 /// @brief Class describing a DescriptorPool object, which is used to store a VkDescriptorPool.
 ///
 /// The DiscriptorPool class contains a pool that can be used to store data inside a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDescriptorSet.html">VkDescriptorSet</a> object. 
@@ -52,4 +54,7 @@ class DescriptorPool {
 		VkDescriptorPool _pool; ///< @brief VkDescriptorPool object containing pool.
 
 };
+
+}
+
 #endif

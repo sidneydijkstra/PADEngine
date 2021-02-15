@@ -32,6 +32,8 @@
 #include <iostream>
 #include <vector>
 
+namespace pad {
+
 /// @brief Enum describing the type of an Entity, this way we know how to render a Entity.
 enum class EntityType {
     ENTITY,
@@ -105,4 +107,7 @@ class Entity : public Hierarchy {
         /// @brief Setup descriptor sets so they can contain entity data.
         void setupDescriptorSets();
 };
+
+}
+
 #endif

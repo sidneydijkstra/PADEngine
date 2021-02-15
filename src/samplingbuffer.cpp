@@ -1,5 +1,7 @@
 #include "samplingbuffer.h"
 
+namespace pad {
+
 SamplingBuffer::SamplingBuffer() : ImageBuffer() {
     this->setupResources();
 }
@@ -27,4 +29,6 @@ SamplingBuffer::~SamplingBuffer() {
     vkDestroyImageView(DeviceHandler::getInstance()->getLogicalDevice(), _colorImageView, nullptr);
     vkDestroyImage(DeviceHandler::getInstance()->getLogicalDevice(), _colorImage, nullptr);
     vkFreeMemory(DeviceHandler::getInstance()->getLogicalDevice(), _colorImageMemory, nullptr);
+}
+
 }

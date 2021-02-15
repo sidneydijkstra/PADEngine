@@ -16,6 +16,8 @@
 #include <vector>
 #include <string>
 
+namespace pad {
+
 /// @brief Class describing a DepthBuffer object, which stores depth buffer image data.
 ///
 /// The DepthBuffer class is an extension of the ImageBuffer. 
@@ -43,4 +45,7 @@ private:
 	/// @brief Setup the depth buffer resource.
 	void setupDepthResources();
 };
+
+}
+
 #endif

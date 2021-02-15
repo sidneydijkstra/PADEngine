@@ -6,6 +6,8 @@
 #include "entity.h"
 #include "scenemanager.h"
 
+using namespace pad;
+
 class CollisionDemo : public Scene {
 	public:
 		CollisionDemo(std::string _name);

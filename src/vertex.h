@@ -22,6 +22,8 @@
 
 #include <array>
 
+namespace pad {
+
 /// @brief Struct describing a Vertex object, which contains Vertex data.
 ///
 /// The Vertex class is used to store the data from each individual vertex within a VertexBuffer. 
@@ -75,9 +77,11 @@ struct Vertex {
 	}
 };
 
+}
+
 namespace std {
-	template<> struct hash<Vertex> {
-		size_t operator()(Vertex const& vertex) const {
+	template<> struct hash<pad::Vertex> {
+		size_t operator()(pad::Vertex const& vertex) const {
 			return ((hash<glm::vec3>()(vertex.pos) ^
 				(hash<glm::vec3>()(vertex.normal) << 1)) >> 1) ^
 				(hash<glm::vec2>()(vertex.texCoord) << 1);

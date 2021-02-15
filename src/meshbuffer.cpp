@@ -1,5 +1,7 @@
 #include "meshbuffer.h"
 
+namespace pad {
+
 MeshBuffer::MeshBuffer() {
 	_indexBuffer = new IndexBuffer(cube_indices);
 	_vertexBuffer = new VertexBuffer(cube_vertices);
@@ -49,4 +51,6 @@ MeshBuffer::MeshBuffer(MeshType _type) {
 MeshBuffer::~MeshBuffer() {
 	delete _indexBuffer;
 	delete _vertexBuffer;
+}
+
 }

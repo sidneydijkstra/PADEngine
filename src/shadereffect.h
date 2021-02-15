@@ -25,6 +25,8 @@
 #include <vector>
 #include <string>
 
+namespace pad {
+
 /// @brief Class describing a ShaderEffect object, which stores ShaderStage for a ShaderPass.
 ///
 /// The ShaderEffect class consists of two ShaderStage objects. 
@@ -49,5 +51,7 @@ class ShaderEffect {
 	protected:
 		std::vector<ShaderStage*> _stages; ///< @brief A std::vector containing ShaderStage pointers.
 };
+
+}
 
 #endif

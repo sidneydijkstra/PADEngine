@@ -14,6 +14,8 @@
 #include <vector>
 #include <algorithm>
 
+namespace pad {
+
 /// @brief Class describing a Hierarchy object, which stores all child -> parent logic.
 ///
 /// The Hierarchy class is designed after the Unity engine <a href=” https://riptutorial.com/unity3d/example/7478/parenting-and-children”>parenting and children</a> structure. 
@@ -56,5 +58,7 @@ private:
 
 	int _nextGuid; ///< @brief Value of next guid.
 };
+
+}
 
 #endif

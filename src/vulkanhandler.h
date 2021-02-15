@@ -22,6 +22,8 @@
 #include <iostream>
 #include <vector>
 
+namespace pad {
+
 /// @brief Class describing a VulkanHandler, which handles window, surface and vulkan creation.
 ///
 /// The VulkanHandler class is for initializing a <a href="https://www.glfw.org/docs/3.3/window_guide.html">GLFWwindow</a> object and a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkInstance.html">VkInstance</a> which implements an instance of the Vulkan API. 
@@ -72,4 +74,7 @@ class VulkanHandler {
                 const bool _enableValidationLayers = true;
         #endif
 };
+
+}
+
 #endif

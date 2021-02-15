@@ -12,9 +12,9 @@
 
 #include <GLFW/glfw3.h>
 
-class Core;
-
 namespace pad {
+
+class Core;
 
 /// @brief Enumeration specifying every available key.
 enum class KeyCode {
@@ -194,8 +194,5 @@ private:
 };
 
 }
-
-/* Temporary using-directive. Remove when the whole engine uses the same namespace. */
-using namespace pad;
 
 #endif

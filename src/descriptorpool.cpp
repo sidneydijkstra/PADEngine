@@ -1,5 +1,7 @@
 #include "descriptorpool.h"
 
+namespace pad {
+
 DescriptorPool::DescriptorPool() {
 	int swapChainImageSize = SwapChainHandler::getInstance()->getSwapChainImagesSize();
 
@@ -46,4 +48,6 @@ void DescriptorPool::setup(int _size, const VkDescriptorPoolSize* _poolSizeData)
 
 DescriptorPool::~DescriptorPool() {
 	vkDestroyDescriptorPool(DeviceHandler::getInstance()->getLogicalDevice(), _pool, nullptr);
+}
+
 }

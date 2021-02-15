@@ -159,7 +159,4 @@ private:
 
 }
 
-/* Temporary using-directive. Remove when the whole engine uses the same namespace. */
-using namespace pad;
-
 #endif

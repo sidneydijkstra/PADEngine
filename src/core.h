@@ -35,7 +35,7 @@
 #include <vector>
 #include <set>
 
-//namespace pad {
+namespace pad {
 
 /// @brief Class describing a Core object, which handels the creation of necessary components and contains the main loop.
 ///
@@ -72,5 +72,6 @@ class Core {
         static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
 
-//}
+}
+
 #endif

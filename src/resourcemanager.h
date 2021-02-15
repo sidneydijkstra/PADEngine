@@ -17,6 +17,8 @@
 #include "meshbuffer.h"
 #include "modelloader.h"
 
+namespace pad {
+
 /// @brief Class describing a ResourceManager, which stores all the pointers to frequently used objects.
 ///
 /// The ResourceManager manages the loading of different objects like textures, meshes and other resources used in the game. 
@@ -54,4 +56,7 @@ class ResourceManager {
 		std::map<MeshType, MeshBuffer*> _meshes; ///< @brief A std::map containing MeshBuffer pointers arranged by MeshType
 		std::map<std::string, MeshBuffer*> _objectMeshes; ///< @brief A std::map containing MeshBuffer pointers arranged by path
 };
+
+}
+
 #endif

@@ -1,5 +1,7 @@
 #include "buffer.h"
 
+namespace pad {
+
 Buffer::Buffer() {
 }
 
@@ -86,4 +88,6 @@ void Buffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize siz
 }
 
 Buffer::~Buffer() {
+}
+
 }

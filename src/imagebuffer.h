@@ -9,6 +9,8 @@
 
 #include "buffer.h"
 
+namespace pad {
+
 /// @brief Class describing a ImageBuffer object, which stores all image data in a buffer.
 ///
 /// The ImageBuffer class is an extension of the Buffer class. This object contains the functionality to create both a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImage.html">VkImage</a> and a <a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkImageView.html">VkImageView</a>. 
@@ -55,4 +57,7 @@ class ImageBuffer : public Buffer {
 		/// @param _flag Image aspect flag bits.
 		VkImageView createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _flag);
 };
+
+}
+
 #endif

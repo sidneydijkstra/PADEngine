@@ -1,5 +1,7 @@
 #include "camera.h"
 
+namespace pad {
+
 Camera::Camera(PerspectiveType type) {
 	this->_firstClick = true;
 	this->lastX = Config::WIDTH / 2.0;
@@ -91,4 +93,6 @@ PerspectiveType Camera::getType()
 }
 
 Camera::~Camera() {
+}
+
 }

@@ -10,6 +10,8 @@
 #include "swapchainhandler.h"
 #include "imagebuffer.h"
 
+namespace pad {
+
 /// @brief Class describing a SamplingBuffer object, which stores all the information msaa image sampling.
 ///
 /// The SamplingBuffer class is an extension of the ImageBuffer. 
@@ -38,4 +40,7 @@ class SamplingBuffer : ImageBuffer {
 		/// @brief Setup msaa sample resource.
 		void setupResources();
 };
+
+}
+
 #endif

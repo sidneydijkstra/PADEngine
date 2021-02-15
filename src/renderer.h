@@ -45,6 +45,8 @@
 #include <array>
 #include <vector>
 
+namespace pad {
+
 /// @brief Class describing a Renderer object, which handles all rendering tasks.
 ///
 /// The Renderer class has the same structure as most OpenGL engines their renderers, containing separate functions to render different objects. 
@@ -110,4 +112,7 @@ class Renderer {
 		/// @return VkCommandBuffer in use.
 		VkCommandBuffer updateCommandBuffers(Scene* _scene, int _index);
 };
+
+}
+
 #endif

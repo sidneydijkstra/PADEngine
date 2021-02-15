@@ -1,5 +1,7 @@
 #include "material.h"
 
+namespace pad {
+
 MaterialBuffer::MaterialBuffer(MaterialData _data) {
 	this->_name = _data.name;
 	this->_shaderPass = new ShaderPass(_data);
@@ -19,4 +21,6 @@ ShaderPass* MaterialBuffer::getShaderPass() {
 
 MaterialBuffer::~MaterialBuffer() {
 	delete this->_shaderPass;
+}
+
 }

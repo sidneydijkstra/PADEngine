@@ -1,5 +1,7 @@
 #include "mesh.h"
 
+namespace pad {
+
 Mesh::Mesh() {
 	_meshBuffer = ResourceManager::getInstance()->getMeshBuffer(MeshType::PLANE);
 }
@@ -21,4 +23,6 @@ MeshType Mesh::getType() {
 }
 
 Mesh::~Mesh() {
+}
+
 }

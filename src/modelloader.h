@@ -12,6 +12,8 @@
 #include "vertex.h"
 #include "meshbuffer.h"
 
+namespace pad {
+
 /// @brief Class describing a ModelLoader object, this class is used to load .obj files.
 ///
 /// The Modelloader is exclusively meant for loading .obj file, which are files that contain information about a specific model, for example their verticies and positions of those verticies, texture mapping and more.
@@ -24,4 +26,7 @@ class ModelLoader {
 		/// @return MeshData object containing Vertex's and indicies.
 		static MeshData loadObjectFile(std::string obj_file_path);
 };
+
+}
+
 #endif

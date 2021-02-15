@@ -17,6 +17,8 @@
 #include <cstdint>
 #include <iostream>
 
+namespace pad {
+
 /// @brief Class holding Material.
 ///
 /// The material class contains information about the material that can be attached to the Entity object. 
@@ -62,4 +64,7 @@ class Material {
 
 		void setup(const char* _name);
 };
+
+}
+
 #endif

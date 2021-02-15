@@ -14,6 +14,8 @@
 #include <cstdint>
 #include <vector>
 
+namespace pad {
+
 /// @brief Class describing a SequenceManager, which handles the flow of the engine.
 ///
 /// The SequenceManager is an important component inside the engine. 
@@ -73,4 +75,7 @@ class SequenceManager {
 
 		const int MAX_FRAMES_IN_FLIGHT = 2;
 };
+
+}
+
 #endif

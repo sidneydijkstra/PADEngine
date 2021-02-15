@@ -18,6 +18,8 @@
 #include <string>
 #include <array>
 
+namespace pad {
+
 /// @brief Struct for texture buffer data.
 struct TextureBufferData {
 	VkImageView textureImageView;
@@ -75,4 +77,7 @@ private:
 	/// @brief Create a texture sampler.
 	void createTextureSampler();
 };
+
+}
+
 #endif

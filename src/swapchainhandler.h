@@ -30,6 +30,8 @@
 #include <vector>
 #include <set>
 
+namespace pad {
+
 /// @brief Class describing a SwapChainHandler object, which handles all the swapchain logic.
 ///
 /// The SwapChainHandler class is in its essence a class that contains a list of images on which can be renderd. 
@@ -106,4 +108,7 @@ private:
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 };
+
+}
+
 #endif

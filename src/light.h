@@ -9,6 +9,8 @@
 
 #include "entity.h"
 
+namespace pad {
+
 /// @brief Class holding Light information.
 ///
 /// The Light class creates a light for the scene to create a more realistic scene. 
@@ -28,4 +30,7 @@ class Light : public Entity {
 	private:
 		UniformBuffer<LightBufferObject>* _lightBuffer;
 };
+
+}
+
 #endif
