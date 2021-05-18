@@ -4,6 +4,7 @@
 
 #include "scene.h"
 #include "entity.h"
+#include "timer.h"
 #include "scenemanager.h"
 
 using namespace pad;

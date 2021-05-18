@@ -1,7 +1,7 @@
 
 #ifndef TIME_CLASS
 #define TIME_CLASS
-/// @file time.h
+/// @file timer.h
 /// @brief Standalone header providing Time functionality.
 /// @author Sidney Dijkstra
 /// @version 1.0.0

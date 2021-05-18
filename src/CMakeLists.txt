@@ -89,8 +89,8 @@ add_library(PADEngine STATIC
   material.h
   input.h
   input.cpp
-  time.h
-  time.cpp
+  timer.h
+  timer.cpp
   camera.h
   camera.cpp
   logger.h

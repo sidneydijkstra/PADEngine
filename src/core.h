@@ -26,7 +26,7 @@
 #include "sequencemanager.h"
 #include "scenemanager.h"
 #include "input.h"
-#include "time.h"
+#include "timer.h"
 
 #include <iostream>
 #include <fstream>

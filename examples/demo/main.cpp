@@ -11,21 +11,23 @@ int main() {
 
     LightDemo* sceneA = new LightDemo("light_demo");
     ShaderDemo* sceneB = new ShaderDemo("shader_demo");
-    CollisionDemo* sceneC = new CollisionDemo("collision_demo");
+    //CollisionDemo* sceneC = new CollisionDemo("collision_demo");
+
     SceneManager::getInstance()->addScene(sceneA);
     SceneManager::getInstance()->addScene(sceneB);
-    SceneManager::getInstance()->addScene(sceneC);
-    SceneManager::getInstance()->setCurrentScene(sceneC);
+    //SceneManager::getInstance()->addScene(sceneC);
+
+    SceneManager::getInstance()->setCurrentScene(sceneA);
 
     core.run();
 
     SceneManager::getInstance()->deleteScene("light_demo");
     SceneManager::getInstance()->deleteScene("shader_demo");
-    SceneManager::getInstance()->deleteScene("collision_demo");
+    //SceneManager::getInstance()->deleteScene("collision_demo");
 
     delete sceneA;
     delete sceneB;
-    delete sceneC;
+    //delete sceneC;
 
     core.cleanup();
 
