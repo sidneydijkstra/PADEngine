@@ -22,8 +22,8 @@ add_executable(PADEngine_startup
 add_executable(PADEngine_demo
     demo/main.cpp
 
-    demo/collisiondemo/collisiondemo.cpp
-    demo/collisiondemo/collisiondemo.h
+    demo/objectdemo/objectdemo.cpp
+    demo/objectdemo/objectdemo.h
 
     demo/lightdemo/lightdemo.cpp
     demo/lightdemo/lightdemo.h

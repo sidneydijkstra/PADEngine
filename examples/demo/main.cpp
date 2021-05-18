@@ -1,7 +1,7 @@
 #include "core.h"
 #include "lightdemo/lightdemo.h"
 #include "shaderdemo/shaderdemo.h"
-#include "collisiondemo/collisiondemo.h"
+#include "objectdemo/objectdemo.h"
 
 using namespace pad;
 
@@ -11,11 +11,11 @@ int main() {
 
     LightDemo* sceneA = new LightDemo("light_demo");
     ShaderDemo* sceneB = new ShaderDemo("shader_demo");
-    //CollisionDemo* sceneC = new CollisionDemo("collision_demo");
+    ObjectDemo* sceneC = new ObjectDemo("object_demo");
 
     SceneManager::getInstance()->addScene(sceneA);
     SceneManager::getInstance()->addScene(sceneB);
-    //SceneManager::getInstance()->addScene(sceneC);
+    SceneManager::getInstance()->addScene(sceneC);
 
     SceneManager::getInstance()->setCurrentScene(sceneA);
 
@@ -23,7 +23,7 @@ int main() {
 
     SceneManager::getInstance()->deleteScene("light_demo");
     SceneManager::getInstance()->deleteScene("shader_demo");
-    //SceneManager::getInstance()->deleteScene("collision_demo");
+    SceneManager::getInstance()->deleteScene("object_demo");
 
     delete sceneA;
     delete sceneB;

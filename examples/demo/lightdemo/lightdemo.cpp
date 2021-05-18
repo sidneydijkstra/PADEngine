@@ -24,7 +24,7 @@ void LightDemo::update() {
 	amountZ = this->_light->position.z > 5 || this->_light->position.z < -5 ? -amountZ : amountZ;
 
 	if (Input::getKeyDown(KeyCode::Q))
-		SceneManager::getInstance()->setCurrentScene("collision_demo");
+		SceneManager::getInstance()->setCurrentScene("object_demo");
 	if (Input::getKeyDown(KeyCode::E))
 		SceneManager::getInstance()->setCurrentScene("shader_demo");
 }

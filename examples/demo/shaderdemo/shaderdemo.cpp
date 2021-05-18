@@ -53,7 +53,7 @@ void ShaderDemo::update() {
 	if (Input::getKeyDown(KeyCode::Q))
 		SceneManager::getInstance()->setCurrentScene("light_demo");
 	if (Input::getKeyDown(KeyCode::E))
-		SceneManager::getInstance()->setCurrentScene("collision_demo");
+		SceneManager::getInstance()->setCurrentScene("object_demo");
 }
 
 ShaderDemo::~ShaderDemo() {

@@ -66,6 +66,7 @@ class VulkanHandler {
 
         const std::vector<const char*> _validationLayers = {
             "VK_LAYER_KHRONOS_validation"
+            //"VK_LAYER_LUNARG_standard_validation"
         };
 
         #ifdef NDEBUG
