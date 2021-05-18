@@ -21,7 +21,7 @@
 
 #include "config.h"
 #include "input.h"
-#include "time.h"
+#include "timer.h"
 
 namespace pad {
 
