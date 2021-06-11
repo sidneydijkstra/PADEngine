@@ -1,5 +1,7 @@
 #include "core.h"
 
+// refactor vulkan engine version, worked on by sidney!
+
 namespace pad {
 
 Core::Core() {

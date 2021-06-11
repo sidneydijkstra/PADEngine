@@ -1,6 +1,8 @@
 ﻿# PAD Engine
 Basic 3D Engine Runs in Vulkan On Windows, Linux and Mac.
 
+This is a refactor build of the engine. This build is being worked on by Sidney a programmer of the team that wanted to improve the engine. 
+
 How to build
 ---------
 
