@@ -1,5 +1,7 @@
 #include "core.h"
 
+// version 1 of engine, this version was used for a school assesment!
+
 namespace pad {
 
 Core::Core() {
