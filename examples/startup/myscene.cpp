@@ -3,7 +3,7 @@
 int amountX = 2;
 int amountY = 2;
 int amountZ = 2;
-LightDemo::LightDemo(std::string _name) : Scene(_name) {
+MyScene::MyScene(std::string _name) : Scene(_name) {
 	list = std::vector<Entity*>();
 	
 	for (size_t i = 0; i < 10; i++) {
@@ -14,8 +14,26 @@ LightDemo::LightDemo(std::string _name) : Scene(_name) {
 	}
 }
 
-void LightDemo::update() {
+void MyScene::update() {
 	this->getCamera()->move3D(5.0f);
+
+	if(Input::getKeyDown(KeyCode::G)){
+		for (size_t i = 0; i < list.size(); i++) {
+			list[i]->getMaterial()->color = Color(255, 255, 0);
+		}
+	}
+
+	if (Input::getKeyDown(KeyCode::H)) {
+		for (size_t i = 0; i < list.size(); i++) {
+			list[i]->getMaterial()->color = Color(255, 0, 0);
+		}
+	}
+
+	if (Input::getKeyDown(KeyCode::J)) {
+		for (size_t i = 0; i < list.size(); i++) {
+			list[i]->getMaterial()->color = Color(0, 255, 255);
+		}
+	}
 
 	this->_light->position.x += amountX * Time::getDeltaTime();
 	this->_light->position.y += amountY * Time::getDeltaTime();
@@ -26,7 +44,7 @@ void LightDemo::update() {
 	amountZ = this->_light->position.z > 5 || this->_light->position.z < -5 ? -amountZ : amountZ;
 }
 
-LightDemo::~LightDemo() {
+MyScene::~MyScene() {
 	for (auto e : list)
 		delete e;
 	list.clear();

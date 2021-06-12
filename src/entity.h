@@ -93,7 +93,6 @@ class Entity : public Hierarchy {
         Vector3 position; ///< @brief Position of Entity in the Scene.
         Vector3 rotation; ///< @brief Rotation of Entity in the Scene.
         Vector3 scale; ///< @brief Scale of Entity.
-        Color color; ///< @brief Color of Entity.
     protected:
         EntityType _type; ///< @brief Mesh object EntityType.
 

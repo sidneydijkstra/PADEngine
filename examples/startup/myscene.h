@@ -7,10 +7,10 @@
 
 using namespace pad;
 
-class LightDemo : public Scene {
+class MyScene : public Scene {
 	public:
-		LightDemo(std::string _name);
-		~LightDemo();
+		MyScene(std::string _name);
+		~MyScene();
 		
 		void update() override;
 

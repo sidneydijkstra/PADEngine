@@ -27,6 +27,8 @@ class Light : public Entity {
 		/// @return Pointer to light buffer.
 		UniformBuffer<LightBufferObject>* getLightBuffer();
 
+		Color color; ///< @brief Color of Light.
+
 	private:
 		UniformBuffer<LightBufferObject>* _lightBuffer;
 };
